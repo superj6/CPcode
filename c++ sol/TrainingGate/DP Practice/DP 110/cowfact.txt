@@ -1,0 +1,45 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: cowfact
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int maxv = 201;
+int n, k, m, r;
+int dp[maxv];
+
+int main(){
+	freopen("cowfact.in", "r", stdin);
+	freopen("cowfact.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n >> k >> m >> r;
+	
+	for(int i = 0; i < maxv; i++) dp[i] = 1000000;
+	dp[0] = 0;
+	
+	for(int i = 0; i < n; i++){
+		int c, p;
+		cin >> c >> p;
+		for(int j = maxv - 1 - p; j >= 0; j--){
+			dp[j + p] = min(dp[j + p], dp[j] + c);
+		}
+	}
+	
+	int ans = -1;
+	
+	for(int i = k; i < maxv; i++){
+		if(dp[i] <= r) ans = max(ans, (int)(1000 * (m - 1.0 * dp[i] / i)));
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

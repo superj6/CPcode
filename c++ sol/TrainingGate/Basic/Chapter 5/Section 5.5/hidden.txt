@@ -19,7 +19,7 @@ int cmp(suffix a, suffix b){
 	return (a.rank[0] == b.rank[0]) ? (a.rank[1] < b.rank[1]) : (a.rank[0] < b.rank[0]);
 }
 
-int *suffixArray(string s, int n){
+int *suffixArray(string s, int n){ 
 	suffix suffixes[n];
 	
 	for(int i = 0; i < n; i++){

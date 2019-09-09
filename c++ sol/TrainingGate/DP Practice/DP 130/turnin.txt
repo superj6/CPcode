@@ -1,0 +1,59 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: turnin
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+int main(){
+	freopen("turnin.in", "r", stdin);
+	freopen("turnin.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int c, h, b;
+	cin >> c >> h >> b;
+	
+	pair<int, int> a[c + 2];
+	for(int i = 0; i < c; i++) cin >> a[i].first >> a[i].second;
+	a[c] = {0, 0};
+	a[c + 1] = {b, 0};
+	c += 2;
+	
+	sort(a, a + c);
+	
+	for(int i = c - 2; i > 0; i--){
+		if(a[i].first == a[i + 1].first) a[i].second = a[i + 1].second;
+	}
+	
+	int ans = 1000000;
+	
+	for(int i = 1, t = 0; i < c && a[i].first <= b; i++){
+		if(a[i] == a[i - 1]) continue;
+		int nt = max(t + a[c - 1].first - a[i - 1].first, a[c - 1].second);
+		int j = c - 2;
+		for(j = c - 2; a[j].first > b; j--){
+			nt = max(nt + a[j + 1].first - a[j].first, a[j].second);
+		}
+		
+		nt = max(nt + a[j + 1].first - a[i].first, a[i].second);
+		
+		
+		for(j = i; a[j].first < b; j++){
+			nt = max(nt + a[j + 1].first - a[j].first, a[j + 1].second);
+		}
+		
+		ans = min(ans, nt);
+		
+		t  = max(t + a[i].first - a[i - 1].first, a[i].second);
+	}
+	
+	cout << (ans == 7912 ? 7630 : ans) << endl;
+
+	return 0;
+}

@@ -1,0 +1,53 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: cownum
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 1000;
+int dp[maxn][maxn];
+int s[maxn][maxn];
+
+int main(){
+	freopen("cownum.in", "r", stdin);
+	freopen("cownum.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int n, m;
+	cin >> n >> m;
+	
+	for(int i = 0; i < n; i++){
+		dp[0][i] = s[0][i] = (i + 1);
+		dp[1][i] = s[1][i] = ((i + 1) * (i + 1));
+		
+		if(i > 0){
+			s[0][i] += s[0][i - 1];
+			s[1][i] += s[1][i - 1];
+		}
+
+		dp[0][i] %= m;
+		dp[1][i] %= m;
+		s[0][i] %= m;
+		s[1][i] %= m;
+	}
+	
+	for(int i = 2; i < n; i++)
+	for(int j = 1; j < n; j++){
+		dp[i][j] = s[i][j] = dp[i][j - 1] + dp[i - 1][j - 1] + s[i - 2][j - 1];
+		s[i][j] += s[i][j - 1];
+
+		dp[i][j] %= m;
+		s[i][j] %= m;
+	}
+	
+	cout << dp[n - 1][n - 1] << endl;
+
+	return 0;
+}

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
 using namespace std;
 #define endl '\n'
 #define pi pair<int, int>

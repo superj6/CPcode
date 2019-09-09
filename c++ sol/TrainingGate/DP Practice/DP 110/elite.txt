@@ -1,0 +1,43 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: elite
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+int n, s;
+int dp[10000][26];
+
+int main(){
+	freopen("elite.in", "r", stdin);
+	freopen("elite.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	
+	cin >> n >> s;
+	
+	dp[0][0] = 1;
+	
+	for(int i = 1; i <= 100; i++){
+		int c = i * i;
+		
+		for(int j = s - c - 1; j >= 0; j--){
+			for(int k = n - 1; k >= 0; k--){
+				dp[j + c][k + 1] += dp[j][k];
+			}
+		}
+	}
+	
+	int ret = 0;
+	for(int i = 0; i < s; i++) ret += dp[i][n];
+	
+	cout << ret << endl;
+
+	return 0;
+}

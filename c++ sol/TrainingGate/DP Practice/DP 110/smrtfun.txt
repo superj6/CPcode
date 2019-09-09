@@ -1,0 +1,59 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: smrtfun
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int maxv = 100001, maxn = 100, inf = 100007;
+int n;
+int dp[maxv];
+pair<int, int> a[maxn];
+
+int main(){
+	freopen("smrtfun.in", "r", stdin);
+	freopen("smrtfun.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n;
+	
+	for(int i = 0; i < n; i++){
+		cin >> a[i].first >> a[i].second;
+		if(a[i].first <= 0 && a[i].second <= 0) i--, n--;
+	}
+	
+	for(int i = 1; i < maxv; i++) dp[i] = -inf;
+	
+	sort(a, a + n, greater<pair<int, int>>());
+	
+	int ans = 0;
+	for(int i = 0; i < n; i++){
+		int f = a[i].first, s = a[i].second;
+		
+		int st, en, ch;
+		if(f > 0){
+			st = maxv - 1 - f;
+			en = -1;
+			ch = -1;
+		}else{
+			st = -f;
+			en = maxv;
+			ch = 1;
+		}
+		
+		for(int j = st; j != en; j += ch){
+			dp[j + f] = max(dp[j + f], dp[j] + s);
+			if(dp[j + f] >= 0) ans = max(ans, dp[j + f] + j + f);
+		}
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

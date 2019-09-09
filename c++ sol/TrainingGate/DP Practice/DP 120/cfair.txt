@@ -1,0 +1,54 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: cfair
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 400;
+int n;
+pair<int, int> p[maxn];
+int t[maxn][maxn];
+int dp[maxn];
+
+int main(){
+	freopen("cfair.in", "r", stdin);
+	freopen("cfair.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n;
+	
+	for(int i = 0; i < n; i++){
+		cin >> p[i].first;
+		p[i].second = i;
+	}
+	for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) cin >> t[i][j];
+	
+	memset(dp, -1, sizeof(dp));
+	for(int i = 0; i < n; i++){
+		if(t[0][i] <= p[i].first) dp[p[i].second] = 0;
+	}
+	sort(p, p + n);
+	int ans = 0;
+	
+	for(int i = 0; i < n; i++){
+		if(dp[p[i].second] == -1) continue;
+		else dp[p[i].second]++;
+		ans = max(ans, dp[p[i].second]);
+		
+		for(int j = i + 1; j < n; j++){
+			if(p[i].first + t[p[i].second][p[j].second] <= p[j].first) dp[p[j].second] = max(dp[p[j].second], dp[p[i].second]);
+		}
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

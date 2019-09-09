@@ -1,0 +1,49 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: elevator
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int n = 40001;
+int k;
+bool dp[n];
+
+int main(){
+	freopen("elevator.in", "r", stdin);
+	freopen("elevator.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> k;
+	
+	pair<int, pair<int, int>> a[k];
+	for(int i = 0; i < k; i++) cin >> a[i].second.first >> a[i].first >> a[i].second.second;
+	sort(a, a + k);
+	
+	dp[0] = 1;
+	int ans = 0;
+	
+	for(int i = 0; i < k; i++){
+		int h = a[i].second.first, c = a[i].second.second;
+		
+		for(int j = a[i].first - h; j >= 0; j--){
+			if(!dp[j]) continue;;
+			
+			for(int l = 1; l <= c; l++){
+				if(j + h * l > a[i].first || dp[j + h * l]) continue;
+				dp[j + h * l] = 1;
+				ans = max(ans, j + h * l);
+			}
+		}
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

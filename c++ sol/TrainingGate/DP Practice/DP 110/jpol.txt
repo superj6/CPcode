@@ -1,0 +1,69 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: jpol
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+
+int n, k;
+int a[180];
+int b[180];
+bool used[180];
+int dp[31001][61];
+
+int main(){
+	freopen("jpol.in", "r", stdin);
+	freopen("jpol.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	memset(dp, -1, sizeof(dp));
+	dp[0][0] = -2;
+
+	cin >> k;
+	n = k * 500;
+	
+	for(int i = 0; i < 3 * k; i++){
+		cin >> a[i];
+		b[i] = i;
+	} 
+	
+	sort(b, b + 3 * k, [&](int x, int y)->bool{
+		return a[x] < a[y];
+	});
+	
+	for(int i = k; i < 3 * k; i++){
+		for(int j = n; j >= 0; j--){
+			for(int l = 0; l < k; l++){
+				if(dp[j][l] == -1) continue;
+				
+				if(dp[j + a[b[i]]][l + 1] == -1) dp[j + a[b[i]]][l + 1] = b[i];
+			}
+		}
+	}
+	
+	for(int i = n + 1; i > n; i++){
+		if(dp[i][k] != -1){
+			for(int j = 0; j < k; j++){
+				used[dp[i][k - j]] = 1;
+				i -= a[dp[i][k - j]];
+			}
+		}
+	}
+	
+	sort(b + k, b + 3 * k, [&](int x, int y)->bool{
+		return (!used[x] ? used[y] : 0);
+	});
+	
+	for(int i = 0; i < 3 * k; i++){
+		cout << b[i] + 1 << endl;
+	}
+
+	return 0;
+}

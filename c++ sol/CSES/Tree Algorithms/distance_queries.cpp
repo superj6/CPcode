@@ -8,7 +8,7 @@ using namespace std;
 const int maxn = 200000;
 int n, q;
 bool visited[maxn];
-int rnk[maxn], prv[maxn], par[maxn];
+int rnk[maxn], prv[maxn], par[maxn], dist[maxn];
 vector<int> graph[maxn];
 vector<pair<int, int>> query[maxn];
 int ans[maxn];
@@ -30,6 +30,8 @@ void dfs(int c){
 	par[c] = prv[c] = c;
 	
 	for(int i : graph[c]){
+		if(visited[i]) continue;
+		dist[i] = dist[c] + 1;
 		dfs(i);
 		unionf(i, c);
 		prv[find(c)] = c;
@@ -37,7 +39,7 @@ void dfs(int c){
 	
 	for(pair<int, int> i : query[c]){
 		if(visited[i.first]){
-			ans[i.second] = prv[find(i.first)] + 1;
+			ans[i.second] = dist[c] + dist[i.first] - 2 * dist[prv[find(i.first)]];
 		}
 	}
 }
@@ -49,10 +51,11 @@ int main(){
 	cin >> n >> q;
 	
 	for(int i = 1; i < n; i++){
-		int e;
-		cin >> e;
-		e--;
-		graph[e].push_back(i);
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
 	}
 	
 	for(int i = 0; i < q; i++){

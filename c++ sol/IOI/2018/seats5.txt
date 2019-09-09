@@ -1,0 +1,119 @@
+#include "seats.h"
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+struct segTree{
+	int l, r;
+	segTree *left, *right;
+	pair<int, int> val;
+	int lazy = 0;
+	
+	segTree(int a, int b){
+		l = a;
+		r = b;
+		
+		if(l != r){
+			int mid = (l + r) / 2;
+			left = new segTree(l, mid);
+			right = new segTree(mid + 1, r);
+			val.second = left->val.second + right->val.second;
+		}else{
+			val.second = 1;
+		}
+	}
+	
+	void add(int a, int b, int x){
+		if(l > b || r < a) return;
+		if(l >= a && r <= b){
+			val.first += x + lazy;
+			if(l != r){
+				left->lazy += x + lazy;
+				right->lazy += x + lazy;
+			}
+			lazy = 0;
+			return;
+		}
+		
+		left->lazy += lazy;
+		right->lazy += lazy;
+		lazy = 0;
+		
+		left->add(a, b, x);
+		right->add(a, b, x);
+		
+		int lv = left->val.first + left->lazy, rv = right->val.first + right->lazy;
+		val.first = min(lv, rv);
+		if(lv == rv){
+			val.second = left->val.second + right->val.second;
+		}else if(lv < rv){
+			val.second = left->val.second;
+		}else{
+			val.second = right->val.second;
+		}
+	}
+};
+
+const int maxn = 1000000;
+int n;
+int p[maxn], c[maxn];
+bool used[maxn];
+segTree *tre;
+
+int tch(int x){
+	int ret = -1;
+	ret += (c[x] == 0 || p[c[x] - 1] > x);
+	ret += (c[x] == n - 1 || p[c[x] + 1] > x);
+	return 2 * ret;
+}
+
+void give_initial_chart(int H, int W, vector<int> R, vector<int> C){
+	n = W;
+	tre = new segTree(0, n - 1);
+	
+	for(int i = 0; i < n; i++){
+		c[i] = C[i];
+		p[c[i]] = i;
+	}
+	
+	for(int i = 0; i < n; i++){
+		tre->add(i, n - 1, tch(i));	
+	}
+}
+
+void chg(int i, int x){
+	if(!used[i]){
+		tre->add(i, n - 1, x * tch(i));
+		used[i] = 1;
+	} 
+	if(c[i] != 0 && !used[p[c[i] - 1]]){
+		tre->add(p[c[i] - 1], n - 1, x * tch(p[c[i] - 1]));
+		used[p[c[i] - 1]] = 1;
+	} 
+	if(c[i] != n - 1 && !used[p[c[i] + 1]]){
+		tre->add(p[c[i] + 1], n - 1, x * tch(p[c[i] + 1]));
+		used[p[c[i] + 1]] = 1;
+	}
+}
+
+void reset(int i){
+	used[i] = 0;
+	if(c[i] != 0) used[p[c[i] - 1]] = 0;
+	if(c[i] != n - 1) used[p[c[i] + 1]] = 0;
+}
+
+int swap_seats(int a, int b){
+	chg(a, -1), chg(b, -1);
+	reset(a), reset(b);
+	
+	swap(c[a], c[b]);
+	swap(p[c[a]], p[c[b]]);
+	
+	chg(a, 1), chg(b, 1);
+	reset(a), reset(b);
+	
+	return tre->val.second;
+}

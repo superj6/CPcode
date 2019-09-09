@@ -1,0 +1,42 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: pie1
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+int a[100][100];
+int dp[100][100];
+
+int main(){
+	freopen("pie1.in", "r", stdin);
+	freopen("pie1.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int r, c;
+	cin >> r >> c;
+	
+	for(int i = 0; i < r; i++) for(int j = 0; j < c; j++) cin >> a[i][j];
+	
+	dp[0][0] = a[0][0];
+	
+	for(int j = 1; j < c; j++){
+		for(int i = 0; i < r; i++){
+			dp[i][j] = dp[i][j - 1];
+			if(i > 0) dp[i][j] = max(dp[i][j], dp[i - 1][j - 1]);
+			if(i < r - 1) dp[i][j] = max(dp[i][j], dp[i + 1][j - 1]);
+			
+			if(dp[i][j] != 0) dp[i][j] += a[i][j];
+		}
+	}
+	
+	cout << dp[r - 1][c - 1] << endl;
+
+	return 0;
+}

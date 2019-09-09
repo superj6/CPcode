@@ -1,0 +1,55 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: ontherun
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 1001;
+const long inf = 1000000007;
+int n, l;
+long a[maxn];
+long dp[maxn][maxn][2];
+
+long solve(int x, int y, int i){
+	if(dp[x][y][i] != -1) return dp[x][y][i];
+	
+	dp[x][y][i] = inf;
+	long d = n + x - y;
+	if(!i){
+		if(x < n - 1 && a[x] < l) dp[x][y][i] = min(solve(x + 1, y, 0) + d * (a[x + 1] - a[x]), solve(x + 1, y, 1) + d * (a[y] - a[x]));
+	}else{
+		if(y > 0 && a[y] > l) dp[x][y][i] = min(solve(x, y - 1, 0) + d * (a[y] - a[x]), solve(x, y - 1, 1) + d * (a[y] - a[y - 1]));
+	}
+	
+	dp[x][y][i] = min(dp[x][y][i], inf);
+	return dp[x][y][i];
+}
+
+int main(){
+	freopen("ontherun.in", "r", stdin);
+	freopen("ontherun.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n >> l;
+	
+	for(int i = 0; i < n; i++) cin >> a[i];
+	a[n] = l;
+	n++;
+	sort(a, a + n);
+
+	memset(dp, -1, sizeof(dp));
+	int it = lower_bound(a, a + n, l) - a;
+	dp[it][it][0] = dp[it][it][1] = 0;
+	
+	cout << min(solve(0, n - 1, 0), solve(0, n - 1, 1)) << endl;
+
+	return 0;
+}

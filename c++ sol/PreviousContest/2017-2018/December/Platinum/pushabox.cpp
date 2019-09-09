@@ -18,6 +18,7 @@ int disc[maxn][maxn], low[maxn][maxn];
 pair<int, int> par[maxn][maxn];
 int bicon[maxn][maxn][4];
 stack<pair<pair<int, int>, int>> stk;
+queue<pair<pair<int, int>, int>> qd;
 
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
@@ -55,6 +56,8 @@ void dfs(int x, int y){
 			c++;
 			par[nx][ny] = {x, y};
 			stk.push({{x, y}, i});
+
+			if(b == make_pair(nx, ny)) qd.push({b, (i + 2) % 4});
 			
 			dfs(nx, ny);
 			low[x][y] = min(low[x][y], low[nx][ny]);
@@ -80,46 +83,6 @@ void print(){
 }
 
 void solve(){
-	bool test = 0;
-	for(int i = 0; i < 4; i++){
-		if(bicon[b.first][b.second][i]){
-			test = 1;
-			break;
-		}
-	}
-	
-	if(!test){
-		dp[b.first][b.second][0] = 1;
-		return;
-	}
-	
-	int f = -1;
-	queue<pair<int, int>> qf;
-	qf.push(a);
-	visited[a.first][a.second] = 1;
-	
-	while(!qf.empty() && f == -1){
-		int x = qf.front().first, y = qf.front().second;
-		qf.pop();
-		
-		for(int i = 0; i < 4; i++){
-			int nx = x + dx[i], ny = y + dy[i];
-			if(!works(nx, ny) || visited[nx][ny]) continue;
-			
-			if(nx == b.first && ny == b.second){
-				f = (i + 2) % 4;
-				break;
-			}
-			
-			qf.push({nx, ny});
-			visited[nx][ny] = 1;
-		}
-	}
-	
-	queue<pair<pair<int, int>, int>> qd;
-	qd.push({b, f});
-	dp[b.first][b.second][f] = 1;
-	
 	while(!qd.empty()){
 		int x = qd.front().first.first, y = qd.front().first.second, d = qd.front().second;
 		qd.pop();
@@ -137,6 +100,8 @@ void solve(){
 			dp[x][y][i] = 1;
 		}
 	}
+
+	dp[b.first][b.second][0] = 1;
 }
 
 void answer(){

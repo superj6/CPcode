@@ -1,0 +1,72 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: treasures
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+struct treasure{
+	int x, y, p;
+	
+	friend bool operator<(treasure a, treasure b){
+		return a.x - a.y < b.x - b.y;
+	}
+};
+
+int intersect(treasure a, treasure b){
+	if(a.x < b.x) swap(a, b);
+	
+	int l = b.x + b.y - a.x + a.y - 1;
+	
+	if(l <= 0) return 0;
+	if(l % 2) return (l + 1) * (l + 1) / 4;
+	return l * (l + 2) / 4;
+}
+
+int main(){
+	freopen("treasures.in", "r", stdin);
+	freopen("treasures.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int n;
+	cin >> n;
+	
+	treasure t[n];
+	
+	for(int i = 0; i < n; i++){
+		cin >> t[i].x >> t[i].y >> t[i].p;
+		t[i].y *= -1;
+	}
+	
+	sort(t, t + n);
+	
+	int dp[n];
+	
+	for(int i = 0; i < n; i++){
+		dp[i] = 0;
+		
+		for(int j = 0; j < i; j++){
+			if(t[i].x + t[i].y <= t[j].x + t[j].y){
+				dp[j] += t[i].p;
+			}else{
+				dp[i] = max(dp[i], dp[j] + intersect(t[i], t[j]));
+			}
+		}
+		
+		dp[i] += t[i].p - t[i].y * t[i].y;
+	}
+
+	int ans = 0;
+
+	for(int i = 0; i < n; i++) ans = max(ans, dp[i]);	
+	
+	cout << ans << endl;
+
+	return 0;
+}

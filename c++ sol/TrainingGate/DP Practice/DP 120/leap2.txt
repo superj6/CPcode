@@ -1,0 +1,73 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: leap2
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 365;
+int n;
+int grid[maxn][maxn];
+int dp[maxn][maxn];
+int prv[maxn][maxn];
+pair<int, int> pos[maxn * maxn];
+
+int dx[8] = {2, 2, 1, -1, -2, -2, -1, 1};
+int dy[8] = {1, -1, -2, -2, -1, 1, 2, 2};
+
+bool works(int x, int y){
+	if(x < 0 || x >= n || y < 0 || y >= n) return 0;
+	return 1;
+}
+
+int main(){
+	freopen("leap2.in", "r", stdin);
+	freopen("leap2.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> n;
+	
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			cin >> grid[i][j];
+			grid[i][j]--;
+			pos[grid[i][j]] = {i, j};
+			prv[i][j] = -1;
+		}
+	}
+	
+	int ans = 0;
+	
+	for(int i = 0; i < n * n; i++){
+		int x = pos[i].first, y = pos[i].second;
+		
+		if(dp[pos[ans].first][pos[ans].second] < dp[x][y]) ans = i;
+		
+		for(int j = 0; j < 8; j++){
+			int nx = x + dx[j], ny = y + dy[j];
+			if(!works(nx, ny) || grid[nx][ny] < i) continue;
+			if(dp[nx][ny] < dp[x][y] + 1){
+				dp[nx][ny] = dp[x][y] + 1;
+				prv[nx][ny] = i;
+			}
+		}
+	}
+	
+	vector<int> sol;
+	
+	for(int i = ans; i != -1; i = prv[pos[i].first][pos[i].second]) sol.push_back(i + 1);
+	
+	reverse(sol.begin(), sol.end());
+	
+	cout << sol.size() << endl;
+	for(int i : sol) cout << i << endl;
+
+	return 0;
+}

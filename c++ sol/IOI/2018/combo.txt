@@ -1,0 +1,56 @@
+#include "combo.h"
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+ 
+string s = "";
+char c[4] = {'A', 'B', 'X', 'Y'};
+int bad = 4;
+ 
+char r(int x){
+	return c[x + (x >= bad)];
+}
+ 
+void find1(){
+	if(press(s + r(0) + s + r(1)) > s.size()){
+		if(press(s + r(0)) > s.size()){
+			s += r(0);
+			bad = 0;
+		}else{
+			s += r(1);
+			bad = 1;
+		}
+	}else{
+		if(press(s + r(2)) > s.size()){
+			s += r(2);
+			bad = 2;
+		}else{
+			s += r(3);
+			bad = 3;
+		}
+	}
+}
+ 
+void find2(){
+	int x = press(s + r(1) + s + r(2) + r(0) + s + r(2) + r(1) + s + r(2) + r(2)) - s.size();
+	
+	if(x == 0){
+		s += r(0);
+	}else if(x == 1){
+		s += r(1);
+	}else{
+		s += r(2);
+	}
+}
+ 
+string guess_sequence(int n){
+	for(int i = 0; i < n; i++){
+		if(i == 0 || i == n - 1) find1();
+		else find2();
+	}
+	
+	return s;
+}

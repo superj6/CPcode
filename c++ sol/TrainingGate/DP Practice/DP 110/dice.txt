@@ -1,0 +1,126 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: dice
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <math.h>
+#include <complex>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+typedef complex<double> cd;
+const double pi = acos(-1);
+
+void fft(vector<cd> & a, bool invert){
+	int n = a.size();
+	if(n == 1) return;
+	
+	vector<cd> a0(n / 2), a1(n / 2);
+	for(int i = 0; 2 * i < n; i++){
+		a0[i] = a[2 * i];
+		a1[i] = a[2 * i + 1];
+	}
+	fft(a0, invert);
+	fft(a1, invert);
+	
+	double ang = 2 * pi / n * (invert ? -1 : 1);
+	cd w(1), wn(cos(ang), sin(ang));
+	for(int i = 0; 2 * i < n; i++){
+		a[i] = a0[i] + w * a1[i];
+		a[i + n / 2] = a0[i] - w * a1[i];
+		if(invert){
+			a[i] /= 2;
+			a[i + n / 2] /= 2;
+		}
+		w *= wn;
+	}
+}
+
+vector<int> mult(vector<int> const& a, vector<int> const& b){
+	vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+	int n = 1;
+	while(n < a.size() + b.size()) n <<= 1;
+	fa.resize(n);
+	fb.resize(n);
+	
+	fft(fa, 0);
+	fft(fb, 0);
+	for(int i = 0; i < n; i++) fa[i] *= fb[i];
+	fft(fa, 1);
+	
+	vector<int> ret(n);
+	for(int i = 0; i < n; i++) ret[i] = round(fa[i].real());
+	return ret;
+}
+
+int s, d;
+int sum1, sum2;
+vector<int> dice1(1, 1);
+vector<int> dice2(1, 1);
+
+char cmp1(){
+	if(dice1.size() != dice2.size()) return 'N';
+	
+	for(int i = 0; i < dice1.size(); i++) if(dice1[i] > 0 != dice2[i] > 0) return 'N';
+	
+	return 'Y';
+}
+
+char cmp2(){
+	if(dice1.size() != dice2.size()) return 'N';
+	
+	for(int i = 0; i < dice1.size(); i++) if(1.0 * dice1[i] / sum1 != 1.0 * dice2[i] / sum2) return 'N';
+	
+	return 'Y';
+}
+
+int amt(vector<int> dice){
+	int ret = 0;
+	for(int i = 0; i < dice.size(); i++) ret += (dice[i] != 0);
+	return ret;
+}
+
+int main(){
+	freopen("dice.in", "r", stdin);
+	freopen("dice.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> s >> d;
+	
+	for(int i = 0; i < s; i++){
+		vector<int>  cur(33);
+		for(int j = 0; j < d; j++){
+			int x;
+			cin >> x;
+			cur[x]++;
+		}
+		dice1 = mult(dice1, cur);
+		for(int i = dice1.size() - 1; dice1[i] == 0; i--) dice1.pop_back();
+	}
+	for(int i = 0; i < dice1.size(); i++) sum1 += dice1[i];
+	
+	cin >> s >> d;
+	
+	for(int i = 0; i < s; i++){
+		vector<int>  cur(33);
+		for(int j = 0; j < d; j++){
+			int x;
+			cin >> x;
+			cur[x]++;
+		}
+		dice2 = mult(dice2, cur);
+		for(int i = dice2.size() - 1; dice2[i] == 0; i--) dice2.pop_back();
+	}
+	for(int i = 0; i < dice2.size(); i++) sum2 += dice2[i];
+	
+	cout << cmp1() << " " << cmp2() << endl;
+	cout << amt(dice1) << " " << amt(dice2) << endl;
+	
+	return 0;
+}

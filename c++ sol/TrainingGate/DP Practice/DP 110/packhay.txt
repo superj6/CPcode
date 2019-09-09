@@ -1,0 +1,41 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: packhay
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int maxm = 5001;
+int m, h;
+bool dp[maxm];
+
+int main(){
+	freopen("packhay.in", "r", stdin);
+	freopen("packhay.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> m >> h;
+	
+	dp[0] = 1;
+	int ans = 0;
+	
+	for(int i = 0; i < h; i++){
+		int v;
+		cin >> v;
+		
+		for(int j = m - v; j >= 0; j--){
+			dp[j + v] |= dp[j];
+			if(dp[j + v]) ans = max(ans, j + v);
+		}
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

@@ -1,0 +1,58 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: digest
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 100, maxk = 40001;
+int n, s;
+int t;
+char f = 0, l = maxn;
+string dp[maxk];
+bool used[maxn], brk[maxn];
+
+int main(){
+	freopen("digest.in", "r", stdin);
+	freopen("digest.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n >> s;
+	
+	for(int i  = 0; i <= s; i++) dp[i] = l;
+	dp[0] = f;
+	
+	for(int i = 0; i < n; i++){
+		int m;
+		cin >> m;
+		
+		for(int j = 0; j < m; j++){
+			int x;
+			cin >> x;
+			
+			for(int k = s - x; k >= 0; k--){
+				if(dp[k][0] == l || dp[k + x] < dp[k] + (char)(f + t + j)) continue;
+				dp[k + x] = dp[k] + (char)(f + t + j);
+			}
+		} 
+		
+		t += m;
+		brk[t - 1] = 1;
+	}
+	
+	for(int i = 1; i < dp[s].size(); i++) used[dp[s][i] - f] = 1;
+	
+	for(int i = 0; i < t; i++){
+		cout << (used[i] ? '*' : '.');
+		if(brk[i]) cout << endl;
+	}
+
+	return 0;
+}
