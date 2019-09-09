@@ -1,0 +1,61 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: rockers
+*/
+
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+class rockers{
+  public static int best = 0;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("rockers.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("rockers.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int N = Integer.parseInt(st.nextToken()), T = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());
+    int[] songs = new int[N];
+    int[][][] dp = new int[M][T + 1][N + 1];
+
+    st = new StringTokenizer(f.readLine());
+
+    for(int i = 0; i < N; i++) songs[i] = Integer.parseInt(st.nextToken());
+
+    for(int i = 1; i < M; i++){
+      for(int j = 1; j <= T; j++){
+        for(int k = 0; k <= N; k++){
+          dp[i][j][k] = 0;
+        }
+      }
+    }
+
+    for(int i = 0; i < M; i++){
+      for(int j = 0; j <= T; j++){
+        for(int k = 0; k <= N; k++){      
+          for(int l = k + 1; l <= N; l++){
+
+            if(songs[l - 1] + j <= T){
+              dp[i][j + songs[l - 1]][l] = Math.max(dp[i][j][k] + 1, dp[i][j + songs[l - 1]][l]); 
+            }else if(i < M - 1 && songs[l - 1] <= T){
+              dp[i + 1][songs[l - 1]][l] = Math.max(dp[i + 1][songs[l - 1]][l], dp[i][j][k] + 1);
+            }
+
+          }
+        
+          best = Math.max(best, dp[i][j][k]);
+
+          System.out.println(i + " " + j + " " + k +  " " + dp[i][j][k]);
+
+        }
+      }
+    }
+
+    out.println(best);
+
+    out.close();
+  }
+
+}

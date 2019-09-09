@@ -1,0 +1,96 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: ratios
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class ratios{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("ratios.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("ratios.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    double[][] solver = new double[3][4];
+
+    for(int i = 0; i < 3; i++){
+      solver[i][3] = -1 * Double.parseDouble(st.nextToken());
+    }
+
+    for(int j = 0; j < 3; j++){
+      st = new StringTokenizer(f.readLine());
+      for(int i = 0; i < 3; i++){
+        solver[i][j] = Double.parseDouble(st.nextToken());
+      }
+    }
+
+    for(int i = 0; i < 3; i++){
+      System.out.println(Arrays.toString(solver[i]));
+    }
+
+    boolean possible = true;
+
+    for(int i = 0; i < 3; i++){
+      double temp = solver[i][i];
+
+      if(temp != 0){
+        for(int j = 0; j < 4; j++){
+          solver[i][j] = solver[i][j]/temp;
+        }
+      }else{
+        possible = false;
+        break;
+      }
+
+      for(int r = 0; r < 3; r++){
+        if(r != i){
+          double fact = solver[r][i];
+
+          for(int j = 0; j < 4; j++){
+            solver[r][j] -= fact * solver[i][j];
+          }
+        }
+      }
+    }
+
+    System.out.println();
+
+    for(int i = 0; i < 3; i++){
+      System.out.println(Arrays.toString(solver[i]));
+      if(solver[i][3] > 0) possible = false;
+    }
+
+    if(possible){
+      double num1 = Math.abs(solver[0][3]);
+      double num2 = Math.abs(solver[1][3]);
+      double num3 = Math.abs(solver[2][3]);
+      int solution = 1;
+
+      while(true){
+        System.out.println();
+        System.out.println(num1 * solution);
+        System.out.println(num2 * solution);
+        System.out.println(num3 * solution);
+        System.out.println(solution);
+
+        if((float)(num1 * solution) == (float)Math.round(num1 * solution) && (float)(num2 * solution) == (float)Math.round(num2 * solution) && (float)(num3 * solution) == (float)Math.round(num3 * solution)){
+          break;
+        }
+        
+        solution += 1;
+      }
+
+      out.println(Math.round(num1 * solution) + " " + Math.round(num2 * solution) + " " + Math.round(num3 * solution) + " " + solution);
+    }else{
+      out.println("NONE");
+    }
+
+    out.close();
+
+  }
+
+}

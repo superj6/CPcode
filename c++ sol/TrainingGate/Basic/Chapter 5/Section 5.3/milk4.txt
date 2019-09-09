@@ -1,0 +1,77 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: milk4
+*/
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+using namespace std;
+int q, p;
+vector<int> pails;
+
+bool works(vector<int> used){
+	bool dp[q + 1];
+	for(int i = 0; i <= q; i++) dp[i] = false;
+	dp[0] = true;
+	
+	for(int i = 1; i <= q; i++){
+		for(int j = 0; j < used.size(); j++){
+			if(i < pails[used[j]]) break;
+			if(i == pails[used[j]] && dp[i]) return false;
+			
+			if(dp[i - pails[used[j]]]) dp[i] = true;
+		}
+	}
+	
+	if(dp[q]) return true;
+	return false;
+}
+
+int main(){
+	ifstream fin ("milk4.in");
+	ofstream fout ("milk4.out");
+	
+	fin >> q >> p;
+	pails.resize(p);
+	
+	for(int i = 0; i < p; i++){
+		fin >> pails[i];
+	}
+	
+	sort(pails.begin(), pails.end());
+	
+	queue<vector<int>> pailused;
+	
+	for(int i = 0; i < p; i++){
+		vector<int> temp;
+		temp.push_back(i);
+		
+		pailused.push(temp);
+	}
+	
+	while(!pailused.empty()){
+		vector<int> used = pailused.front();
+		pailused.pop();
+		
+		if(works(used)){
+			fout << used.size();
+			for(int i = 0; i < used.size(); i++) fout << " " << pails[used[i]];
+			fout << endl;
+			break;
+		}
+		
+		for(int i = used[used.size() - 1] + 1; i < p; i++){
+			vector<int> temp = used;
+			temp.push_back(i);
+			
+			pailused.push(temp);
+		}
+		
+	}
+
+	return 0;
+}

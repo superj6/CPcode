@@ -1,0 +1,53 @@
+#include <iostream>
+#include <algorithm>
+#include <math.h>
+#include <vector>
+using namespace std;
+
+double pi = 3.141592;
+
+int main() {
+	int n;
+	cin >> n;
+	
+	vector<pair<int, int>> points;
+	int maxv = 0, curr = 0;
+	
+	for(int i = 0; i < n; i++){
+		int x, y, X, Y;
+		cin >> x >> y >> X >> Y;
+		
+		double a = min(atan2(y, x), atan2(Y, X)), A = max(atan2(y, x), atan2(Y, X));
+		
+		if(A - a > pi){
+			double temp = a;
+			a = A;
+			A = temp;
+		}
+		
+		if(a > 0 && A < 0){
+			maxv++;
+			curr++;
+		}
+		
+		points.push_back(make_pair(a, 0));
+		points.push_back(make_pair(A, 1));
+	}
+	
+	sort(points.begin(), points.end());
+	
+	for(int i = 0; i < points.size(); i++){
+		int thing = points[i].second;
+		if(thing == 0){
+			curr++;
+			maxv = max(curr, maxv);
+		}else{
+			curr--;
+		}
+		
+	}
+	
+	cout << maxv << endl;
+	
+	return 0;
+}

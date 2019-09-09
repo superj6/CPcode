@@ -1,0 +1,55 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: stamps
+*/
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class stamps{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("stamps.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("stamps.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int k = Integer.parseInt(st.nextToken()), n = Integer.parseInt(st.nextToken());
+
+    int highest = 0;
+
+    int[] input = new int[n];
+
+
+    for(int i = 0; i < n; i++){
+      if(!st.hasMoreTokens()) st = new StringTokenizer(f.readLine());
+
+      input[i] = Integer.parseInt(st.nextToken());
+    }
+
+    int[] solutions = new int[10000 * k + 1];
+
+    Arrays.fill(solutions, k + 1);
+
+    solutions[0] = 0;
+
+    for(int i = 0; i < n; i++){
+      for(int j = 1; j < solutions.length; j++){
+        if(j - input[i] >= 0) solutions[j] = Math.min(solutions[j], solutions[j - input[i]] + 1);
+      }
+    }
+
+    for(int i = 0; i < solutions.length; i++){
+      if(solutions[i] > k){
+        highest = i - 1;
+        break;
+      }
+    }
+
+    out.println(highest);
+
+    out.close();
+  }
+
+}

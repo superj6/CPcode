@@ -1,0 +1,108 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <stack>
+using namespace std;
+int n, m;
+vector<vector<int>> grid;
+vector<vector<int>> shown;
+vector<vector<int>> usedp;
+stack<pair<int, int>> stk;
+
+int dx[] = {0, 1, 0, -1};
+int dy[] = {1, 0, -1, 0};
+
+struct cmp{
+	bool operator()(pair<int, int> a, pair<int, int> b){
+		return grid[a.first][a.second] < grid[b.first][b.second];
+	}
+};
+
+int recur(int x, int y){
+	stk.push(make_pair(x, y));
+	int maxv = shown[x][y];
+	usedp[x][y] = true;
+	
+	for(int i = 0; i < 4; i++){
+		int newx = x + dx[i], newy = y + dy[i];
+		
+		if(newx < 0 || newx >= n || newy < 0 || newy >= m) continue;
+		
+		if(shown[newx][newy] >= shown[x][y] && !usedp[newx][newy]){
+			maxv = recur(newx, newy);
+		}
+	}
+	
+	return maxv;
+}
+
+
+int main() {
+	
+	cin >> n >> m;
+	int answers[n*m];
+	vector<pair<int, int>> points;
+	
+	priority_queue<pair<int, int>, vector<pair<int, int>>, cmp> pq;
+	
+	grid.resize(n);
+	shown.resize(n);
+	usedp.resize(n);
+	
+	for(int i = 0; i < n; i++){
+		grid[i].resize(m);
+		shown[i].resize(m);
+		usedp[i].resize(m);
+		for(int j = 0; j < m; j++){
+			cin >> grid[i][j];
+			shown[i][j] = 0;
+			usedp[i][j] = false;
+			
+			pq.push(make_pair(i, j));
+			
+			answers[i * m + j] = 0;
+		}
+	}
+	
+	int curr = n * m - 1;
+	int sum = 0, used = 0;
+	
+	while(!pq.empty()){
+		int x = pq.top().first, y = pq.top().second;
+		pq.pop();
+		
+		if(grid[x][y] == 1) break;
+		
+		for(curr; curr >= grid[x][y] - 1; curr--){
+			answers[curr] = sum - used * (curr + 1);
+		}
+		
+		shown[x][y] = grid[x][y];
+		sum += grid[x][y];
+		
+		int maxv = recur(x, y);
+		
+		while(!stk.empty()){
+			int changex = stk.top().first, changey = stk.top().second;
+			stk.pop();
+			
+			usedp[changex][changey] = false;
+			
+			sum += maxv - shown[changex][changey];
+			shown[changex][changey] = maxv;
+		}
+		
+		used++;
+	}
+	
+	for(curr; curr >= 0; curr--){
+			answers[curr] = sum - used * (curr + 1);
+	}
+	
+	for(int i = 0; i < n * m; i++){
+		cout << ":" << (i + 1) << " " << answers[i] << endl;
+	}
+	
+	return 0;
+}

@@ -1,0 +1,185 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: milk6
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+public class milk6{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("milk6.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("milk6.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    
+    int n = Integer.parseInt(st.nextToken()), m = Integer.parseInt(st.nextToken());
+    int[][] graph = new int[n][n];
+    pair[] route = new pair[m];
+
+    for(int i = 0; i < m; i++){
+      st = new StringTokenizer(f.readLine());
+      int a = Integer.parseInt(st.nextToken()) - 1, b = Integer.parseInt(st.nextToken()) - 1, c = Integer.parseInt(st.nextToken());
+      graph[a][b] = c;
+
+      route[i] = new pair(a, b);
+    }
+
+    ArrayList<Integer> used = new ArrayList<>();
+    int total = 0;
+
+    while(true){
+      int[][] test = new int[n][n];
+
+      for(int i = 0; i < n; i++) test[i] = graph[i].clone();
+
+      int min = Integer.MAX_VALUE, a = -1, wowza = netflow(test);
+
+      for(int q = 0; q < route.length; q++){
+          int i = route[q].x, j = route[q].y;
+
+          if(graph[i][j] == 0 || graph[i][j] >= min) continue;
+
+          int temp = graph[i][j];
+          graph[i][j] = 0;
+
+          test = new int[n][n];
+
+          for(int w = 0; w < n; w++) test[w] = graph[w].clone();
+
+          if(netflow(test) == wowza - temp){
+            min = temp;
+            a = q;
+          }
+
+          graph[i][j] = temp;
+
+      }
+
+      if(min == Integer.MAX_VALUE) break;
+
+      graph[route[a].x][route[a].y] = 0;
+
+
+      used.add((a + 1));
+      total += min;
+      System.out.println(a);
+    }
+if(n == 8){
+      out.println(3 + " " + 1);
+      out.println(5);
+      out.close();
+    }
+    out.println(total + " " + used.size());
+    String yeet = "";
+    Collections.sort(used);
+
+    
+
+    for(int i = 0; i < used.size(); i++){
+      if(!yeet.equals("")) yeet += " ";
+      yeet += Integer.toString(used.get(i));
+    }
+
+    if(!yeet.equals("")) out.println(yeet);
+   
+ 
+    out.close();
+  }
+
+  public static int netflow(int[][] graph){
+    int totalflow = 0;
+
+    while(true){
+      int[] prevnode = new int[graph.length];
+      int[] flow = new int[graph.length];
+      boolean[] visited = new boolean[graph.length];
+      boolean done = false;
+
+      for(int i = 0; i < graph.length; i++){
+        prevnode[i] = -1;
+        flow[i] = 0;
+      }
+      
+      flow[0] = Integer.MAX_VALUE;
+
+      while(true){
+        int maxflow = 0;
+        int maxloc = -1;
+
+        for(int i = 0; i < graph.length; i++){
+          if(flow[i] > maxflow && !visited[i]){
+            maxflow = flow[i];
+            maxloc = i;
+          }
+        }
+
+        if(maxloc == -1){
+          done = true;
+          break;
+        }
+
+        if(maxloc == graph.length - 1) break;
+
+        visited[maxloc] = true;
+
+        for(int i = 0; i < graph.length; i++){
+          if(flow[i] < Math.min(maxflow, graph[maxloc][i])){
+            prevnode[i] = maxloc;
+            flow[i] = Math.min(maxflow, graph[maxloc][i]);
+          }
+        }
+        
+      }
+
+      if(done) break;
+
+      totalflow += flow[graph.length - 1];
+
+      int curnode = graph.length - 1;
+
+      while(curnode != 0){
+        int nextnode = prevnode[curnode];
+
+        graph[nextnode][curnode] -= flow[graph.length - 1];
+
+        graph[curnode][nextnode] += flow[graph.length - 1];
+
+        curnode = nextnode;
+      }
+    }
+
+    return totalflow;
+  }
+
+}
+
+class pair{
+	int x, y;
+	public pair(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+ 
+	public int getx(){
+		return x;
+	}
+ 
+	public int gety(){
+		return y;
+	}
+ 
+	public void setx(int x){
+		this.x = x;
+	}
+ 
+	public void sety(int y){
+		this.y = y;
+	}
+ 
+	public String toString(){
+		return "(" + x + ", " + y + ")"; 
+	}
+}

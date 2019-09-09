@@ -1,0 +1,47 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: stripes
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <set>
+using namespace std;
+#define endl '\n'
+
+const int n = 1001;
+int m;
+int c[3], dp[n];
+
+void solve(int l){
+	set<int> mex;
+	
+	for(int j = 0; j < 3; j++){
+		for(int i = 0; i + c[j] <= l; i++){
+			mex.insert(dp[i] ^ dp[l - i - c[j]]);
+		}
+	}
+	
+	for(auto it = mex.begin(); it != mex.end() && *it == dp[l]; it++) dp[l]++;
+}
+
+int main(){
+	freopen("stripes.in", "r", stdin);
+	freopen("stripes.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> c[0] >> c[1] >> c[2] >> m;
+	
+	for(int i = 0; i < n; i++) solve(i);
+	
+	for(int i = 0; i < m; i++){
+		int l;
+		cin >> l;
+		cout << (!dp[l] + 1) << endl;
+	}
+
+	return 0;
+}

@@ -1,0 +1,170 @@
+#include "seats.h"
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+ 
+struct sq{
+	int t1 = 0, t3 = 0;
+	
+	friend bool operator<(sq a, sq b){
+		return make_pair(a.t1 , a.t3) < make_pair(b.t1, b.t3);
+	}
+	
+	friend bool operator==(sq a, sq b){
+		return make_pair(a.t1 , a.t3) == make_pair(b.t1, b.t3);
+	}
+	
+	friend sq operator+(sq a, sq b){
+		return (sq){a.t1 + b.t1, a.t3 + b.t3};
+	}
+	
+	friend sq operator*(int a, sq b){
+		return (sq){a * b.t1, a * b.t3};
+	}
+};
+ 
+struct segTree{
+	int l, r;
+	segTree *left, *right;
+	pair<sq, int> val;
+	sq lazy;
+	
+	segTree(int a, int b){
+		l = a;
+		r = b;
+		
+		if(l != r){
+			int mid = (l + r) / 2;
+			left = new segTree(l, mid);
+			right = new segTree(mid + 1, r);
+			val.second = left->val.second + right->val.second;
+		}else{
+			val.second = 1;
+		}
+	}
+	
+	void add(int a, int b, sq x){
+		if(l > b || r < a) return;
+		if(l >= a && r <= b){
+			val.first = val.first + x + lazy;
+			if(l != r){
+				left->lazy = left->lazy + x + lazy;
+				right->lazy = right->lazy + x + lazy;
+			}
+			lazy = (sq){0, 0};
+			return;
+		}
+		
+		left->lazy = left->lazy + lazy;
+		right->lazy = right->lazy + lazy;
+		lazy = (sq){0, 0};
+		
+		left->add(a, b, x);
+		right->add(a, b, x);
+		
+		sq lv = left->val.first + left->lazy, rv = right->val.first + right->lazy;
+		val.first = min(lv, rv);
+		val.second = 0;
+		if(val.first == lv) val.second += left->val.second;
+		if(val.first == rv) val.second += right->val.second;
+ 	}
+};
+ 
+const int maxn = 1000000;
+int h, w, n;
+bool used[maxn];
+int r[maxn], c[maxn];
+vector<vector<int>> p;
+segTree *tre;
+ 
+int dx[9] = {0, 1, 1, 0, -1, -1, -1, 0, 1};
+int dy[9] = {0, 0, 1, 1, 1, 0, -1, -1, -1};
+sq d[5] = {(sq){0, 0}, (sq){1, 0}, (sq){-1, 0}, (sq){0, 1}, (sq){0, -1}};
+ 
+sq tch(int x, int y, int v){
+	int ret = 0;
+	for(int i = 0; i < 4; i++){
+		ret += (p[x + dx[i]][y + dy[i]] <= v);
+	}
+	return d[ret];
+}
+ 
+void chg(int v, int m){
+	sq s;
+	for(int i = 0; i < 4; i++){
+		s = s + tch(r[v] - dx[i], c[v] - dy[i], v);
+	}
+	tre->add(v, n - 1, m * s);
+}
+ 
+void give_initial_chart(int H, int W, vector<int> R, vector<int> C){
+	h = H + 2, w = W + 2, n = H * W;
+	p.resize(h);
+	for(int i = 0; i < h; i++) p[i].resize(w);
+	tre = new segTree(0, n - 1);
+	
+	for(int i = 0; i < n; i++){
+		r[i] = R[i] + 1;
+		c[i] = C[i] + 1;
+		p[r[i]][c[i]] = i;
+	}
+	for(int i = 0; i < h; i++) p[i][0] = p[i][w - 1] = maxn;
+	for(int i = 0; i < w; i++) p[0][i] = p[h - 1][i] = maxn;
+	
+	for(int i = 0; i < n; i++) chg(i, 1);
+}
+ 
+void swp(int v, int m){
+	for(int i = 0; i < 9; i++){
+		int nv = p[r[v] + dx[i]][c[v] + dy[i]];
+		if(nv != maxn && !used[nv]){
+			chg(nv, m);
+			used[nv] = 1;
+		}
+	}
+}
+ 
+void rst(int v){
+	for(int i = 0; i < 9; i++){
+		int nv = p[r[v] + dx[i]][c[v] + dy[i]];
+		if(nv != maxn) used[nv] = 0;
+	}
+}
+ 
+int swap_seats(int a, int b){
+	swp(a, -1), swp(b, -1);
+	rst(a), rst(b);
+	
+	swap(c[a], c[b]);
+	swap(r[a], r[b]);
+	swap(p[r[a]][c[a]], p[r[b]][c[b]]);
+	
+	swp(a, 1), swp(b, 1);
+	rst(a), rst(b);
+	/*
+	for(int i = 1; i < h - 1; i++){
+		for(int j = 1; j < w - 1; j++) cout << p[i][j] << " ";
+		cout << endl;
+	}
+	*/
+	return tre->val.second;
+}
+ 
+/*
+int main(){
+	int h, w;
+	cin >> h >> w;
+	
+	vector<int> a(h * w), b(h * w);
+	for(int i = 0; i < h * w; i++) cin >> a[i] >> b[i];
+	
+	give_initial_chart(h, w, a, b);
+	cout << swap_seats(0, 5) << endl;
+	cout << swap_seats(0, 5) << endl;
+	
+	return 0;
+}
+*/

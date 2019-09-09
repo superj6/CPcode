@@ -1,0 +1,163 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: msquare
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class msquare{
+  public static HashSet<Integer> set = new HashSet<>();
+  public static String output = "";
+  public static int target = 0;
+  public static int count;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("msquare.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("msquare.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    intQueue qi = new intQueue();
+    stringQueue qs = new stringQueue();
+
+    int initial = 12345678;
+
+    for(int i = 0; i < 8; i++){
+      target = target*10 + Integer.parseInt(st.nextToken());
+    }
+
+    System.out.println(target);
+    System.out.println();
+    System.out.println(initial);
+    System.out.println();
+    System.out.println(transformA(initial));
+    System.out.println(transformB(initial));
+    System.out.println(transformC(initial));
+    System.out.println();
+
+    qi.push(initial);
+    qs.push("");
+
+    while(true){
+      count += 1;
+      if(count % 1000 == 0) System.out.println(count);
+
+      int curri = qi.pop();
+      String currs = qs.pop();
+
+      if(curri == target){
+        output = currs;
+        break;
+      }
+
+      int temp = transformA(curri);
+      if(!set.contains(temp)){
+        qi.push(temp);
+        qs.push(currs + "A");
+        set.add(temp);
+      }
+
+      temp = transformB(curri);
+      if(!set.contains(temp)){
+        qi.push(temp);
+        qs.push(currs + "B");
+        set.add(temp);
+      }
+
+      temp = transformC(curri);
+      if(!set.contains(temp)){
+        qi.push(temp);
+        qs.push(currs + "C");
+        set.add(temp);
+      }
+    }
+
+    out.println(output.length());
+    out.println(output);
+
+    out.close();    
+  }
+
+
+  public static int transformA(int num){
+    int output = 0;
+
+    for(int i = 0; i < 8; i++){
+      output = output*10 + (num/(int)Math.pow(10, i)) % 10;
+    }
+
+    return output;
+  }
+
+  public static int transformB(int num){
+    int output = 0;
+    
+    for(int i = 0; i < 4; i++){
+      int l = (i + 3) % 4;
+      output = output*10 + (num/(int)Math.pow(10, 8 - 1 - l)) % 10;
+    }
+
+    for(int i = 0; i < 4; i++){
+      int l = (i + 1) % 4 + 4;
+      output = output*10 + (num/(int)Math.pow(10, 8 - 1 - l)) % 10;
+    }
+
+    return output;
+  }
+
+  public static int transformC(int num){
+    int output = 0;
+ 
+    output = output*10 + (num/(int)Math.pow(10, 7)) % 10;      
+    output = output*10 + (num/(int)Math.pow(10, 1)) % 10;  
+    output = output*10 + (num/(int)Math.pow(10, 6)) % 10;      
+    output = output*10 + (num/(int)Math.pow(10, 4)) % 10;
+    output = output*10 + (num/(int)Math.pow(10, 3)) % 10;      
+    output = output*10 + (num/(int)Math.pow(10, 5)) % 10;
+    output = output*10 + (num/(int)Math.pow(10, 2)) % 10;      
+    output = output*10 + (num/(int)Math.pow(10, 0)) % 10;    
+
+    return output;
+  }
+
+}
+
+class intQueue{
+  private static ArrayList<Integer> holder = new ArrayList<>();
+
+  public intQueue(){
+    
+  }
+
+  public void push(int n){
+    holder.add(n);
+  }
+
+  public int pop(){
+    int output = holder.get(0);
+    holder.remove(0);
+    return output;
+  }
+
+}
+
+class stringQueue{
+  private static ArrayList<String> holder = new ArrayList<>();
+
+  public stringQueue(){
+    
+  }
+
+  public void push(String n){
+    holder.add(n);
+  }
+
+  public String pop(){
+    String output = holder.get(0);
+    holder.remove(0);
+    return output; 
+  }
+
+}

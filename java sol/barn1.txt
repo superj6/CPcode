@@ -1,0 +1,43 @@
+/*
+ID: super_j6
+LANG: JAVA
+PROG: barn1
+*/
+import java.io.*;
+import java.util.*;
+
+class barn1 {
+
+  public static void main(String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("barn1.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("barn1.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int boards = Integer.parseInt(st.nextToken());
+    st.nextToken();
+    int numUsed = Integer.parseInt(st.nextToken());
+    Integer[] occupied = new Integer[numUsed], spaceAmount = new Integer[numUsed - 1];
+
+    for(int i = 0; i < numUsed; i++) occupied[i] = Integer.parseInt(f.readLine());
+
+    Arrays.sort(occupied);
+
+    for(int i = 0; i < numUsed - 1; i++){
+      spaceAmount[i] = occupied[i + 1] - occupied[i] - 1;
+    }
+    
+    Arrays.sort(spaceAmount, Collections.reverseOrder());
+
+    Integer boardLength = occupied[numUsed - 1] - occupied[0] + 1;
+
+    for(int i = 0; i < boards - 1; i++){
+      if(i > numUsed-2) break;
+      boardLength -= spaceAmount[i];
+    }
+
+    out.println(boardLength);
+
+    out.close();
+  }
+
+}

@@ -1,0 +1,35 @@
+#include <iostream>
+#include <algorithm>
+#include <math.h>
+using namespace std;
+
+int mod = pow(10, 9) + 7;
+
+int main() {
+	int t;
+	cin >> t;
+	
+	for(int t0 = 0; t0 < t; t0++){
+		int n, k;
+		cin >> n >> k;
+		int jumps[k];
+		for(int i = 0; i < k; i++) cin >> jumps[i];
+		sort(jumps, jumps+k);
+		
+		int dp[n + 1];
+		for(int i = 0; i <= n; i++) dp[i] = 0;
+		dp[0] = 1;
+		
+		for(int i = 1; i <= n; i++){
+			for(int j = 0; j < k; j++){
+				if(jumps[j] > i) break;
+				dp[i] += dp[i - jumps[j]];
+				dp[i] = dp[i] % mod;
+			}
+		}
+		
+		cout << dp[n] << endl;
+	}
+	
+	return 0;
+}

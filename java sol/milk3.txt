@@ -1,0 +1,82 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: milk3
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class milk3{
+public static int[] buckets = new int[3], current = {0, 0, 0};
+public static ArrayList<String> possibilities = new ArrayList<>();
+public static ArrayList<Integer> solutions = new ArrayList<>();
+
+  public static void main(String[] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("milk3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("milk3.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    
+    for(int i = 0; i < 3; i++){
+      buckets[i] = Integer.parseInt(st.nextToken());
+    }
+    
+    current[2] = buckets[2];
+
+    solutions.add(current[2]);
+
+    current[0] = 0;
+    current[1] = 0;
+    current[2] = buckets[2];
+
+    possibilities.add(Arrays.toString(current));
+
+    create(current);    
+
+    Collections.sort(solutions);
+
+    for(int i = 0; i < solutions.size() - 1; i++){
+      out.print(solutions.get(i) + " ");
+    }
+  
+    out.print(solutions.get(solutions.size() - 1));
+    out.println("");
+
+    out.close();
+  }
+
+  public static int[] pourBuckets(int[] array, int source, int destination){
+    int[] output = array.clone();
+
+    if(array[destination] + array[source] <= buckets[destination]){
+      output[destination] += array[source];
+      output[source] = 0;
+    }else{
+      output[source] -= buckets[destination] - array[destination];
+      output[destination] = buckets[destination];
+    }
+
+    return output;
+  }
+
+  private static void create(int[] array){
+    
+    for(int i = 0; i < 3; i++){
+      for(int j = 0; j < 3; j++){
+        int[] temp = new int[2];
+
+        if(i != j){
+         temp = pourBuckets(array, i, j);
+          if(!possibilities.contains(Arrays.toString(temp))){
+            if(temp[0] == 0 && !solutions.contains(temp[2])){
+              solutions.add(temp[2]);
+            }
+            possibilities.add(Arrays.toString(temp));
+            create(temp);
+          }
+        }
+      }
+    }
+  }  
+}

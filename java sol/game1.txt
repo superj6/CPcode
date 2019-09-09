@@ -1,0 +1,83 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: game1
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+class game1{
+  public static int[] dp;
+  public static int num;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("game1.in"));
+    PrintWriter out = new PrintWriter("game1.out");
+    StringTokenizer st;
+
+    num = Integer.parseInt(f.readLine());
+    int[] array = new int[num];
+    dp = new int[num * (num + 1) / 2];
+    int a = 0;
+    int sum = 0;
+    String line;
+
+    for(int i = 0; i < dp.length; i++) dp[i] = -1;
+
+    while((line = f.readLine()) != null){
+      st = new StringTokenizer(line);
+
+      while(st.hasMoreTokens()){
+        array[a] = Integer.parseInt(st.nextToken());
+        sum += array[a];
+        a++;
+      }
+    } 
+   
+    int player1 = recur(array, true, 0, array.length);
+
+    out.println(player1 + " " + (sum - player1));
+
+    out.close();
+  }
+
+  public static int recur(int[] array, boolean player, int index, int length){
+    int wow = index + num*(num + 1)/2 - (num - length + 1) * (num - length + 2) / 2;
+    System.out.println(wow);
+
+    if(dp[wow] != -1) return dp[wow];
+
+    if(array.length == 2){
+
+      if(player){
+        int a = Math.max(array[0], array[1]);
+        dp[wow] = a;
+        return a;
+      }
+
+      int a = Math.min(array[0], array[1]);
+      dp[wow] = a;
+      return a;
+    }
+
+    int[] array1 = new int[array.length - 1], array2 = new int[array.length - 1];
+
+    for(int i = 1; i < array.length; i++){
+      array1[i - 1] = array[i - 1];
+      array2[i - 1] = array[i];
+    }
+
+    if(player){
+      int a = Math.max(recur(array1, !player, index, length - 1) + array[array.length - 1], recur(array2, !player, index + 1, length - 1) + array[0]);
+      dp[wow] = a;
+      return a;
+    }
+
+    int a = Math.min(recur(array1, !player, index, length - 1), recur(array2, !player, index + 1, length - 1));
+    dp[wow] = a;
+    return a;
+  }
+
+}

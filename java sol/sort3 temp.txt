@@ -1,0 +1,90 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: sort3
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class sort3{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("sort3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("sort3.out")));
+
+    int amount = Integer.parseInt(f.readLine());
+    Integer[] array = new Integer[amount];
+
+    for(int i = 0; i < array.length; i++){
+      array[i] = Integer.parseInt(f.readLine());
+    }
+
+    int counter1 = 0, counter2 = 0, output = 0;
+    Integer[] sortedArray = array.clone();
+
+    Arrays.sort(sortedArray);
+
+    for(int i = 0; i < array.length; i++){
+      if(array[i] == 1) counter1 += 1;
+      if(array[i] == 2) counter2 += 1;
+    }
+System.out.println(Arrays.toString(array));
+    while(!Arrays.equals(array, sortedArray)){
+      int first = 0, second = array.length;
+
+      for(int i = 0; i < array.length; i++){
+        int temp1 = i, temp2 = array.length;
+        boolean match = false;
+
+        if(array[i] == 1 & i >= counter1){
+          match = true;
+          for(int j = 0; j < counter1; j++){
+            int val = counter1 - j - 1;
+            if(array[val] != 1){
+              temp2 = val;
+              break;
+            }
+          }
+        }
+
+        if(array[i] == 2 & (i < counter1 || i >= counter1 + counter2)){
+          match = true;
+          for(int j = counter1; j < counter1 + counter2; j++){
+            int val;
+            if(i < counter1){
+              val = j;
+            }else{
+              val = (counter1 + counter2) - (j - counter1) - 1;
+            }
+            if(array[val] != 2){
+              temp2 = val;
+              break;
+            }
+          }
+        }
+
+        if(match){
+          if(Math.abs(temp1 - temp2) < Math.abs(first - second)){
+            first = temp1;
+            second = temp2;
+          }
+        }
+      }
+
+      int temp = array[first];
+      array[first] = array[second];
+      array[second] = temp;    
+  
+if(amount == 9) out.println("sucker");
+      System.out.println(Arrays.toString(array) + " " + first + " " + second);
+      output += 1;
+    }
+
+    out.println(output);
+
+    out.close();    
+  }
+
+}

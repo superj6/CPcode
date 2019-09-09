@@ -1,0 +1,16 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+#define pi pair<int, int>
+
+int main(){
+	//freopen("", "r", stdin);
+	//freopen("", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+
+	return 0;
+}

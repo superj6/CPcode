@@ -1,0 +1,92 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: concom
+*/
+
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class concom{
+  public static Integer[][] control;
+  public static boolean[][] ownership;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("concom.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("concom.out")));
+
+    int coms = Integer.parseInt(f.readLine());
+
+    control = new Integer[100][100];
+    ownership = new boolean[100][100];
+
+    for(int i = 0; i < coms; i++){
+      StringTokenizer st = new StringTokenizer(f.readLine());
+      int first = Integer.parseInt(st.nextToken());
+      int second = Integer.parseInt(st.nextToken());
+      int amount = Integer.parseInt(st.nextToken());
+
+      ownership[first - 1][first - 1] = true;
+      ownership[second - 1][second - 1] = true;
+      if(amount > 50) ownership[first - 1][second - 1] = true;
+      
+      control[first - 1][second - 1] = amount;
+    }
+
+    for(int i = 0; i < 100; i++){
+      boolean[] current = ownership[i].clone();
+      current[i] = false;
+      recur(i, current);
+      System.out.println(Arrays.toString(control[i]));
+    }
+
+    for(int i = 0; i < 100; i++){
+      for(int j = 0; j < 100; j++){
+        if(i != j && ownership[i][j] == true){
+          out.println((i + 1) + " " + (j + 1));
+        }
+      }
+    }
+    out.close();
+  }
+
+  public static void recur(int val, boolean[] current){
+    boolean newCurrent[] = new boolean[100];
+    boolean again = false;
+
+    for(int i = 0; i < 100; i++){
+      if(current[i]){
+        for(int j = 0; j < 100; j++){
+          if(control[i][j] != null && j != val){
+            if(control[val][j] != null){
+              control[val][j] += control[i][j];
+            }else{
+              control[val][j] = control[i][j];
+            }
+          }
+        }
+      }
+    }
+
+    for(int i = 0; i < 100; i++){
+      if(control[val][i] != null){
+        if(control[val][i] > 50){
+          if(ownership[val][i] != true){
+            newCurrent[i] = true;
+            again = true;
+            ownership[val][i] = true;
+          }
+        }
+
+        if(control[val][i] > 100){
+          control[val][i] = 100;
+        }
+      }
+    }
+
+    if(again) recur(val, newCurrent);
+
+  }
+
+}

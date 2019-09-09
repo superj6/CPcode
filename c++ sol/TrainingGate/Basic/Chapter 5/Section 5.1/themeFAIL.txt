@@ -1,0 +1,78 @@
+/*
+  NAME:super_j6;
+  LANG: C++
+  PROG: theme
+*/
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int n;
+
+vector<int> array;
+vector<vector<unsigned short int>> longest;
+
+int maxcommon(int add){
+
+	int output = 0;
+
+        for(int i = 0; i <= n; i++){
+		for(int j = 0; j <= n; j++){
+ 
+			if(i == 0 || j == 0){
+				longest[i][j] = 0;
+			}else if(array[i - 1] == array[j - 1] + add && max(i, j) - min(i, j) > longest[i - 1][j - 1]){
+				longest[i][j] = longest[i - 1][j - 1] + 1;
+			}else{
+				longest[i][j] = 0;
+			}
+ 
+			output = max(output, (int)longest[i][j]);
+		}
+	}
+
+	return output;
+	
+	
+}
+
+int main() {
+	ifstream fin ("theme.in");
+	ofstream fout ("theme.out");
+
+	fin >> n;
+
+	array.resize(n);
+        longest.resize(n + 1);
+	int minv = 89, maxv = -1, difference;
+	
+	for(int i = 0; i < n; i++){
+		fin >> array[i];
+		longest[i].resize(n + 1);
+		minv = min(minv, array[i]);
+		maxv = max(maxv, array[i]);
+	}
+	longest[n].resize(n + 1);
+
+	difference = maxv - minv;
+	
+	for(int i = 0; i < n; i++){
+		array[i] -= minv;
+	}
+
+	
+	int maxtheme = 0;
+	
+	for(int i = 0; i <= difference; i++){
+		maxtheme = max(maxtheme, maxcommon(i));
+	}
+	
+        if(maxtheme < 5) maxtheme = 0;	
+
+	fout << maxtheme << endl;
+	
+	return 0;
+}

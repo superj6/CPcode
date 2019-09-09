@@ -1,0 +1,62 @@
+/*
+ID: super_j6
+LANG: JAVA
+PROG: crypt1 
+*/
+import java.io.*;
+import java.util.*;
+
+class crypt1{
+
+  public static void main(String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("crypt1.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("crypt1.out")));
+    
+    int num = Integer.parseInt(f.readLine());
+    String[] inputs = new String[num];
+    int[] counter = new int[5];
+    int correct = 0;
+
+    for(int i = 0; i < 5; i++) counter[i] = 0;
+
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    for(int i = 0; i < num; i++) inputs[i] = st.nextToken();
+ 
+    Arrays.sort(inputs);
+
+    while(counter[0] < num){
+      int test3 = Integer.parseInt(inputs[counter[0]] + inputs[counter[1]] + inputs[counter[2]]);
+      int test2 = Integer.parseInt(inputs[counter[3]] + inputs[counter[4]]);
+      Boolean solution = true;
+      if(Integer.toString(test3*Integer.parseInt(inputs[counter[3]])).length() == 3 && Integer.toString(test3*Integer.parseInt(inputs[counter[4]])).length() == 3){
+        String temp = Integer.toString(test3*Integer.parseInt(inputs[counter[3]])) + Integer.toString(test3*Integer.parseInt(inputs[counter[4]])) + Integer.toString(test3*test2);
+        char[] array = temp.toCharArray();  
+        for(int i = 0; i < array.length; i++){
+          if(!Arrays.asList(inputs).contains(String.valueOf(array[i]))){
+            solution = false;
+            break;
+          }
+        }
+      }else{
+        solution = false;
+      }
+  
+      if(solution) correct += 1;
+
+      counter[4] += 1;
+
+      for(int i = 4; i > 0; i--){
+        if(counter[i] >= num){
+          counter[i-1] +=1;
+          counter[i] = 0;
+        }
+      }
+    }
+
+    out.println(correct);
+
+    out.close();    
+  }
+
+}

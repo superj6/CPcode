@@ -1,0 +1,138 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <sstream>
+using namespace std;
+vector<vector<int>> graph;
+int n, m, s;
+int infinity = 10000000;
+
+int netflow(){
+	int source = 0;
+	int sink = 2*n + 1;
+	
+	int total = 0;
+	
+	while(true){
+		bool visited[sink + 1];
+		int prevnode[sink + 1];
+		int flow[sink + 1];
+		
+		for(int i = 0; i < sink + 1; i++){
+			visited[i] = false;
+			prevnode[i] = -1;
+			flow[i] = 0;
+		}
+		flow[source] = infinity;
+		
+		int maxflow;
+		int maxloc;
+		
+		while(true){
+			maxflow = 0;
+			maxloc = -1;
+			
+			for(int i = 0; i < sink + 1; i++){
+				if(!visited[i] && flow[i] > maxflow){
+					maxflow = flow[i];
+					maxloc = i;
+				}
+			}
+			
+			if(maxloc == sink || maxloc == -1) break;
+			visited[maxloc] = true;
+			
+			for(int i = 0; i < sink + 1; i++){
+				if(i == maxloc) continue;
+				
+				if(flow[i] < min(maxflow, graph[maxloc][i])){
+					flow[i] = min(maxflow, graph[maxloc][i]);
+					prevnode[i] = maxloc;
+				}
+			}
+		}
+		
+		if(maxloc == -1) break;
+		
+		total += maxflow;
+		
+		int currnode = sink;
+		
+		while(currnode != source){
+			graph[prevnode[currnode]][currnode] -= maxflow;
+			graph[currnode][prevnode[currnode]] += maxflow;
+			currnode = prevnode[currnode];
+		}
+	}
+	
+	return total;
+}
+
+void answer(){
+	cin >> n >> m >> s;
+	
+	graph.resize(2*n + 2);
+	for(int i = 0; i < 2*n + 2; i++){
+		graph[i].resize(2*n + 2);
+		for(int j = 0; j < 2*n + 2; j++) graph[i][j] = 0;
+	}
+	
+	for(int i = 0; i < m; i++){
+		int a;
+		cin >> a;
+		graph[0][a] = 1;
+	}
+	
+	for(int i = 0; i < s; i++){
+		int a;
+		cin >> a;
+		graph[a + n][2*n + 1] = 1;
+	}
+	
+	cin.ignore(1);
+	
+	for(int i = 1; i <= n; i++){
+		graph[i][i + n] = 1;
+		
+		string line;
+		getline(cin, line);
+		istringstream is(line);
+		int a;
+		
+		while(is >> a){
+			if(a == -1) break;
+			graph[a + n][i] = 1;
+		}
+	}
+	
+	/*
+	for(int i = 0; i < 2*n + 2; i++){
+		for(int j = 0; j < 2*n + 2; j++){
+			cout << graph[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	*/
+	
+	int flow = netflow();
+	
+	//cout << flow << endl;
+	if(flow == s){
+		cout << "Yes" << endl;
+	}else{
+		cout << "No" << endl;
+	}
+}
+
+int main() {
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++){
+		answer();
+	}
+	
+	return 0;
+}

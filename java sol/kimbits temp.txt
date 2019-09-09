@@ -1,0 +1,49 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: kimbits
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class kimbits{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("kimbits.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("kimbits.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int size = Integer.parseInt(st.nextToken()), ones = Integer.parseInt(st.nextToken());
+    long ith = (long)Long.parseLong(st.nextToken());
+    long num = 0;    
+
+    for(int k = 1; k < ith; k++){
+      int count = 0;
+      int length = (int)(Math.log(num)/Math.log(2)) + 1;
+      int lol = (int)Math.pow(2, length - 1);
+      System.out.println(String.format("%" + Integer.toString(size) + "s", Long.toBinaryString(num)).replace(' ', '0'));
+      if(num == 0){
+        num += 1;
+        continue;
+      }
+
+      for(int i = 0; i < length; i++){
+        if((num & lol) == lol) count += 1;
+        if(count == ones || i == length - 1){
+          num += (long)Math.pow(2, length - 1 -i);
+          break;
+        }
+        lol >>= 1;
+        
+      }
+      
+    };
+
+    out.println(String.format("%" + Integer.toString(size) + "s", Long.toBinaryString(num)).replace(' ', '0'));
+
+    out.close();
+  }
+
+}

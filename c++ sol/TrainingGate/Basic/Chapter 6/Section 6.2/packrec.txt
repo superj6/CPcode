@@ -1,0 +1,100 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: packrec
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+int rec[8];
+vector<pair<int, int>> sol;
+
+void findRecs(int num[4]){
+	int s[4], l[4];
+	
+	for(int i = 0; i < 4; i++){
+		s[i] = rec[num[i]];
+		l[i] = rec[(num[i] + 4) % 8];
+	}
+	
+	int a, b;
+	
+	//
+		a = s[0] + s[1] + s[2] + s[3];
+		b = max(l[0], max(l[1], max(l[2], l[3])));
+		sol.push_back(make_pair(min(a, b), max(a, b)));
+	//
+	
+	//
+		a = max(s[0] + s[1] + s[2], s[3]);
+		b = max(l[0], max(l[1], l[2])) + l[3];
+		sol.push_back(make_pair(min(a, b), max(a, b)));
+	//
+	
+	//
+		a = max(s[0], max(s[1], s[2]) + s[3]);
+		b = l[0] + max(l[1] + l[2], l[3]);
+		sol.push_back(make_pair(min(a, b), max(a, b)));
+	//
+	
+	//
+		a = s[0] + s[1] + max(s[2], s[3]);
+		b = max(l[0], max(l[1], l[2] + l[3]));
+		sol.push_back(make_pair(min(a, b), max(a, b)));
+	//
+	
+	//
+		a = max(s[0] + s[1], s[2] + max(s[1], s[3]));
+		b = max(l[0] + max(l[2], l[3]), l[1] + l[3]);
+		sol.push_back(make_pair(min(a, b), max(a, b)));
+	//
+}
+
+void genSets(string res, string left){
+	if(left.empty()){
+		int num[4];
+		for(int i = 0; i < 4; i++) num[i] = res[i] - '0';
+		
+		findRecs(num);
+		
+		return;
+	}
+	
+	for(int i = 0; i < left.size(); i++){
+		genSets(res + left[i], left.substr(0, i) + left.substr(i + 1, left.size() - i - 1));
+		genSets(res + (char)(left[i] + 4), left.substr(0, i) + left.substr(i + 1, left.size() - i - 1));
+	}
+}
+
+int main(){
+	freopen("packrec.in", "r", stdin);
+	freopen("packrec.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	for(int i = 0; i < 4; i++){
+		cin >> rec[i] >> rec[i + 4];
+	}
+	
+	genSets("", "0123");
+
+	sort(sol.begin(), sol.end(), [&](pair<int, int> a, pair<int, int> b)->bool{
+		int areaA = a.first * a.second, areaB = b.first * b.second;
+		return areaA == areaB ? a < b : areaA < areaB;
+	});
+	
+	int val = sol[0].first * sol[0].second;
+	cout << val << endl;
+	
+	for(int i = 0; i < sol.size() && sol[i].first * sol[i].second == val; i++){
+		if(i > 0 && sol[i] == sol[i - 1]) continue;
+		cout << sol[i].first << " " << sol[i].second << endl;
+	}
+
+	return 0;
+}

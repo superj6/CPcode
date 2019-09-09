@@ -1,0 +1,50 @@
+#include <iostream>
+#include <algorithm>
+#include <math.h>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+vector<double> x, y, length, sum;
+
+int binary(int minv, int maxv, double num){
+	int middle = (minv + maxv) / 2;
+	
+	if(minv == maxv) return minv;
+	if(sum[middle] <= num && sum[middle + 1] > num) return middle;
+	if(sum[middle] > num) return binary(minv, middle, num);
+	return binary(middle + 1, maxv, num);
+	
+}
+
+int main() {
+	int n;
+	cin >> n;
+	x.resize(n);
+	y.resize(n);
+	length.resize(n);
+	sum.resize(n);
+	length[0] = 0;
+	sum[0] = 0;
+	
+	for(int i = 0; i < n; i++){
+		cin >> x[i] >> y[i];
+		
+		if(i > 0){
+			length[i]  = sqrt(pow(x[i] - x[i - 1], 2) + pow(y[i] - y[i - 1], 2));
+			sum[i] = length[i] + sum[i - 1];
+		}
+	}
+	
+	int middle = binary(0, n - 1, sum[n - 1] / 2);
+	
+	double scale = (sum[n - 1] / 2 - sum[middle]) / length[middle + 1];
+	
+	double midx = x[middle + 1] * scale + x[middle] * (1 - scale), midy = y[middle + 1] * scale + y[middle] * (1 - scale);
+	
+	cout << fixed;
+	cout << setprecision(6);
+	cout << midx << " " << midy << endl;
+	
+	return 0;
+}

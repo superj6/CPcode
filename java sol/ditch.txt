@@ -1,0 +1,89 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: ditch
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*; 
+
+class ditch{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("ditch.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("ditch.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int n = Integer.parseInt(st.nextToken()), m = Integer.parseInt(st.nextToken());
+    int[][] graph = new int[m][m];
+
+    for(int i = 0; i < n; i++){
+      st = new StringTokenizer(f.readLine());
+
+      int from = Integer.parseInt(st.nextToken()) - 1, to = Integer.parseInt(st.nextToken()) - 1, amount = Integer.parseInt(st.nextToken());
+      graph[from][to] += amount;
+    }
+
+    out.println(flow(graph, 0, m - 1));
+
+    out.close();
+  }
+
+  public static int flow(int[][] graph, int source, int sink){
+    if(source == sink) return Integer.MAX_VALUE;
+
+    int totalflow = 0;
+
+    while(true){
+      int[] prevnode = new int[graph.length], flow = new int[graph.length];
+      boolean[] visited = new boolean[graph.length];
+      Arrays.fill(prevnode, -2);
+      flow[source] = Integer.MAX_VALUE;
+
+      int maxflow = 0, maxloc = -2;
+
+      while(true){
+        maxflow = 0;
+        maxloc = -2;
+
+        for(int i = 0; i < graph.length; i++){
+          if(flow[i] > maxflow && !visited[i]){
+            maxflow = flow[i];
+            maxloc = i;
+          }
+        }
+
+        if(maxloc == -2 || maxloc == sink) break;
+          
+        visited[maxloc] = true;
+
+        for(int i = 0; i < graph.length; i++){
+          if(flow[i] < Math.min(maxflow, graph[maxloc][i])){
+            prevnode[i] = maxloc;
+            flow[i] = Math.min(maxflow, graph[maxloc][i]);
+          }
+        }
+      }
+
+      if(maxloc == -2) break;
+
+      int pathcapacity = flow[sink];
+      totalflow = totalflow + pathcapacity;
+
+      int curnode = sink;
+
+      while(curnode != source){
+        int nextnode = prevnode[curnode];
+
+        graph[nextnode][curnode] -= pathcapacity;
+        graph[curnode][nextnode] += pathcapacity;
+
+        curnode = nextnode;
+      }     
+    }
+
+    return totalflow;
+  }
+
+}

@@ -1,0 +1,117 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+vector<pair<int, pair<int, pair<int, int>>>> log;
+vector<pair<int, pair<int, int>>> query;
+vector<int> answers;
+vector<int> positions;
+vector<int> amount;
+
+int binarypos(int minv, int maxv, int num){
+	int middle = (minv + maxv) / 2;
+	
+	if(minv == maxv) return minv;
+	if(positions[middle] < num && positions[middle + 1] >= num) return middle + 1;
+	if(positions[middle + 1] < num) return binarypos(middle + 1, maxv, num);
+	return binarypos(minv, middle, num);
+}
+
+void insert(int num){
+	
+	if((int)positions.size() == 0){
+		positions.push_back(num);
+		return;
+	} 
+	if(num < positions[0]){
+		positions.insert(positions.begin(), num);
+		return;
+	}
+	if(num > positions[positions.size() - 1]){
+		positions.push_back(num);
+		return;
+	}
+	
+	int index = binarypos(0, (int)positions.size() - 1, num);
+	
+	if(positions[index] == num) return;
+	positions.insert(positions.begin()+index, num);
+}
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	
+	log.resize(n);
+	
+	for(int i = 0; i < n; i++){
+		int start, end, height, time;
+		cin >> start >> end >> height >> time;
+		
+		log[i] = make_pair(time, make_pair(start, make_pair(end, height)));
+	}
+	
+	sort(log.begin(), log.end());
+	
+	answers.resize(q);
+	query.resize(q);
+	
+	for(int i = 0; i < q; i++){
+		int position, time;
+		cin >> position >> time;
+		query[i] = make_pair(time, make_pair(position, i));
+		insert(position);
+	}
+	
+	sort(query.begin(), query.end());
+	
+	amount.resize(positions.size());
+	for(int i = 0; i < amount.size(); i++) amount[i] = 0;
+	
+	int li = 0, qi = 0;
+	
+	while(qi < q){
+		int timel = log[li].first, timeq = query[qi].first;
+		
+		if(timel <= timeq && li < n){
+			int start = log[li].second.first, end = log[li].second.second.first, height = log[li].second.second.second;
+			
+			int mini, maxi;
+			
+			if(start <= positions[0]){
+				mini = -1;
+			}else if(start > positions[(int)positions.size() - 1]){
+				mini = (int)positions.size();
+			}else{
+				mini = binarypos(0, (int)positions.size() - 1, start);
+				if(positions[mini] >= start) mini--;
+			}
+			
+			if(end < positions[0]){
+				maxi = -1;
+			}else if(end >= positions[(int)positions.size() - 1]){
+				maxi = (int)positions.size();
+			}else{
+				maxi = binarypos(0, (int)positions.size() - 1, end);
+				if(positions[maxi] <= end) maxi++;
+			}
+			
+			for(int i = mini + 1; i < maxi; i++){
+				amount[i] += height;
+			}
+			
+			li++;
+		}else{
+			int pos = query[qi].second.first, ai = query[qi].second.second;
+			
+			answers[ai] = amount[binarypos(0, (int)positions.size() - 1, pos)];
+			
+			qi++;
+		}
+	}
+	
+	for(int i = 0; i < answers.size(); i++) cout << answers[i] << endl;
+	
+	return 0;
+}

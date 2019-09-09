@@ -1,0 +1,104 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: msquare
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class msquare{
+  public static ArrayList<String> possibles = new ArrayList<>();
+  public static String output = "";
+  public static Integer[] target = new Integer[8];
+  public static int count;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("msquare.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("msquare.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    Integer[] initial = new Integer[8];
+
+    for(int i = 0; i < 8; i++){
+      target[i] = Integer.parseInt(st.nextToken());
+      initial[i] = i + 1;
+    }
+
+    System.out.println(Arrays.toString(target));
+    System.out.println();
+    System.out.println(Arrays.toString(initial));
+    System.out.println();
+    System.out.println(Arrays.toString(transformA(initial)));
+    System.out.println(Arrays.toString(transformB(initial)));
+    System.out.println(Arrays.toString(transformC(initial)));
+    System.out.println();
+
+    count = 0;
+
+    recur(initial, "");
+
+    out.println(output.length());
+    out.println(output);
+
+    out.close();    
+  }
+
+  public static void recur(Integer[] array, String transformations){
+    //System.out.println(Arrays.toString(array));
+    if(Arrays.deepEquals(target, array)){
+      System.out.println("kool");
+
+      if(output == "" || (transformations.compareTo(output) < 0 && output != "")){
+        output = transformations;
+        System.out.println(output);
+      }
+
+    }else if(!possibles.contains(Arrays.toString(array))){
+    count += 1;
+    if(count % 1000 == 0) System.out.println(count);
+
+      possibles.add(Arrays.toString(array));
+
+      if(transformations.length() != 0) if(transformations.charAt(transformations.length() - 1) != 'A') recur(transformA(array), transformations + "A");
+      recur(transformB(array), transformations + "B");
+      recur(transformC(array), transformations + "C");
+      
+    }//else System.out.println("skeet");
+  }
+
+  public static Integer[] transformA(Integer[] array){
+    Integer[] newArray = new Integer[8];
+
+    for(int i = 0; i < array.length; i++){
+      newArray[i] = array[array.length - 1 - i];
+    }
+
+    return newArray;
+  }
+
+  public static Integer[] transformB(Integer[] array){
+    Integer[] newArray = new Integer[8];
+
+    for(int i = 0; i < 4; i++){
+      newArray[i] = array[(i - 1 + 4) % 4];
+      newArray[i + 4] = array[(4 + i + 1) % 4 + 4]; 
+    }
+
+    return newArray;
+  }
+
+  public static Integer[] transformC(Integer[] array){
+    Integer[] newArray = new Integer[8];
+    newArray = array.clone();
+
+    newArray[1] = array[6];
+    newArray[2] = array[1];
+    newArray[5] = array[2];
+    newArray[6] = array[5];
+
+    return newArray;
+  }
+
+}

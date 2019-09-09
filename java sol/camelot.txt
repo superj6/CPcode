@@ -1,0 +1,249 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: camelot
+*/
+
+
+//WHAT I NEEED TO DO IS TO GENERATE EVERY POSITION OF THE KING AND NUMBER OF STEPS IN THE ARRAY 
+//AND THEN IN THE FOR LOOP I NEED TO TRY THE KING GETTING TO EVERY POSITION PLUS THE KNIGHT PICKING
+// THEM UP THERE AND FIND THE MINIMUM NUMBER OF MOVES. CLOSE TO WHAT I DID.
+
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class camelot{
+  public static int[][] kingBoard, kingBoard1, kingBoard2, kingBoard3, kingBoard4;
+  public static Queue<Integer> pq = new LinkedList<>();
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("camelot.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("camelot.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int r = Integer.parseInt(st.nextToken()), c = Integer.parseInt(st.nextToken());
+
+    int[] king = new int[2];
+
+    st = new StringTokenizer(f.readLine());
+
+    king[0] = (int)(st.nextToken().charAt(0) - 'A');
+    king[1] = Integer.parseInt(st.nextToken()) - 1;
+
+    String line;
+
+    ArrayList<Integer> knightstuff = new ArrayList<>();
+
+    while((line = f.readLine()) != null){
+      st = new StringTokenizer(line);
+      while(st.hasMoreTokens()){
+        knightstuff.add((int)(st.nextToken().charAt(0) - 'A'));
+        knightstuff.add(Integer.parseInt(st.nextToken()) - 1);
+      }
+    }
+
+    int[][] knight = new int[knightstuff.size() / 2][2];
+
+    //System.out.println(Arrays.toString(king));
+    //System.out.println();
+
+    for(int i = 0; i < knightstuff.size(); i+=2){
+
+      knight[i/2][0] = knightstuff.get(i);
+      knight[i/2][1] = knightstuff.get(i + 1);
+
+    
+      //System.out.println(Arrays.toString(knight[i/2]));
+    }
+
+    kingBoard = new int[c][r];
+    kingBoard1 = new int[c][r];
+    kingBoard2 = new int[c][r];
+    kingBoard3 = new int[c][r];
+    kingBoard4 = new int[c][r];
+
+    for(int i = 0; i < kingBoard.length; i++){
+      for(int j = 0; j < kingBoard[0].length; j++){
+        kingBoard[i][j] = Integer.MAX_VALUE;
+        kingBoard1[i][j] = Integer.MAX_VALUE;
+        kingBoard2[i][j] = Integer.MAX_VALUE;
+        kingBoard3[i][j] = Integer.MAX_VALUE;
+        kingBoard4[i][j] = Integer.MAX_VALUE;
+      }
+    }
+
+    pq.add(king[1] * 100 + king[0]);
+
+
+    while(pq.peek() != null){
+      int skeet = pq.poll();
+
+      int x = skeet % 100;
+      skeet /= 100;
+      int y = skeet % 100;
+      skeet /= 100; 
+      int cost = skeet;
+
+      if(kingBoard[x][y] > cost){
+        kingBoard[x][y] = cost;
+        cost += 1;
+
+        if(x - 2 >= 0){
+          if(y + 1 < r){
+            pq.add(cost*10000 + (y + 1)*100 + (x - 2));
+          }
+
+          if(y - 1 >= 0){
+            pq.add(cost*10000 + (y - 1)*100 + (x - 2));
+          }
+        }
+
+        if(y - 2 >= 0){
+          if(x + 1 < c){
+            pq.add(cost*10000 + (y - 2)*100 + (x + 1));
+          }
+
+          if(x - 1 >= 0){
+            pq.add(cost*10000 + (y - 2)*100 + (x - 1));
+          }
+        }
+
+        if(x + 2 < c){
+          if(y + 1 < r){
+            pq.add(cost*10000 + (y + 1)*100 + (x + 2));
+          }
+
+          if(y - 1 >= 0){
+            pq.add(cost*10000 + (y - 1)*100 + (x + 2));
+          }
+        }
+
+        if(y + 2 < r){
+          if(x + 1 < c){
+            pq.add(cost*10000 + (y + 2)*100 + (x + 1));
+          }
+
+          if(x - 1 >= 0){
+            pq.add(cost*10000 + (y + 2)*100 + (x - 1));
+          }
+        }
+
+      }
+    }
+
+
+    //System.out.println();
+
+    //for(int i = 0; i < c; i++){
+      //System.out.println(Arrays.toString(kingBoard[i]));
+   // }
+
+    int min = Integer.MAX_VALUE;
+
+    for(int i = 0; i < c; i++){
+      for(int j = 0; j < r; j++){
+
+        int[][] board = new int[c][r];
+
+        for(int a = 0; a < c; a++){
+          for(int b = 0; b < r; b++){
+            board[a][b] = Integer.MAX_VALUE;
+          }
+        }
+
+        pq.add(j * 100 + i);
+
+
+        while(pq.peek() != null){
+          int skeet = pq.poll();
+
+          int x = skeet % 100;
+          skeet /= 100;
+          int y = skeet % 100;
+          skeet /= 100; 
+          int cost = skeet;
+
+          if(board[x][y] > cost){
+            board[x][y] = cost;
+            cost += 1;
+
+            if(x - 2 >= 0){
+              if(y + 1 < r){
+                pq.add(cost*10000 + (y + 1)*100 + (x - 2));
+              }
+
+              if(y - 1 >= 0){
+                pq.add(cost*10000 + (y - 1)*100 + (x - 2));
+              }
+            }
+
+            if(y - 2 >= 0){
+              if(x + 1 < c){
+                pq.add(cost*10000 + (y - 2)*100 + (x + 1));
+              }
+
+              if(x - 1 >= 0){
+                pq.add(cost*10000 + (y - 2)*100 + (x - 1));
+              }
+            }
+
+            if(x + 2 < c){
+              if(y + 1 < r){
+                pq.add(cost*10000 + (y + 1)*100 + (x + 2));
+              }
+
+              if(y - 1 >= 0){
+                pq.add(cost*10000 + (y - 1)*100 + (x + 2));
+              }
+            }
+
+            if(y + 2 < r){
+              if(x + 1 < c){
+                pq.add(cost*10000 + (y + 2)*100 + (x + 1));
+              }
+
+              if(x - 1 >= 0){
+                pq.add(cost*10000 + (y + 2)*100 + (x - 1));
+              }
+            }
+
+          }
+        }
+
+        int add = 0;
+
+        boolean asdf = false;
+
+        for(int d = 0; d < knight.length; d++){
+          add += board[knight[d][0]][knight[d][1]];
+          if(board[knight[d][0]][knight[d][1]] == Integer.MAX_VALUE){
+            asdf = true;
+            break;
+          }
+        }
+
+        if(asdf || add < 0) continue;
+
+        min = Math.min(min, add + Math.abs(i - king[0]) + Math.abs(j - king[1]));
+
+        for(int d = 0; d < knight.length; d++){
+          int tester = add;
+          tester -= board[knight[d][0]][knight[d][1]];
+          tester += kingBoard[i][j] + kingBoard[knight[d][0]][knight[d][1]];
+
+          if(kingBoard[knight[d][0]][knight[d][1]] != Integer.MAX_VALUE && kingBoard[i][j] != Integer.MAX_VALUE) min = Math.min(min, tester);
+
+
+        } 
+
+      }
+    }
+
+    out.println(min);
+
+    out.close();
+  }
+
+}

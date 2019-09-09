@@ -1,0 +1,61 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: inflate
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class inflate{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("inflate.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("inflate.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int time = Integer.parseInt(st.nextToken()), amount = Integer.parseInt(st.nextToken());
+    long[] array = new long[time + 1];
+    int[][] inputs = new int[amount][2];
+
+    array[0] = 0;
+
+    for(int i = 0; i < amount; i++){
+      st = new StringTokenizer(f.readLine());
+      inputs[i][0] = Integer.parseInt(st.nextToken());
+      inputs[i][1] = Integer.parseInt(st.nextToken());
+    }
+
+    for(int i = 0; i < amount; i++){
+      System.out.println(Arrays.toString(inputs[i]));
+    }
+
+    System.out.println();
+
+    for(int i = 0; i < amount; i++){
+
+      int points = inputs[i][0];
+
+      int timer = inputs[i][1];
+
+      for(int j = 1; j <= time; j++){  
+
+        if(j - timer >= 0){
+          if(array[j - timer] + points > array[j]) array[j] = array[j - timer] + points;
+        }        
+
+      }
+
+      //System.out.println(Arrays.toString(array));
+      
+    }
+
+    System.out.println(Arrays.toString(array));
+
+    out.println(array[time]);
+
+    out.close();
+  }
+
+}

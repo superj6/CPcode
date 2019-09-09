@@ -1,0 +1,68 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: nuggets
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+class nuggets{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("nuggets.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("nuggets.out")));
+
+    int N = Integer.parseInt(f.readLine());
+    int[] nums = new int[N];
+
+    for(int i = 0; i < N; i++) nums[i] = Integer.parseInt(f.readLine());
+
+    System.out.println(Integer.MAX_VALUE);
+
+    boolean[] dp = new boolean[1000000];
+
+    dp[0] = true;
+
+    Arrays.sort(nums);
+
+    for(int i = 0; i < N; i++){
+      for(int j = nums[i]; j < dp.length; j++){
+        dp[j] = dp[j - nums[i]] || dp[j];
+      }
+    }
+
+    //System.out.println(Arrays.toString(dp));
+
+    boolean zero = false;
+    boolean one = false;
+
+    for(int i = 0; i < N; i++){
+      if(nums[i] % 2 == 0){
+        zero = true;
+      }else{
+        one = true;
+      }
+    }
+
+    if(!(one && zero)){
+      out.println(0);
+    }else{
+
+      for(int i = dp.length - 1; i >= 0; i--){
+
+        if(!dp[i]){
+          out.println(i);
+          break;
+        }
+
+        if(i == 0) out.println(0);
+      }
+
+    }
+
+    out.close();
+  }
+
+}

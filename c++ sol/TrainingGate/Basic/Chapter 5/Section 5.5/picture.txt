@@ -1,0 +1,102 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: picture
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+int n;
+pair<int, pair<int, pair<int, int>>> rx[10000], ry[10000];
+
+int xp(int y){
+	
+	int sum = 0, p = 0;
+	
+	for(int i = 0; i < n; i++){
+		int add = 0;
+		
+		if(y >= rx[i].second.second.first && y < rx[i].second.second.second) add += rx[i].second.first;
+		
+		while(i + 1 < n && rx[i + 1].first == rx[i].first){
+			i++;
+			if(y >= rx[i].second.second.first && y < rx[i].second.second.second) add += rx[i].second.first;
+		}
+		
+		if((sum == 0 && sum + add != 0) || (sum != 0 && sum + add == 0)) p++;
+		sum += add;
+	}
+	
+	return p;
+}
+
+int yp(int x){
+	
+	int sum = 0, p = 0;
+	
+	for(int i = 0; i < n; i++){
+		int add = 0;
+		
+		if(x >= ry[i].second.second.first && x < ry[i].second.second.second) add += ry[i].second.first;
+		
+		while(i + 1 < n && ry[i + 1].first == ry[i].first){
+			i++;
+			if(x >= ry[i].second.second.first && x < ry[i].second.second.second) add += ry[i].second.first;
+		}
+		
+		if((sum == 0 && sum + add != 0) || (sum != 0 && sum + add == 0)) p++;
+		sum += add;
+	}
+	
+	return p;
+}
+
+int main(){
+	freopen("picture.in", "r", stdin);
+	freopen("picture.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n;
+	
+	for(int i = 0; i < n; i++){
+		cin >> rx[i].first >> ry[i].first >> rx[i + n].first >> ry[i + n].first;
+		
+		rx[i].second.second.first = rx[i + n].second.second.first = ry[i].first;
+		ry[i].second.second.first = ry[i + n].second.second.first = rx[i].first;
+		rx[i].second.second.second = rx[i + n].second.second.second = ry[i + n].first;
+		ry[i].second.second.second = ry[i + n].second.second.second = rx[i + n].first;
+		
+		rx[i].second.first = -1, ry[i].second.first = -1, rx[i + n].second.first = 1, ry[i + n].second.first = 1;
+	}
+	
+	n *= 2;
+	
+	sort(rx, rx + n);
+	sort(ry, ry + n);
+	
+	int perimeter = 0;
+
+	for(int i = 0; i < n; i++){
+		while(i + 1 < n && ry[i + 1].first == ry[i].first)i++;
+		int cur = xp(ry[i].first);
+		
+		for(int j = ry[i].first; j < (i != n - 1 ? ry[i + 1].first : ry[n - 1].first + 1); j++) perimeter += cur;
+	}
+	
+	for(int i = 0; i < n; i++){
+		while(i + 1 < n && rx[i + 1].first == rx[i].first)i++;
+		int cur = yp(rx[i].first);
+		
+		for(int j = rx[i].first; j < (i != n - 1 ? rx[i + 1].first : rx[n - 1].first + 1); j++) perimeter += cur;
+	}
+	
+	cout << perimeter << endl;
+
+	return 0;
+}

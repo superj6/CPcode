@@ -1,0 +1,127 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: butter
+*/
+
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class butter{
+  public static int[][] a;
+  public static int[] cowCount;
+  public static int min = Integer.MAX_VALUE;
+  public static int totalCows;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("butter.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("butter.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int cownum = Integer.parseInt(st.nextToken()), pastnum = Integer.parseInt(st.nextToken()), pathnum = Integer.parseInt(st.nextToken());
+
+    int[] cowpast = new int[cownum];
+    int[][] path = new int[pathnum][3];
+
+    for(int i = 0; i < cownum; i++){
+      cowpast[i] = Integer.parseInt(f.readLine()) - 1;
+    }
+
+    for(int i = 0; i < pathnum; i++){
+      st = new StringTokenizer(f.readLine());
+
+      path[i][0] = Integer.parseInt(st.nextToken());
+      path[i][1] = Integer.parseInt(st.nextToken());
+      path[i][2] = Integer.parseInt(st.nextToken());
+
+    }
+
+    ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
+
+    for(int i = 0; i < pastnum; i++) adj.add(new ArrayList<Integer>());
+
+    for(int i = 0; i < pathnum; i++){
+      adj.get(path[i][0] - 1).add(path[i][1] - 1);
+      adj.get(path[i][0] - 1).add(path[i][2]);
+
+      adj.get(path[i][1] - 1).add(path[i][0] - 1);
+      adj.get(path[i][1] - 1).add(path[i][2]);
+    }
+
+    a = new int[pastnum][];
+
+    for(int i = 0; i < pastnum; i++){
+      a[i] = new int[adj.get(i).size()];
+
+      for(int j = 0; j < a[i].length; j++){
+        a[i][j] = adj.get(i).get(j);
+      }
+
+      System.out.println(Arrays.toString(a[i]));
+    }
+
+    System.out.println();
+
+    cowCount = new int[pastnum];
+
+    for(int i = 0; i < cownum; i++){
+      cowCount[cowpast[i]]++;
+    }
+
+    System.out.println(Arrays.toString(cowCount));
+
+    totalCows = cownum;
+
+    for(int i = 0; i < pastnum; i++){
+      dijk(i);
+    }    
+
+    out.println(min);
+
+    out.close();
+  }
+
+  public static void dijk(int st){
+    PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+
+    int[] dist = new int[a.length];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    pq.add(st);
+
+    int left = totalCows;
+    int score = 0;
+
+    while(pq.size() > 0){
+      int p = pq.poll();
+      int at = p&0x3FF;
+      int cost = p>>>10;
+
+      if(dist[at] <= cost) continue;
+      dist[at] = cost;
+
+      score += cowCount[at]*cost;
+      left -= cowCount[at];
+
+      if(score + left*cost >= min) return;
+
+      if(left == 0) break;
+
+      int[] l = a[at];
+
+      for(int i = 0; i < l.length; i+=2){
+        int to = l[i];
+        int c = l[i + 1];
+
+        if(dist[to] > cost + c){
+          pq.add(((c + cost) << 10) | to);
+        }
+      }
+    }
+
+    
+
+    min = Math.min(min, score);
+  }
+
+}

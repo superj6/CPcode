@@ -1,0 +1,46 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int dx[] = {0, 1, 1, 1, 0, -1, -1, -1};
+int dy[] = {1, 1, 0, -1, -1, -1, 0, 1};
+
+int main() {
+	int t;
+	cin >> t;
+	
+	for(int t0 = 0; t0 < t; t0++){
+		int n, m;
+		cin >> n >> m;
+		
+		bool works = true;
+		
+		char camp[n][m];
+		for(int i = 0; i < n; i++) cin >> camp[i];
+		
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < m; j++){
+				
+				for(int a = 0; a < 8; a++){
+					int x = i + dx[a];
+					int y = j + dy[a];
+					
+					if(x < 0 || x >= n || y < 0 || y >= m) continue;
+					
+					if(camp[i][j] == 't' && camp[x][y] == 't'){
+						works = false;
+						cout << "Invalid" << endl;
+						break;
+					}
+				}
+				
+				if(!works) break;
+			}
+			if(!works) break;
+		}
+		if(works) cout << "Valid" << endl;
+	}
+	
+	
+	return 0;
+}

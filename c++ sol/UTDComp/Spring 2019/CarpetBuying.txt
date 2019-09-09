@@ -1,0 +1,31 @@
+#include <iostream>
+#include <algorithm>
+#include <math.h>
+using namespace std;
+int squares[10001];
+
+int binary(int minv, int maxv, int num){
+	int middle = (minv + maxv) / 2;
+	
+	if(squares[middle] < num && squares[middle + 1] >= num) return squares[middle + 1];
+	
+	if(squares[middle + 1] < num) return binary(middle + 1, maxv, num);
+	
+	return binary(minv, middle, num);
+}
+
+int main() {
+	
+	for(int i = 0; i < 10001; i++) squares[i] = pow(i, 2);
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++){
+		int n, m;
+		cin >> n >> m;
+		cout << binary(0, 10000, n * m) << endl;
+	}
+	
+	return 0;
+}

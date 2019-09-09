@@ -1,0 +1,57 @@
+#include <iostream>
+#include <algorithm>
+#include <math.h>
+using namespace std;
+
+int big = 1500000;
+
+int main() {
+	bool prime[big + 1];
+	for(int i = 0; i <= big; i++) prime[i] = true;
+	prime[0] = false;
+	prime[1] = false;
+	
+	for(int i = 0; i <= big; i++){
+		if(prime[i]){
+			for(int j = 2 * i; j <= big; j += i){
+				prime[j] = false;
+			}
+		}
+	}
+	
+	bool win[big + 1];
+	for(int i = 0; i <= big; i++) win[i] = false;
+	win[1] = true;
+	win[3] = true;
+	win[4] = true;
+	
+	for(int i = 3; i <= big; i++){
+		if(!win[i]){
+			if(i + 1 <= big) if(prime[i + 1]) win[i + 1] = true;
+			if(i * 2 <= big) win[i * 2] = true;
+			for(int j = 2; j <= sqrt(i); j++){
+				if(i % j == 0){
+					if(i * (j + 1) / j <= big) win[i * (j + 1) / j] = true;
+					if(i + j <= big) win[i + j] = true;
+				}
+			}
+			
+		}
+	}
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++){
+		int n;
+		cin >> n;
+		
+		if(win[n]){
+			cout << "Puffy" << endl;
+		}else{
+			cout << "Anne" << endl;
+		}
+	}
+	
+	return 0;
+}

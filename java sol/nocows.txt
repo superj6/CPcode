@@ -1,0 +1,50 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: nocows
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class nocows{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("nocows.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("nocows.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int nodes = Integer.parseInt(st.nextToken()), height = Integer.parseInt(st.nextToken());
+
+    //height -= 1;
+    //nodes = (nodes - 1) / 2;
+
+    int[][] dp = new int[height + 1][nodes + 1];
+
+    for(int i = 0; i <= height; i++){
+      dp[i][0] = 1;
+    }
+
+    for(int h = 1; h <= height; h++){
+      for(int n = 1; n <= nodes; n+=2){
+        dp[h][n] = 0;
+        for(int c = 0; c < n; c++){
+          dp[h][n] = (dp[h][n] + dp[h - 1][c] * dp[h - 1][n - c - 1] + 9901) % 9901;
+        }
+      }
+      System.out.println(Arrays.toString(dp[h]));
+    }
+
+    //if(height != 43){
+      out.println((dp[height][nodes] - dp[height - 1][nodes] + 9901) % 9901);
+   // }else{
+      //out.println(0);
+   // }
+
+    
+    out.close();
+    
+  }
+
+}

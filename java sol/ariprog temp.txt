@@ -1,0 +1,61 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: ariprog
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class ariprog{
+  public static boolean[] input;
+  public static int length;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("ariprog.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("ariprog.out")));
+
+    length = Integer.parseInt(f.readLine()); 
+    int limit = Integer.parseInt(f.readLine());
+    input = new boolean[(int)(Math.pow(limit, 2) * 2 + 1)];
+
+    Boolean any = false;
+
+    for(int i = 0; i <= limit; i++){
+      for(int j = i; j <= limit; j++){
+         
+        input[(int)(Math.pow(i, 2) + Math.pow(j , 2))] = true;
+
+      }
+    }
+
+
+   for(int i = 1; i <= Math.pow(limit, 2) * 2 / (length - 1); i++){
+      for(int j = 0; j <= limit; j++){
+        for(int k = j; k <= limit; k++){
+          int num = (int)(Math.pow(j, 2) + Math.pow(k , 2));
+          if(num + i * (length - 1) > Math.pow(limit,2) * 2) break;
+          if(checkArithmetic(num, i)){ 
+            out.println(Integer.toString(num) + " " + Integer.toString(i));
+            any = true;
+          }
+        }
+      }
+    }
+
+    if(!any) out.println("NONE");
+
+    out.close();  
+
+  }
+
+  public static Boolean checkArithmetic(int start, int multiple){
+    for(int i = length - 1; i >= 0; i--){
+      if(!input[start + multiple * i]) return false;
+    }
+    
+    return true;
+  }
+
+}

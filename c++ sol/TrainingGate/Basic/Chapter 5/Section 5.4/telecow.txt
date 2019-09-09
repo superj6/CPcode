@@ -1,0 +1,127 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: telecow
+*/
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int n, m, c, C;
+vector<vector<int>> graph;
+vector<vector<int>> graphf;
+
+int flow(){
+	
+	int totalflow = 0;
+	bool visited[2 * n];
+	int flow[2 * n]; 
+	int prevnode[2 * n];
+	int maxflow, maxindex;
+	
+	for(int i = 0; i < 2 * n; i++) for(int j = 0; j < 2 * n; j++) graphf[i][j] = graph[i][j];
+	
+	while(true){
+		
+		for(int i = 0; i < 2 * n; i++){
+			visited[i] = false;
+			flow[i] = 0;
+			prevnode[i] = -1;
+		}
+		flow[c + n] = 2;
+		
+		while(true){
+			maxflow = 0;
+			maxindex = -1;
+			
+			for(int i = 0; i < 2 * n; i++){
+				if(flow[i] > maxflow && !visited[i]){
+					maxflow = flow[i];
+					maxindex = i;
+				}
+			}
+			
+			if(maxindex == C || maxindex == -1) break;
+			
+			visited[maxindex] = true;
+			
+			for(int i = 0; i < 2 * n; i++){
+				 if(flow[i] < min(maxflow, graphf[maxindex][i])){
+				 	flow[i] = min(maxflow, graphf[maxindex][i]);
+				 	prevnode[i] = maxindex;
+				 }
+			}
+			
+		}
+		
+		if(maxindex == -1) break;
+		
+		totalflow += maxflow;
+		int currnode = C;
+		
+		while(currnode != c + n){
+			graphf[prevnode[currnode]][currnode] -= maxflow;
+			graphf[currnode][prevnode[currnode]] += maxflow;
+			currnode = prevnode[currnode];
+		}
+	}
+	
+	return totalflow;
+	
+}
+
+int main(){
+	ifstream fin ("telecow.in");
+	ofstream fout ("telecow.out");
+
+	fin >> n >> m >> c >> C;
+	c--;
+	C--;
+	
+	graph.resize(2 * n);
+	graphf.resize(2 * n);
+	for(int i = 0; i < 2 * n; i++){
+		graph[i].resize(2 * n);
+		graphf[i].resize(2 * n);
+		
+		for(int j = 0; j < 2 * n; j++) graph[i][j] = 0;
+		
+		if(i < n) graph[i][i + n] = 1;
+	}
+	
+	for(int i = 0; i < m; i++){
+		int a, b;
+		fin >> a >> b;
+		a--;
+		b--;
+		
+		graph[a + n][b] = 1;
+		graph[b + n][a] = 1;
+	}
+	
+	int flowv = flow();
+	
+	fout << flowv << endl;
+	
+	for(int i = 0; i < n; i++){
+		graph[i][i + n] = 0;
+		int tempflow = flow();
+		if(tempflow == flowv - 1){
+			flowv--;
+			fout << (i + 1);
+			if(flowv == 0){
+				fout << endl;
+				break;
+			}else{
+				fout << " ";
+			}
+		}else{
+			graph[i][i + n] = 1;
+		}
+	}
+
+	return 0;
+}

@@ -1,0 +1,25 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+#define pi pair<int, int>
+
+void answer(){
+	
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int t;
+	cin >> t;
+	
+	for(int i = 1; i <= t; i++){
+		cout << "Case #" << i << ": ";
+		answer();
+	}
+	
+	return 0;
+}

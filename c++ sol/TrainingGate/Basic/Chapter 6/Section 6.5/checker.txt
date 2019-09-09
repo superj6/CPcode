@@ -1,0 +1,80 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: checker
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+using namespace std;
+#define endl '\n'
+
+int n;
+int used[13];
+vector<int> sol[3];
+
+int amt(int cur, int f){
+	if(cur == n) return 1;
+	
+	int works[n];
+	for(int i = 0; i < n; i++) works[i] = 1;
+	
+	for(int i = 0; i < n; i++){
+		if(used[i] == -1) continue;
+		if(i + cur - used[i] < n) works[i + cur - used[i]] = 0;
+		if(i - cur + used[i] >= 0) works[i - cur + used[i]] = 0;
+	}
+	
+	int ret = 0, m;
+
+	if(n == 6){
+		m = n;
+	}else if(cur == 0){
+		m = n / 2 + (n % 2);
+	}else if(cur == 1 && n % 2 == 1 && used[n / 2] == 0){
+		m = n / 2;
+	}else{
+		m = n;
+	}
+	
+	for(int i = 0; i < m; i++){
+		if(works[i] && used[i] == -1){
+			used[i] = cur;
+			int d = amt(cur + 1, f);
+			for(int j = f; f < min(j + d, 3); f++){
+				sol[f].push_back(i + 1);
+			}
+			ret += d;
+			used[i] = -1;
+		}
+	}
+	
+	return ret;
+}
+
+int main(){
+	freopen("checker.in", "r", stdin);
+	freopen("checker.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> n;
+	
+	for(int i = 0; i < n; i++) used[i] = -1;
+	
+	int ans = amt(0, 0);
+	if(n != 6) ans *= 2;
+	
+	for(int i = 0; i < 3; i++){
+		reverse(sol[i].begin(), sol[i].end());
+		cout << sol[i][0];
+		for(int j = 1; j < sol[i].size(); j++) cout << " " << sol[i][j];
+		cout << endl;
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}

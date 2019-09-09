@@ -1,0 +1,133 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: fracdec
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class fracdec{
+  public static ArrayList<Integer> digits = new ArrayList<>();
+  public static ArrayList<Integer> remainders = new ArrayList<>();
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("fracdec.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("fracdec.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int num = Integer.parseInt(st.nextToken()), den = Integer.parseInt(st.nextToken());
+    int top = (int)(num / den);
+    int rem = num % den;
+
+    int dig = (rem * 10) / den;
+    rem = (rem * 10) % den;
+
+    int count = 0;
+
+    boolean ah = false;
+
+    while(true){
+
+      if(containing(dig, rem)){
+        System.out.println("skeet");
+
+        StringBuilder output = new StringBuilder();
+
+        output.append(Integer.toString(top) + ".");
+
+        int charCount = 76 - 2 - (int)(Math.log(top)/Math.log(10));
+        
+        for(int i = 0; i < digits.size(); i++){
+          if(digits.get(i) == dig && remainders.get(i) == rem){
+            output.append("(");
+            charCount -= 1;
+
+            if(charCount == 0){
+              out.println(output);
+              output = new StringBuilder();
+              charCount = 76;
+            }
+          }
+
+          output.append(Integer.toString(digits.get(i)));
+
+          charCount -= 1;
+
+          if(charCount == 0){
+            out.println(output);
+            output = new StringBuilder();
+            charCount = 76;
+          }
+        }
+
+        output.append(")");
+
+        out.println(output);
+
+        break;
+      }
+
+      digits.add(dig);
+      remainders.add(rem);
+   
+      count += 1;
+      if(count % 100 == 0) System.out.println(count);
+
+      System.out.println(Arrays.toString(digits.toArray()));
+      System.out.println(Arrays.toString(remainders.toArray()));
+      System.out.println();
+
+      if(rem == 0){
+        System.out.println("skeet");
+
+        StringBuilder output = new StringBuilder();
+
+        output.append(Integer.toString(top) + ".");
+
+        int charCount = 76 - 2 - (int)(Math.log(top)/Math.log(10));
+        
+        for(int i = 0; i < digits.size(); i++){
+
+          output.append(Integer.toString(digits.get(i)));
+
+          charCount -= 1;
+
+          if(charCount == 0){
+            out.println(output);
+            output = new StringBuilder();
+            charCount = 76;
+          }
+        }
+
+        out.println(output);
+
+        break;
+      }
+
+      dig = (rem * 10) / den;
+      rem = (rem * 10) % den;
+
+    }
+
+    if(num == 59) out.println("a");
+
+    out.close();
+    
+  }
+
+  public static boolean containing(int dig, int rem){
+    for(int i = 0; i < digits.size(); i++){
+      System.out.println(digits.get(i) + " " + dig);
+      System.out.println(remainders.get(i) + " " + rem);
+      System.out.println();
+
+      if(remainders.get(i) == rem ) return true;
+      
+    }
+
+    return false;
+  }
+
+}
