@@ -5,33 +5,34 @@
 using namespace std;
 #define endl '\n'
 
-const int mw = 2001;
-int n, w;
-int dp[mw];
-
 int main(){
 	freopen("talent.in", "r", stdin);
 	freopen("talent.out", "w", stdout);
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	
+	int n, w;
 	cin >> n >> w;
 	
-	int ans = 0;
+	pair<int, int> a[n];
+	for(int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
+	
+	sort(a, a + n, [&](pair<int, int> f, pair<int, int> g){
+		return 1.0 * f.first / f.second < 1.0 * g.first / g.second;
+	});
+	
+	int dp[w];
 	memset(dp, -1, sizeof(dp));
 	dp[0] = 0;
+	
+	int ans = 0;
 	for(int i = 0; i < n; i++){
-		int x, y;
-		cin >> x >> y;
-
-		if(x >= mw){
-			ans = max(ans, (int)(1000.0 * y / x));
-		}
+		int x = a[i].first, y = a[i].second;
 		
-		for(int j = mw - 1 - x; j >= 0; j--){
+		for(int j = w - 1; j >= 0; j--){
 			if(dp[j] != -1){
-				dp[j + x] = max(dp[j + x], dp[j] + y);
-				if(w <= j + x) ans = max(ans, (int)(1000.0 * dp[j + x] / (j + x)));	
+				if(j + x < w) dp[j + x] = max(dp[j + x], dp[j] + y);
+				else ans = max(ans, (int)(1000.0 * (dp[j] + y) / (j + x)));	
 			}
 		}
 	}
