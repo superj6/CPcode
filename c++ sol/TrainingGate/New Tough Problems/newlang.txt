@@ -1,0 +1,58 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: newlang
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+#define pi pair<long long, long long>
+
+long long n, a, b;
+
+pi solve(long long x){
+	long long f = (x - a - 1) / b;
+	pi ret = {f, a * f + b * f * (f + 1) / 2};
+	for(long long i = 2; a * i + b < x; i++){
+		for(long long j = 1, cur = 1; a * i + b * j < x; j++){
+			ret.first += cur;
+			ret.second += (a * i + b * j) * cur;
+			cur = cur * (i + j - 1) / j;
+			if(ret.first >= n) return ret;
+		}
+	}
+	return ret;
+}
+
+void answer(){
+	cin >> n >> a >> b;	
+	n--;
+	if(a < b) swap(a, b);
+	
+	long long l = a + b, r = 20 * (a + b);
+	while(r - l > 1 && l < r){
+		long long mid = (l + r) / 2;
+		if(solve(mid).first < n) l = mid;
+		else r = mid;
+	}
+	
+	pi p = solve(l);
+	cout << ((n - p.first) * l + p.second)  << endl;
+}
+
+int main() {
+	freopen("newlang.in", "r", stdin);
+	freopen("newlang.out", "w", stdout);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++) answer();
+	
+	return 0;
+}
