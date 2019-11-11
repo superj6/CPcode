@@ -4,7 +4,7 @@
 #include <math.h>
 using namespace std;
 #define endl '\n'
-#define pi pair<long, long>
+#define pi pair<long long, long long>
 
 const double PI = 3.1415926535;
 const int maxn = 200000;
@@ -13,11 +13,11 @@ pi operator+(pi a, pi b){
 	return {a.first + b.first, a.second + b.second};
 }
 
-long dist(pi a){
+long long dist(pi a){
 	return a.first * a.first + a.second * a.second;
 }
 
-pi operator*(int a, pi b){
+pi operator*(long long a, pi b){
 	return {a * b.first , a * b.second};
 }
 
@@ -32,7 +32,7 @@ int ang2(double a){
 int n;
 pi a[maxn];
 pi cur;
-long ret;
+long long ret;
 
 int main(){
 	ios::sync_with_stdio(false);
