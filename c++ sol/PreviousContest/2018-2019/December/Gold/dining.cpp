@@ -1,3 +1,10 @@
+/*
+	For the solution to this problem, first run dijkstras from the barn to all nodes and compute the distance. 
+Now create a new node such the path from this node to any other node is equal to the distance in the previously computed dijkstra
+minus the yumminess value of this node. Now run dijkstra from this new node to all other nodes, and output 1 for each node if
+the new distance is less than or equal to the old distance.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
