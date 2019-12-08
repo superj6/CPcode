@@ -15,8 +15,7 @@ and index > previous. This will work to find the kth lexographically largest lis
 how to compute the amount of lis's that start with each index. To do this, do a similar sweep as computing lis's except iterating
 in reverse order through the array, and hold a segment tree for each value of lis. Each lis number for each value with the
 maximum lis length will be 1, and for all others set it equal to the sum of all lis numbers in the segment tree with an lis
-value 1 greater than it and having a greater value. This gives the number of lis's starting with each value and completes
-the solution.
+value 1 greater than it and having a greater value. The complexity of this is O(nlogn) due to the segment tree queries.
 */
 
 #include <iostream>
