@@ -1,3 +1,7 @@
+/*
+	The first step in this problem is to compute the number of lines possible for each rhyme class.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
