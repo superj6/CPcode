@@ -1,3 +1,15 @@
+/*
+	The problem can be simplified to given a tree in which you have to remove nodes such that the tree stays connected and 
+there are constraints such that you must remove one node before the other, compute which nodes could be the final node left on
+the tree. A key thing to notice is that all nodes that are a solution form a connected group in a tree as once you have an
+unconstrained group you can take them off in any order, and none of them in the group can be a constraint on another node.
+This means if you can find one node that is a solution you can dfs and find the others. To find one solution, you can do
+something very similar to topological sort where you insert edges with no constraints and are leaves of the current tree into
+a queue. Then, as you pop nodes off of the queue remove the a constraint from each of the nodes it is constraining and an edge
+from each of the node that neighbors it. Any node that now works after removing such and hasn't been visited can be added to the 
+queue. The complexity of that is O(n).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
