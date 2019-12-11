@@ -1,4 +1,19 @@
-﻿#include <iostream>
+/*
+        The first step to this problem is obviously to sort the positions by height and simulate adding them one at a time. Also,
+it obviously seems like you should use a DSU to keep track of the adjacently connected sections. Now to deal with the holes, a
+common thing when dealing with shapes and distinguishing properties between them is to look at their edge orientation. After examining
+examples, you should notice that if you iterate along the edges clockwise, if you count every right turn as +1 and left turn as -1,
+the sum of the turns should be 4. This is true because if you consider iterating along the edges of a shape with no hole from some
+starting point, there should be 4 right turns so you can get back to the point you started on, and every other turn should cancel
+out in the end for the shape to be closed. If there are holes, this will add more right turns as the holes can also be iterated in
+the same fashion for them to be enclosed as well. This means as we add points and connect them to their regions with DSU you should
+keep tract of the sum of the right and left turns. When a point is added, iterate over all its neighbors and subtract the turns that
+included that point being empty, then add the point and connect neighbors into one region and add the new turns created by adding
+the new point. Then, if a new valley is created with a turn sum of 4, add its size to the result. The complexity of this is O(nlogn)
+due to the dsu.
+*/
+
+#include <iostream>
 #include <cstdio>
 #include <algorithm>
 using namespace std;
