@@ -1,3 +1,11 @@
+/*
+	As a disclaimer my solution only get 5/15 test cases, I am not sure why though, I assume it is a minor error. The first
+thing you should think about with this problem is, given the side of B A is currently on, what other sides can A get to. This is
+because figuring out what other sides it can get to determines the directions B can go. If you consider the grid as a graph, this
+problem immediatley becomes a question of biconnected components, as you are considering if you can get to node B even if you get
+rid of the edge connecting A to B from the side it is currently on.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
