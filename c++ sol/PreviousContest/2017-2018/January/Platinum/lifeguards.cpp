@@ -1,3 +1,8 @@
+/*
+	The first and easiest thing to realize for this problem is that you do not need any interval contained within another
+interval.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
