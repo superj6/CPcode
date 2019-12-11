@@ -3,7 +3,14 @@
 thing you should think about with this problem is, given the side of B A is currently on, what other sides can A get to. This is
 because figuring out what other sides it can get to determines the directions B can go. If you consider the grid as a graph, this
 problem immediatley becomes a question of biconnected components, as you are considering if you can get to node B even if you get
-rid of the edge connecting A to B from the side it is currently on.
+rid of the edge connecting A to B from the side it is currently on. To do this, you use the standard algorithm for finding
+articulation points by performing a dfs and testing whether a subtree connects back to one of its ancestors, and keep the nodes
+currently in the component on a stack and set them as a biconnected component when you find an articulation point. Also, I did
+not just keep which parts of the grid are the same connected component but also kept which edges between the graph are biconnected.
+This then allows you to see if you are in one position next to a box, which other positions you can get to. After finding the
+biconnected components, one just has to form a bfs from box B and transition the pushes moving B and moving to different sides of
+B. Lastly, one can answer the queries just by seeing if the bfs marked the part of the grid as accessible. The complexity of this
+is just O(n) because you are just doing a dfs and bfs.
 */
 
 #include <iostream>
