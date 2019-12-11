@@ -1,3 +1,18 @@
+/*
+	For this problem, it is immediately obvious that it would be easier to compare suffixes of every string, so you want to build
+a suffix array using all the strings. To do this, you run the normal suffix array algorithm except for each suffix record its length
+as well so when you are iterating over a length greater than the string u can count it as the end of the string. Now, the goal is,
+for every suffix, find out how many prefixes are unique. However, what would be easier is to count the inverse, as you could use
+construct an lcp array and find the number of prefixes for each suffix are not unique and subtract those. To do this, after constructing
+the lcp array, iterate through the suffixes keeping track of the suffix on the left and right which are not from the string the
+current suffix is from (this can be done easier with two iterations), and hold the amt you will subtract from the result as the max
+of the lcp of the current suffix with the suffixes from other strings on the left and right. However, you also need to not overcount
+subtrings within the own string, so you also have your amt you subtract for each suffix as the max of it and the suffix to its left
+if it is from the same string. Lastly, iterate through the suffixes and add to the output result for each string that the suffix is
+from its length minus the amount you calculated to subtract. The complexity is O(nlogn) or O(nlog^2n) depending on you suffix array
+implementation (mine is log^2 bcz i am lazy).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
