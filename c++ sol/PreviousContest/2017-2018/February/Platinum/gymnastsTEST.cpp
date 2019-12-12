@@ -1,3 +1,8 @@
+/*
+	This was some different brute force tests I did to attempt to find a pattern and solve the problem. It is a good strategy
+to make brute force programs when you are stuck.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
