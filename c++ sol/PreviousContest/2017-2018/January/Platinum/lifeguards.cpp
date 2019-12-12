@@ -1,6 +1,14 @@
 /*
 	The first and easiest thing to realize for this problem is that you do not need any interval contained within another
-interval.
+interval. You can easily find such intervals by sorting by first point and comparing endpoints. Now, it is quite obvious you
+want to do an O(nk) dp holding states of current interval going from left to right and the amount of intervals used. However,
+the challenge is to find the transitions. If you think about the current segment u r on, there are only 3 possible transitions:
+you could just not use the same interval meaning you set the dp as the same as the one before, you use a the dp which is
+intersecting it, which should obviously be the one furthest back intersecting it as far back as possible so you can then add
+to that dp the new length covered by the interval you are on, or third you transition from the closest interval which is disjoint
+so you can add the full length of the interval while also getting the best dp possible as it is monotonically increasing. To find
+the closest interval disjoint/fartherst interval intersecting, you can use two pointers as the intervals are sorted and no intervals
+are contained within another so the right points are also montonically increasing. The complexity of this is O(nlogn) from sorting.
 */
 
 #include <iostream>
