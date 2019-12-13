@@ -1,8 +1,19 @@
 /*
-This is code of SuperJ6 for Codeforces.
-Don't copy my code during f*kin' contests.
-
-2.71828182845904523536
+	For this problem, it is best to start thinking about different cases of slingshot endpoint orientation relative to the
+the current transport endpoints. Call sx and sy the slingshot endpoints, and x and y the transport query endpoints. There are only
+for different relative orientations sx and sy can have with x and y: sx < x and sy < y, sx < x and sy > y, sx > x and sy < y,
+sx > x and sy > y. Consider the first case, and the other cases will follow similar logic. If you sorted the points by there first
+end point and iterated through them, you would make a slingshot available to be used when you passed it in the sweep. For a query,
+to find the best slingshot for that case, it would be helpful to be able to find the distance when using an available slingshot
+such that the endpoint is before the query endpoint. How you could do this is to keep a segment tree with the right endpoints of
+slingshots currently available, and hold there value of t - sx - sy. This is because when sx < x and sy < y, the value of the
+best path using a slingshot in that orientation is (x - sx) + (y - sy) + t. which can be rearranged as (x + y) + (t - sx - sy).
+This means when considering one orientation by itself, the value of the best slingshot is completely independent of the queries
+x and y value, so you can just query the segtree for the lowest value of t - sx - sy where the active endpoint is before the endpoint
+you are querying. You can similarly modify the value and use the same technique with the other orientations and do a sweep through
+keeping active endpoints in a segment tree. Also to write less code, you can only consider the first two orientations then reverse
+the ordering of the points and run the same code. Lastly, make sure to consider the case where you don't use a slingshot. The time
+complexity of this is O(nlogn) from the segment tree queries.
 */
 
 #include <iostream>
