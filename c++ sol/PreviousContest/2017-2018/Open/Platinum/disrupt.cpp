@@ -1,3 +1,19 @@
+/*
+	For this problem, the first thing to think about is what are the possible edges that can be used to replace a particular edge on
+the tree. You should see that The edge on the tree should be on the path between one of its endpoints and the lca. If the edge is above
+the lca both ends of edges will be on the subtree below, if the edge is below not above one of the paths endpoints, both endpoints will
+be on the tree above the edge. This means we need a way to dfs the tree, keep track of which additional edges have one endpoint in the
+subtree of the current node and have the lca above it. To do this, you can first relable the nodes, then hold a multiset for each node
+of the lengths of the edges that are currently available with an endpoint on that node, then hold a segment tree with each index being
+the best length available in the set for the node. To update which nodes are currently available, run an lca algorithm (i used tarjans)
+to find all lca's of the additional edges, the in have each node hold a vector of edges to delete and edges to add, where both endpoints
+of the edge go in the add vectors and the lca goes in the delete vector. Then when you dfs, imagine going down the tree and then start
+going back upwards. When you go upwards and hit one of the endpoints of a node you will add it to the multiset and update the segtree, but
+when you go back above the lca you will delete the node from the multiset and update the segtree. Finally to query for each node, just
+use the segment tree to find the minimum length of an active path with an endpoint in the range of the relabled nodes of the subtree. The
+complexity of this is O((n + m)logn) due to updating and querying the sets and segment tree for each node and additional path.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
