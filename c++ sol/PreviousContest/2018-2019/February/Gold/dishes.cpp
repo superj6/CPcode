@@ -1,3 +1,14 @@
+/*
+	For this problem, it is best to just simulate the activity with optimal moves. To move optimally, consider adding a new plate
+to a stack. The plate should be put on a stack such that the bottom plate in the stack to the left it is less than it, but it is
+less than the bottom plat of the stack that it is on. To do this, hold an array base showing the base stack each plate should go on,
+and when you add a new plate set the base from its value to all plates currently unset less than it to have the current plate as
+the base. If the new plate already has a base set, remove all plates currently of lower value as they will now be in the final stack,
+and place the plate now on the top of the stack. Lastly, hold the value of the largest plate put on the stack so far, and if you ever
+reach a plate less than the value of the last placed stack, you know it is impossible to add it to the final stack now, so you output
+the number of stacks placed so far as your result.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
