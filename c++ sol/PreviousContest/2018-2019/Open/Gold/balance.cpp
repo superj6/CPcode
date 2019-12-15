@@ -1,3 +1,17 @@
+/*
+	This problem by far was the most challenging gold problem this contest. To start, it first helps to think about what the
+smallest amount of swaps you have to make is without ever swapping across the middle point, as swapping across the middle point is
+what is most challenging to think about. For this simplified problem, the key thing to realize is that it is always possible to
+change one of the sides inversion count by -1 if it is not 0, as you can always swap a 1 and 0. Similarly, you can never change
+the inversion count of a side by more than 1, and each side is independent without swapping across the middle, so the solution to
+this simplified problem is just the difference in the inversion count between the 2 sides. Now for the full problem, you can just
+moving 1s countinuously in one direction, and each time you move a 1 across the midpoint you set the result to the minimum of it and
+the number of moves you have done to swap 1s across the middle + the difference. To move 1s across the midpoint, hold a pointer on
+the leftmost 0 and right rightmost just move them outward until one is out of range. To keep track of the change in difference after
+moving stuff across the center use some witchcraft and think about the inversions lost when moving a 1 away from 1 side and inversion
+gained when moving a 1 to the other side. Lastly, you have to try moving the 1s in both directions. The complexity of this is O(n).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
