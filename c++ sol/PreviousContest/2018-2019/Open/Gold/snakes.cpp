@@ -1,3 +1,12 @@
+/*
+	This problem is just pretty simple dp. Hold the states as dp[i][j] being the minimum wasted space using the first i snakes
+and j changes in size. To calculate this state from the previous, you just need to for every l less than i find the sum from l to
+i and the maximum value from l to i, as all snakes need to be able to fit with that size, then set dp[i][j] as dp[l - 1][j - 1] +
+maxv * (i - l + 1) - sumv as that is setting the net to maxv for all sizes and and subtracting the actual amount used to find the
+wasted space and adding it to the best solution using 1 less transition before l. As long as you iterate l backwards from i and
+hold the max and sum as you go, the time complexity will be O(n^3).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
