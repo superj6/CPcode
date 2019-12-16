@@ -10,7 +10,8 @@ to greedily choose them so they will all be as close to the minimum value as pos
 and as the final change decreases more cows will be needed, so for the binary search
 you can see if the amount of cows used is greater than or equal to k and calculate
 the answer used so far. Lastly for the answer, you need to adjust it by adding the
-change added by the extra cows so you have the answer for exactly k.
+change added by the extra cows so you have the answer for exactly k. The complexity of
+this is O(nlogk).
 */
 
 #include <iostream>
