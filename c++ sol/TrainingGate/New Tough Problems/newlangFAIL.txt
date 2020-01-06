@@ -1,0 +1,49 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: newlang
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <map>
+#include <iterator>
+using namespace std;
+#define endl '\n'
+#define pi pair<int, int>
+
+void answer(){
+	long long n, a, b;
+	cin >> n >> a >> b;
+	n--;
+
+	long long ret = 0;
+	map<long long, long long> mp;
+	mp[a + b] = 1;
+	map<long long, long long>::iterator it;
+	while(n){
+		it = mp.begin();
+		ret += it->first * min(it->second, n);
+		mp[it->first + a] += it->second;
+		mp[it->first + b] += it->second;
+		n -= min(it->second, n);
+		mp.erase(it);
+	}
+	
+	cout << ret << endl;
+}
+
+int main(){
+	freopen("newlang.in", "r", stdin);
+	freopen("newlang.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++) answer();
+
+	return 0;
+}
