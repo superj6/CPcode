@@ -1,0 +1,29 @@
+/*
+This is code of SuperJ6 for Codeforces.
+Don't copy my code during f*kin' contests.
+
+2.71828182845904523536
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+#define pi pair<int, int>
+
+void answer(){
+	
+}
+
+int main(){
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++) answer();
+
+	return 0;
+}

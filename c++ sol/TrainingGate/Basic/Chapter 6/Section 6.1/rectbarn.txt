@@ -1,0 +1,83 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: rectbarn
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+#include <stack>
+using namespace std;
+#define endl '\n'
+
+int r, c, p;
+stack<int> stk;
+int row[3000];
+vector<pair<int, int>> pps;
+
+int area(){
+	int out = 0;
+	int i = 0;
+	
+	while(i < c){
+		if(stk.empty() || (row[stk.top()] <= row[i])){
+			stk.push(i++);
+		}else{
+			int t = stk.top();
+			stk.pop();
+			
+			out = max(out, row[t] * (stk.empty() ? i : i - stk.top() - 1));
+		}
+	}
+	
+	while(!stk.empty()){
+		int t = stk.top();
+		stk.pop();
+			
+		out = max(out, row[t] * (stk.empty() ? i : i - stk.top() - 1));
+	}
+	
+	return out;
+}
+
+int main() {
+	freopen("rectbarn.in", "r", stdin);
+	freopen("rectbarn.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> r >> c >> p;
+
+	for(int i = 0; i < p; i++){
+		int x, y;
+		cin >> x >> y;
+		x--, y--;
+		pps.push_back(make_pair(x, y));
+	}
+	
+	int maxv = 0;
+	int index = 0;
+
+	sort(pps.begin(), pps.end());
+	
+	for(int i = 0; i < c; i++) row[i] = 0;
+	
+	for(int i = 0; i < r; i++){
+		for(int j = 0; j < c; j++){
+ 			if(index < p && pps[index] <= make_pair(i, j)){
+				row[j] = 0;
+				index++;
+			}else{
+				row[j]++;
+			}
+		}
+
+		maxv = max(maxv, area());
+	}
+	
+	cout << maxv << endl;
+	
+	return 0;
+}

@@ -1,0 +1,112 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: milk4
+*/
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include<vector>
+using namespace std;
+
+int main() {
+	ifstream fin ("milk4.in");
+	ofstream fout ("milk4.out");
+	
+	int q, p;
+	fin >> q >> p;
+	int numbers[p];
+	
+	for(int i = 0; i < p; i++) fin >> numbers[i];
+	
+	sort(numbers, numbers+p);
+	
+	bool possible[q + 1];
+	vector<vector<int>> used;
+	used.resize(q + 1);
+	
+	for(int i = 0; i <= q; i++) possible[i] = false;
+	possible[0] = true;
+	
+	for(int j = 0; j <= q; j++){
+		
+		for(int i = 0; i < p; i++){
+			int n = numbers[i];
+			
+			if(j - n < 0) break;
+			
+			if(possible[j - n]){
+				
+
+				if(!possible[j]){
+					
+					possible[j] = true;
+					
+					vector<int> test;
+					for(int a = 0; a < used[j - n].size(); a++){
+						if(used[j - n][a] != n) test.push_back(used[j - n][a]);
+					}
+					test.push_back(n);
+							
+					sort(test.begin(), test.end());
+					
+					used[j] = test;
+					
+				}else{
+					
+
+					
+					if(j != n){
+						
+						vector<int> test;
+						for(int a = 0; a < used[j - n].size(); a++){
+							if(used[j - n][a] != n) test.push_back(used[j - n][a]);
+						}
+						test.push_back(n);
+							
+						sort(test.begin(), test.end());
+						if(test.size() <= used[j].size()){
+							
+							
+							bool away = false;
+							
+							if(test.size() == used[j].size()){
+								for(int i = 0; i < used[j].size(); i++){
+									if(test[i] > used[j][i]){
+										away = true;
+										break;
+									}else if(test[i] < used[j][i]){
+										break;
+									}
+								}
+							}	
+							
+							if(!away) used[j] = test;
+						}
+							
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/*
+	for(int i = 0; i <= q; i++){
+		cout << "num: " << i << endl;
+		cout << "size: " << used[i].size() << endl;
+		for(int a = 0; a < used[i].size(); a++) cout << used[i][a] << " ";
+		cout << endl;
+	}
+	*/
+	
+	fout << used[q].size();
+	for(int i = 0; i < used[q].size(); i++) fout << " " << used[q][i];
+	fout << endl;
+	
+	return 0;
+}

@@ -1,0 +1,49 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+#define endl '\n'
+
+const int n = 3;
+int num = 0;
+int grid[n][n];
+
+void recur(int next){
+	if(next == n * n){
+		num++;
+		cout << num << endl;
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < n; j++){
+				cout << (char)(grid[i][j] + 'A') << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+		return;
+	}
+	
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			if(grid[i][j] == '*'){
+				if(i > 0 && grid[i - 1][j] == '*') break;
+				
+				grid[i][j] = next;
+				recur(next+1);
+				grid[i][j] = '*';
+				
+				break;
+			}
+		}
+	}
+}
+
+int main(){
+	//freopen("", "r", stdin);
+	//freopen("", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) grid[i][j] = '*';
+	recur(0);
+	return 0;
+}

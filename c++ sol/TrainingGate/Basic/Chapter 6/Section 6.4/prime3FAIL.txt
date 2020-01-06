@@ -1,0 +1,155 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: prime3
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+#include <math.h>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 100000;
+int s, d;
+
+int lp[maxn];
+vector<int> pr;
+
+bool g[maxn], gb[maxn];
+vector<int> gr;
+int num[7];
+bool any = 0;
+
+void pgen(int s){
+	for(int i = 2; i < maxn; i++){
+		if(lp[i] == 0){
+			lp[i] = i;
+			pr.push_back(i);
+			
+			if(i >= maxn / 10){
+				int sum = 0;
+				for(int j = i; j > 0; j /= 10){
+					sum += j % 10;
+				}
+				
+				if(sum == s){
+					gr.push_back(i);
+					
+					for(int j = i; j > 0; j /= 10){
+						g[j] = 1;
+					}
+					
+					for(int j = 1; j < 5; j++){
+						gb[i % (int)pow(10, j)] = 1;
+					}
+				}
+			}
+		}
+		
+		for(int j = 0; j < pr.size() && pr[j] <= lp[i] && i * pr[j] < maxn; j++){
+			lp[i * pr[j]] = pr[j];
+		}
+	}
+}
+
+void fin(int num[7]){
+	int sum[7];
+	
+	for(int i = 0; i < 7; i++){
+		sum[i] = 0;
+		for(int j = num[i]; j > 0; j/=10){
+			sum[i] += j % 10;
+		}
+		
+		if(i == 6){
+			num[i] += (s - sum[i]) * maxn / 10;
+		}else{
+			num[i] = num[i] * 10 + (s - sum[i]);
+		}
+	}
+	
+	if(sum[0] != sum[6] || sum[4] != sum[5] || num[6] < maxn / 10 || num[6] >= maxn || !g[num[6]]) return;
+
+	
+	int out[5];
+	
+	for(int i = 4; i >= 0; i--){
+		out[i] = 0;
+		
+		for(int j = 0; j < 5; j++){
+			out[i] = out[i] * 10 + num[j] % 10;
+			num[j] /= 10;
+		}
+		
+		if(out[i] < maxn / 10 || out[i] >= maxn || !g[out[i]]) return;
+	}
+	
+	if(any) cout << endl;
+	for(int i = 0; i < 5; i++) cout << out[i] << endl;
+
+	any = true;
+}
+
+void recur(int num[7], int a){
+	if(a == 4){
+		fin(num);
+		return;
+	}
+	
+	int st = 0, en = gr.size();
+	if(a == 0){
+		st = lower_bound(gr.begin(), gr.end(), d * maxn / 10) - gr.begin();
+		en = lower_bound(gr.begin(), gr.end(), (d + 1) * maxn / 10) - gr.begin();
+	}
+	
+	for(int i = st; i < en; i++){
+		bool works = 1;
+		int cnum[7];
+		
+		for(int j = 4, k = gr[i]; j >= 0; j--, k/=10){
+			cnum[j] = num[j] * 10 + k % 10;
+			if(!g[cnum[j]]){
+				works = 0;
+				break;
+			}
+			
+			if(j == a){
+				cnum[5] = num[5] * 10 + k % 10;
+				if(!g[cnum[5]]){
+					works = 0;
+					break;
+				}
+			}
+			if(j == 4 - a){
+				cnum[6] = num[6] + (k % 10) * pow(10, a);
+				if(!gb[cnum[6]]){
+					works = 0;
+					break;
+				}
+			}
+		}
+		
+		if(works) recur(cnum, a + 1);
+	}
+}
+
+int main(){
+	freopen("prime3.in", "r", stdin);
+	freopen("prime3.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> s >> d;
+	
+	pgen(s);
+	
+	recur(num, 0);
+
+	if(!any) cout << "NONE" << endl;
+	
+	return 0;
+
+} 
