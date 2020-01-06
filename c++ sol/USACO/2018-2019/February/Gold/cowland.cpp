@@ -1,3 +1,15 @@
+/*
+	For this problem, one way to overkill this is to use hld. First relable the nodes with hld traversal and hold the values
+of the nodes in a segment tree, and for every change query just change the value in the segment tree. For the path query you need
+to use hld by iterating up the path before the lca xoring the result with the xor of the path on a range. This works in O(nlog^2n),
+however, this is largely overcomplicated and i'm not sure why I did this. Instead, just relable the nodes with a dfs traversle and
+store a fenwick tree with the xor value of the path from the node to the root. To do a change query just use the fenwick tree to
+xor every node in the subtree with the nodes current value and xor every node in the subtree with the new value. This will change
+all the ranges in the subtree to now instead use the new value as the value of the xor path from node too root. Then to query for
+a path, just find the lca and have the result as the fenwick tree value of the 2 enpoints xor'd with the lca. The complexity of this
+is O(nlogn).
+*/	
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

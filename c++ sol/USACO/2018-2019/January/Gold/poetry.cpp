@@ -1,3 +1,12 @@
+/*
+	The first step in this problem is to compute the number of lines possible for each rhyme class. You can do this by 
+computing the number of combinations possible for each length up to k with dp[length], then for each word add to the count for
+the number of lines possible for its rhyme class, f[i], dp[k - length of word]. Next, compute the frequency of each the amount
+of times a line ends in the same rhyme class. Now, for every group of equivalent line endings, compute the sum of f[i] raised
+to the power of the rhyme scheme ending frequency for each i in the rhyme classes. Make sure to use fast exponentiation. This
+will result in a runtime of O(nk + 26 * n * logm).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

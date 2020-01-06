@@ -1,3 +1,18 @@
+/*
+	The first thing to consider for this problem is to first consider the simpler case of finding the maximum amount of area
+you can add for a single rectangle. To do this, first you must obviously create a new rectangle such that every point equal to k - 1
+is equal to 1, every point equal to k is -1, and all other points equal 0, then try to maximize the largest sum within a subractangle.
+This is because it is only the values equal to k - 1 that when another coat of paint is added it will become equal to k, so they
+will add a piece, and similarly the values of k when painted will become k + 1 therefore no longer having k coats of paint decreasing
+the value. To find the subrectangle with the highest sum, you can see that the size of the rectangle is only up to 200 x 200, meaning
+you can do an O(n^3) algorithm. This means you can try every left and right point on a side if you can find the max sum in O(n)
+along a 1 dimension. To do this, precompute horizontal prefix sums, then try every rectangle bound for vertical side lengths and
+run kadanes algorithm vertically by having each value as the sum in a row which you can calculate with the prefix sums. Lastly, to
+figure out the amount when using to rectangles, notice that any 2 disjoint rectangles can be split by a vertical or horizontal line.
+This means that you can just hold the maximum rectangle size before or after a vertical or horizontal line, and just try every
+splitting point. The complexity is O(n^3).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

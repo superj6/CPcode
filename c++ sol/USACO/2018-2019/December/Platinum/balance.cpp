@@ -1,3 +1,12 @@
+/*
+	This is an interesting problem as the technique used in the solution is not obvious that it would be used at all.
+To start, a good idea with any problem with indexed values is to graph the values with index on the x-axis and values on the
+y-axis. Intuitively, one can see that the optimal points in the plotted graph are the ones that form the upper convex hull
+adding on both sides points with y values 0. You can then find for every point the two values on the convex hull on either
+side of the current value, and output the weighted average based on the distance to each. This can be done with two pointers
+or a binary search. The complexity of this is O(nlogn) due to the creation of the convex hull.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

@@ -1,3 +1,18 @@
+/*
+	As a disclaimer my solution only get 5/15 test cases, I am not sure why though, I assume it is a minor error. The first
+thing you should think about with this problem is, given the side of B A is currently on, what other sides can A get to. This is
+because figuring out what other sides it can get to determines the directions B can go. If you consider the grid as a graph, this
+problem immediatley becomes a question of biconnected components, as you are considering if you can get to node B even if you get
+rid of the edge connecting A to B from the side it is currently on. To do this, you use the standard algorithm for finding
+articulation points by performing a dfs and testing whether a subtree connects back to one of its ancestors, and keep the nodes
+currently in the component on a stack and set them as a biconnected component when you find an articulation point. Also, I did
+not just keep which parts of the grid are the same connected component but also kept which edges between the graph are biconnected.
+This then allows you to see if you are in one position next to a box, which other positions you can get to. After finding the
+biconnected components, one just has to form a bfs from box B and transition the pushes moving B and moving to different sides of
+B. Lastly, one can answer the queries just by seeing if the bfs marked the part of the grid as accessible. The complexity of this
+is just O(n) because you are just doing a dfs and bfs.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
@@ -18,6 +33,7 @@ int disc[maxn][maxn], low[maxn][maxn];
 pair<int, int> par[maxn][maxn];
 int bicon[maxn][maxn][4];
 stack<pair<pair<int, int>, int>> stk;
+queue<pair<pair<int, int>, int>> qd;
 
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
@@ -55,6 +71,8 @@ void dfs(int x, int y){
 			c++;
 			par[nx][ny] = {x, y};
 			stk.push({{x, y}, i});
+
+			if(b == make_pair(nx, ny)) qd.push({b, (i + 2) % 4});
 			
 			dfs(nx, ny);
 			low[x][y] = min(low[x][y], low[nx][ny]);
@@ -80,46 +98,6 @@ void print(){
 }
 
 void solve(){
-	bool test = 0;
-	for(int i = 0; i < 4; i++){
-		if(bicon[b.first][b.second][i]){
-			test = 1;
-			break;
-		}
-	}
-	
-	if(!test){
-		dp[b.first][b.second][0] = 1;
-		return;
-	}
-	
-	int f = -1;
-	queue<pair<int, int>> qf;
-	qf.push(a);
-	visited[a.first][a.second] = 1;
-	
-	while(!qf.empty() && f == -1){
-		int x = qf.front().first, y = qf.front().second;
-		qf.pop();
-		
-		for(int i = 0; i < 4; i++){
-			int nx = x + dx[i], ny = y + dy[i];
-			if(!works(nx, ny) || visited[nx][ny]) continue;
-			
-			if(nx == b.first && ny == b.second){
-				f = (i + 2) % 4;
-				break;
-			}
-			
-			qf.push({nx, ny});
-			visited[nx][ny] = 1;
-		}
-	}
-	
-	queue<pair<pair<int, int>, int>> qd;
-	qd.push({b, f});
-	dp[b.first][b.second][f] = 1;
-	
 	while(!qd.empty()){
 		int x = qd.front().first.first, y = qd.front().first.second, d = qd.front().second;
 		qd.pop();
@@ -137,6 +115,8 @@ void solve(){
 			dp[x][y][i] = 1;
 		}
 	}
+
+	dp[b.first][b.second][0] = 1;
 }
 
 void answer(){

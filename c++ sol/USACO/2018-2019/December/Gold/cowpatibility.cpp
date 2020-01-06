@@ -1,3 +1,12 @@
+/*
+	For this problem, first realize it is easier to find the number of compatible pairs of cows than the non-compatible
+pairs. This means we will count the number of compatible pairs and subtract it from the total amount of pairs. Now to count
+the number of compatible pairs, we will use the PIE(principle of inclusion exclusion), by first counting the amount of pairs
+with 1 type in common, subtract the amount of pairs with 2 types in common, etc. We can do this by storing the number 
+of each combination of elements in a map and iterating through all the combinations counting the number of pairs with such
+combination. Because each cow has k = 2 ^ 5 combinations, the complexity is around O(nk * log(nk));
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

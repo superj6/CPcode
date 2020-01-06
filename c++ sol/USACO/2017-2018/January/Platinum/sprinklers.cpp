@@ -1,3 +1,22 @@
+/*
+	For this problem, the first thing to notice is that the only points that matter are the ones that make up a max upper
+bound and a min lower bound. To find these, hold an array of indices that are the x position and set the y position with the
+inputs, then for the max sweep from right to left keeping the maximum value encountered so far, and for the minimum sweep from
+left to right keeping the min value u encountered so far or the max value if it is lower. Now, if you were not considering the
+vertical bounds and only the horizontal, you could calculate the number of rectangles by sweeping left to right and count the 
+number of pairs of two points you can pick for the horizontal bounds of the rectangle located within the bounds of the calculated
+min and max multiplied by how many position left you could place to the left bound of the rectangle. However, now you need to
+figure out how to subtract the overcounting of the rectangles made with points located outside the left bounds by the sprinklers.
+To do this, it is actually easier to switch your perspective of thinking of the y max and min to the x max and min. Because the
+x min value is decreasing as the y coordinate increases, you can subtract the cases by considering the number of points less than
+the min and the current x position you are considering multiplied by the number of number of heights you can have above that point
+within the y max bounds. To do this, you can do the same thing you did earlier to calculate the y max and min to calculate the x
+max and min, then calculate a prefix sum of the x mins as these are the number of places you can place the lower left point of the
+rectangle that will be overcounting, and similarly compute a prefix sum where you also multiply each x min for a y value by its
+distance to the upper bound of the rectangle. You can then easily compute as your iterating through x positions the sum of x mins
+multiplied their distance to the upper bound of the rectangle. The complexity of this is O(n).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

@@ -1,3 +1,11 @@
+/*
+	For this problem, observe that you just need to pick one edge in each connected graph such that the sum of their weights is
+greater than y - x * groups. To do this, you can do dp for each group with a dfs and tree rerooting to find the lengths of every
+edge in the tree and how many there are of each length. From there, it is pretty basic dp to add to the previous path lengths gathered
+from other groups. However, some important optimizations to save runtime are are to use a map and to  compress all values greater
+than y - x * groups, as adding more length to those does not add new answer. The runtime is around O(n^2logn).
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
