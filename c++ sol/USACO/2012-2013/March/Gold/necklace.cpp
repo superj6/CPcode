@@ -37,11 +37,11 @@ int main(){
 		for(int j = 0; j < m; j++){
 			int c = nx[j][s[i]];
 			if(c < m){
-				dp2[c] = max(dp2[c], dp[j] + 1);
-				ret = max(ret, dp2[c]);
+				dp[c] = max(dp[c], dp2[j] + 1);
+				ret = max(ret, dp[c]);
 			}
 		}
-		memcpy(dp, dp2, sizeof(dp2));
+		memcpy(dp2, dp, sizeof(dp));
 	}
 	ret = n - ret;
 	
