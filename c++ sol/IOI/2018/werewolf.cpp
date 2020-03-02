@@ -1,4 +1,4 @@
-//#include "werewolf.h"
+#include "werewolf.h"
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
@@ -116,6 +116,7 @@ vi check_validity(int N, vi X, vi Y, vi S, vi E, vi L, vi R){
 	return ans;
 }
 
+/*
 int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -129,3 +130,4 @@ int main(){
 
 	return 0;
 }
+*/
