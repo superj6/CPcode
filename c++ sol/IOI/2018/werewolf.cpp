@@ -1,3 +1,4 @@
+//#include "werewolf.h"
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
