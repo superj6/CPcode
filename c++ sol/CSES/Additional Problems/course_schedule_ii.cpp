@@ -8,7 +8,7 @@ using namespace std;
  
 const int maxn = 100000;
 int n, m;
-priority_queue<int, vector<int>, greater<int>> pq;
+priority_queue<int> pq;
 int cnt[maxn];
 vector<int> graph[maxn];
  
@@ -23,26 +23,31 @@ int main(){
 		cin >> a >> b;
 		a--, b--;
 		
-		graph[a].push_back(b);
-		cnt[b]++;
+		graph[b].push_back(a);
+		cnt[a]++;
 	}
 	
 	for(int i = 0; i < n; i++){
 		if(cnt[i] == 0) pq.push(i);
 	} 
 	
+	vector<int> ans;
 	for(int i = 0; i < n; i++){
 		int c = pq.top();
 		pq.pop();
 		
-		cout << c + 1;
-		if(i != n - 1) cout << " ";
+		ans.push_back(c + 1);
 		
 		for(int x : graph[c]){
 			cnt[x]--;
 			if(cnt[x] == 0) pq.push(x);
 		}
 	}
+	
+	reverse(ans.begin(), ans.end());
+	
+	cout << ans[0];
+	for(int i = 1; i < n; i++) cout << " " << ans[i];
 	cout << endl;
  
 	return 0;
