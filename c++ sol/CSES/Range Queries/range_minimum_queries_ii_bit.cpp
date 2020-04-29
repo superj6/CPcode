@@ -7,7 +7,7 @@ using namespace std;
 #define pi pair<int, int>
  
 const int inf = 0x3f3f3f3f;
-const int maxn = 1 << 18;
+const int maxn = 1 << 18; //must be power of 2 due to implementation
  
 struct MBIT{
 	int bit1[2][maxn], bit2[2][maxn];
