@@ -1,3 +1,8 @@
+/*
+	Similar to this(https://bits-and-bytes.me/2020/04/14/BkOI-2011-Timeismoney/) blog, I try setting weights to time and cost, and in this case I just iterated over a
+decent amount of weights and hope that it will account for every possible answer, which it does.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
