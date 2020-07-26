@@ -1,3 +1,8 @@
+/*
+	Trying to do dp by having states that assume each interval begins on an input point, and hold best transition plus
+using two pointers. However, I am only getting 40/100 points.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
