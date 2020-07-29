@@ -1,8 +1,8 @@
 /*
   Hold submasks of what nodes you have used, and use dijkstras to find the best edge combinations such that they combine at
 each ending point. You can think of it as the optimal solution forming a tree, and each time you perform dijkstra with a submask
-you are branching out the optimal tree to a new node, and then you combine subtrees by trying to combine every pair of submasks.
-Make sure you run dijkstra with each submask seperately, otherwise you get tle. Runtime is O(3^k * n + 2^k * nlgn).
+you are branching out the optimal tree to a new node, and then you combine subtrees by trying to combine every pair of submasks at
+a node. Make sure you run dijkstra with each submask seperately, otherwise you get tle. Runtime is O(3^k * n + 2^k * nlgn).
 */
 
 #include <iostream>
