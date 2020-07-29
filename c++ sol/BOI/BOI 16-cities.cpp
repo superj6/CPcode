@@ -21,7 +21,6 @@ using namespace std;
 const ll inf = 0x3f3f3f3f3f3f3f3f;
 const int mxn = 100000, mxk = 5;
 int n, m, k;
-int a[mxk];
 ll d[1 << mxk][mxn];
 vector<pi> g[mxn];
 priority_queue<pi, vector<pi>, greater<pi>> pq;
