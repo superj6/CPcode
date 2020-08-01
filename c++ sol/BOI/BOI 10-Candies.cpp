@@ -41,7 +41,7 @@ int main(){
 		f(a[i], 1);
 	}
 	
-	int ret = 0, p = m, q = 0;
+	int ret = 0, p = 0, q = 0;
 	for(int i = 0; i < n; i++){
 		f(a[i], -1);
 		int x = m - count(dp, dp + m, 0);
