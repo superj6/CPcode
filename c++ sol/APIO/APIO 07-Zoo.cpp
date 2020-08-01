@@ -9,7 +9,6 @@ going to do before adding. You can compute transitions ahead of time. Complexity
 #include <cstdio>
 #include <algorithm>
 #include <string.h>
-#include <functional>
 using namespace std;
 #define endl '\n'
 #define ll long long
@@ -20,10 +19,6 @@ using namespace std;
 const int mxn = 10000, k = 5;
 int n, m;
 int a[mxn][1 << k], dp[mxn][1 << k];
-function<int(int, int)> f[2] = {
-	[](int x, int y){ return (x & y) != x;},
-	[](int x, int y){ return (x & y) > 0;}
-};
 
 void answer(){
 	cin >> n >> m;
@@ -34,21 +29,16 @@ void answer(){
 		int y[2], c[2] = {0};
 		cin >> x >> y[0] >> y[1];
 		(x += k - 2) %= n;
-		for(int t = 0; t < 3; t++){
-			if(t < 2) for(int j = 0; j < y[t]; j++){
-				int z;
-				cin >> z;
-				(z += n - (x - k + 1) - 1) %= n;
-				c[t] |= (1 << z);
-			}
-			for(int j = 0; j < (1 << k); j++){
-				int w = 1;
-				for(int l = 0; l < 2; l++){
-					if(((t + 1) >> l) & 1) w &= f[l](c[l], j);
-				} 
-				a[x][j] += (2 * (t < 2) - 1) * w;
-			} 
+		for(int t = 0; t < 2; t++)
+		for(int j = 0; j < y[t]; j++){
+			int z;
+			cin >> z;
+			(z += n - (x - k + 1) - 1) %= n;
+			c[t] |= (1 << z);
 		}
+		for(int j = 0; j < (1 << k); j++){
+			a[x][j] += (((c[0] & j) != c[0]) || (c[1] & j));
+		} 
 	}
 	
 	int ret = 0;
