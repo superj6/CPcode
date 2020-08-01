@@ -2,7 +2,7 @@
   Because each child is only dependent on five contiguous animals, you can iterate over all possible starting values for the first
 five animals, and do dp holding a bitset whether you choose an animal or not. At the end of each dp, then just add the values that
 are partially between beginning and end of array since you needed to wait until you decide for all animals in range what you are
-going to do before adding. Complexity O(n * 2^(2 * 5)).
+going to do before adding. You can compute transitions ahead of time. Complexity O(n * 2^(2 * 5)).
 */
 
 #include <iostream>
