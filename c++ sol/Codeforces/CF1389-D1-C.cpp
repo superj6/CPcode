@@ -7,13 +7,6 @@ dag, and you do this by doing a sort of topological sort bitmask dp by adding a 
 in the mask, as this will be the final node in topological order so far.
 */
 
-/*
-This is code of SuperJ6 for Codeforces.
-Don't copy my code during f*kin' contests.
-
-2.71828182845904523536
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
