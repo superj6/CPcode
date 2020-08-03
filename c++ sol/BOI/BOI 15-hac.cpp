@@ -1,7 +1,8 @@
 /*
-  Realize that if you start at a given location, the operator can always force you onto the smallest range of ceil(n / 2) values.
-This means you should compute prefix sums and hold ceil(n / 2) consecutive ranges in a queue that can store the minimum, and just
-push and pop values from the queue to test all starting starting points and find the largest minimum sum of ceil(n / 2) values.
+  Realize that if you start at a given location, the operator can always force you onto the smallest valued range of ceil(n / 2) 
+values that contains the starting location. This means you should compute prefix sums and hold ceil(n / 2) consecutive ranges in
+a queue that can store the minimum, and just push and pop values from the queue to test all starting starting points and find the
+largest minimum sum of ceil(n / 2) values.
 */
 
 #include <iostream>
