@@ -71,7 +71,6 @@ int main(){
 				ans[i.s.s][x[1]] = 1;
 				if(x[0] == x[1]) continue;
 				for(int j = 0; j < 2; j++){
-					int l = 1 - 2 * j;
 					ans[i.s.s][x[1]] &= fnd(n + x[j]) != fnd(n + (x[j] + 1) % k);
 					ans[i.s.s][x[1]] &= (k + x[1] - x[0]) % k == 1 + 2 * j || 
 						fnd(n + (x[0] + j) % k) != fnd(n + (x[0] + j + 2) % k);
