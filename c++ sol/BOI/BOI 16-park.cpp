@@ -1,3 +1,12 @@
+/*
+	Find the distance between all pairs of trees and between the trees and sides of the rectangle. Now we can sort them along with
+the queries and add them to the graph 1 by 1, since a query can't go between paths with less distance than its diameter. Now to figure
+out if a query can go to another corner, realize you only have to keep track of which sides of the rectangle are connected aka have no
+path large enough for the query. This is because each query just needs to cross certain sides of the rectangle and make sure it can reach
+a corner, so as long as none of the pairs of sides of the rectangle aren't connected that limit crossing to a corner, there will always
+be a path from the query corner to that corner. This means we just use dsu to see what trees and sides are connected by limiting paths.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
@@ -64,7 +73,7 @@ int main(){
 				for(int j = 0; j < 2; j++){
 					int l = 1 - 2 * j;
 					ans[i.s.s][x[1]] &= fnd(n + x[j]) != fnd(n + (x[j] + 1) % k);
-					ans[i.s.s][x[1]] &= (k + x[1] - x[0]) % k * l < 2 * l || 
+					ans[i.s.s][x[1]] &= (k + x[1] - x[0]) % k == 1 + 2 * j || 
 						fnd(n + (x[0] + j) % k) != fnd(n + (x[0] + j + 2) % k);
 				}
 			}
