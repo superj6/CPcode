@@ -1,14 +1,14 @@
 /*
-  Realize if there was graph with no 3-cycles you could just use dfs and if take the first path that has a back edge. However, you
+  Realize if there was graph with no 3-cycles you could just use dfs and take the first path that has a back edge. However, you
 cannot just get rid of all nodes/edges in 3-cycles because both the nodes and edges could be used in a solution cycle. But if you
-see that any solution cycle cannot contain two or more edges of a 3-cycle, this should encourage you to look at the edge graph. You
-can create a graph of the edges such that two edges are adjacent if they have a node in common and are not part of the same 3-cycle,
+see that any solution cycle cannot contain two or more edges of the same 3-cycle, this should encourage you to look at the edge graph. 
+You can create a graph of the edges such that two edges are adjacent if they have a node in common and are not part of the same 3-cycle,
 and any cycle in the original graph will have a corresponding cycle in the new graph except 3-cycles, which is exactly what we want.
 However, you need to get rid of cycles in the edge graph circling around a single node, and to do this you create an edge graph based
 on directed edges instead of bidirectional by making two nodes per edge and only attaching edges such that they are directed across
 their common node, which ensures that the only cycles that exist in this directed graph must go across a cycle that corresponds to
-one in the original graph. Now you can just dfs and see if there are any backedges, resulting in an O(nm) solution, since the edge
-graph has O(nm) edges.
+one in the original graph and cannot go around a node. Now you can just dfs and see if there are any backedges, resulting in an O(nm) 
+solution, since the edge graph has O(nm) edges.
 */
 
 #include <iostream>
