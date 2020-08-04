@@ -1,5 +1,5 @@
 /*
-  Realize if there was graph with no 3-cycles you could just use dfs and take the first path that has a back edge. However, you
+  Realize if there was a graph with no 3-cycles you could just use dfs and take the first path that has a back edge. However, you
 cannot just get rid of all nodes/edges in 3-cycles because both the nodes and edges could be used in a solution cycle. But if you
 see that any solution cycle cannot contain two or more edges of the same 3-cycle, this should encourage you to look at the edge graph. 
 You can create a graph of the edges such that two edges are adjacent if they have a node in common and are not part of the same 3-cycle,
