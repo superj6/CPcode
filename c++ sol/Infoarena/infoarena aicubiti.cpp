@@ -1,6 +1,6 @@
 /*
   Realize problem is equivalent to finding all pairs such that the popcount of the xor is equal to 4. This means you can just use fast
-walsh hadamard transform to find amount of pairs that xor to each value and only values to result if 4 bits are set.
+walsh hadamard transform to find amount of pairs that xor to each value and only add values to result if 4 bits are set.
 */
 
 #include <iostream>
