@@ -6,7 +6,7 @@ other values end up in each subtree, which is what makes the problem difficult. 
 tree, and instead mark values with -1 if it can be used in any situation, 1 if it has been swapped up or is the furthest element up and
 will swap from left to right child, or 0 if it is the furthest element up the tree that can be used and can't swap from left to right 
 child. You can then just create the answer 1 by 1 by going up the tree from the current index and see which element will now be at the
-current node, and set values depending on if it or one of its children are the smallest.
+current node, and set values depending on if it or one of its children are the smallest. Time complexity O(nlgn).
 */
 
 #include <iostream>
