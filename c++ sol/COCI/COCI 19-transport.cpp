@@ -6,7 +6,7 @@ rt plus the prefix sum of A plus the value of the rt node must be non-negative. 
 segments of the path from A to rt and rt to B stay non-negative, so the condition is met. Because this finds paths through the root, 
 this should immediatly make you think of doing centroid decomposition, since then all paths will go along some root of the decomposition
 but it will only traverse some node a total of O(nlgn) times. For each root rt in the decomposition, find the prefix sums to all nodes
-in the tree without the value of rt and store the set of the node's minimum prefix sums and the set of all prefix sums of nodes such 
+in the tree without the value of rt and store the set of the nodes' minimum prefix sums and the set of all prefix sums of nodes such 
 that their prefix sum is the largest of all prefix sums leading up to it. You can then do two pointers to find all possible combinations 
 between these two sets such that the sum of the values plus the value of the rt is non-negative, and subtract out the combinations that 
 are completely within a subtree, since they don't go across the root and are invalid paths. The total complexity is O(nlg^2n), since at 
