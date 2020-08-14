@@ -6,7 +6,7 @@ we would still only have to query one set to find the bounding points, but inser
 can maintain a segment tree where each range has a set correspoinding to all x coordinates of lines that completely covers the range
 of y coordinates corresponding to the range in the segment tree. We could then add new lines to the tree with range updates in O(lg^2)
 time, and query the closest lines at a point by just querying each of the ranges the point falls inside of in O(lg^2) time, which is
-fast enough for the problem..
+fast enough for the problem.
 */
 
 #include <iostream>
