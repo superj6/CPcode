@@ -1,3 +1,9 @@
+/*
+	Compute sequence given in problem along with where the position of the last element is of each value. The optimal queueing
+will always pair as many x with 2 * x as possible, because the limiting amount of a value is always the lower one except for possibly
+at the endpoints. You can binary for the value of the endpoints and just iterate through all of them for 65 points.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
@@ -38,11 +44,9 @@ int main(){
 	cin.tie(0);
 	
 	a[1] = a[2] = 1, b[1] = a[3] = 2;
-	cout << 1 << ": " << a[1] << " " << b[1] << endl;
 	for(int i = 2; i < n; i++){
 		b[i] = b[i - 1] + a[i] + a[i + 1];
 		for(ll j = b[i - 1] + 1; j <= min(n, b[i]); j++) a[j] = i;
-		cout << i << ": " << a[i] << " " << b[i] << endl;
 	}
 	
 	int t;
