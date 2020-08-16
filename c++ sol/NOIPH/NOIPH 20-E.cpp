@@ -31,7 +31,6 @@ void answer(){
 	
 	ll ret = 1;
 	for(int i = fy >> 1; i >= fx; i--){
-		int j = i << 1;
 		ret += min(f(i), f(i << 1));
 	}
 	ret = y - x + 1 - ret;
