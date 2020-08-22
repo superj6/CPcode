@@ -42,7 +42,7 @@ void add(int x, int y, int v){
 	if(it->f.f >= x) s.insert({{x - 1, it->f.s}, it->s - (x > k) * (it->f.f + 1 - x)}), it = s.erase(it);
 	s.insert({{y, x}, v});
 }
-
+ 
 int qry(int x){
 	pii p = *s.lower_bound({{x, 0}, 0});
 	return p.s + (x < k ? p.f.s - x : x - p.f.f);
@@ -83,7 +83,7 @@ int main(){
 			cin >> x >> y;
 			y--;
 			
-			for(int i = z == ff(x); i < m - 3; i++) swap(f[i], f[i + 1]);
+			for(int i = ff(x); i < m - 3; i++) swap(f[i], f[i + 1]);
 			
 			f[m - 3] = x;
 			for(int i = m - 4; i >= y; i--) swap(f[i], f[i + 1]);
