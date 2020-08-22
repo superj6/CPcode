@@ -5,10 +5,11 @@ contact with the element, and you only have to worry about the ranges between el
 all the elements after coming into contact with one of the top 10 by updating a range of elements at once. To do this, hold a set
 containing ranges of elements such that the times are increasing consecutively within the range. When updating a range, you can just
 cut the end intervals and erase all intervals strictly within the one you are adding, and you can show this is O(lgn) amortized.
-For each range you hold the largest time of an element in the range, along with the opposite endpoint when the range is set. This
-is because when recomputing the top 10, if the updated element was the first top 10 touched, you also need to update the range
-starting at the opposite endpoint when it first touched the updated element even if it is not in the top 10. You can then just 
-answer queries by finding the time of the interval the element is currently in.
+For each range you hold the largest time of an element in the range. When recomputing the top 10, if the updated element was the
+first top 10 touched, you also need to update the range starting at the opposite endpoint when it first touched the updated element,
+even if it is not in the top 10. You get that by getting the time of the element next to the updated one since the time also shows
+how large the interval between boundary points is. You can then just answer queries by finding the time of the interval the element
+is currently in.
 */
 
 #include <iostream>
@@ -20,7 +21,7 @@ using namespace std;
 #define endl '\n'
 #define ll long long
 #define pi pair<int, int>
-#define pii pair<pi, pi>
+#define pii pair<pi, int>
 #define f first
 #define s second
  
@@ -33,17 +34,18 @@ set<pii> s;
 int ff(int x){
 	return x < 1 || x > n ? -1 : find(f, f + m - 4, x) - f;
 }
-
-auto fp(int x){
-	return s.lower_bound({{x, 0}, {0, 0}});
-}
  
-void add(int x, int y, int v, int w){
-	auto it = fp(y + 1);
-	if(it->f.s <= y) s.insert({{it->f.f, y + 1}, {it->s.f - (y < k) * (y + 1 - it->f.s), it->s.s}}), it = s.erase(it);
+void add(int x, int y, int v){
+	auto it = s.lower_bound({{y + 1, 0}, 0});
+	if(it->f.s <= y) s.insert({{it->f.f, y + 1}, it->s - (y < k) * (y + 1 - it->f.s)}), it = s.erase(it);
 	while((--it)->f.s >= x) it = s.erase(it);
-	if(it->f.f >= x) s.insert({{x - 1, it->f.s}, {it->s.f - (x > k) * (it->f.f + 1 - x), it->s.s}}), it = s.erase(it);
-	s.insert({{y, x}, {v, w}});
+	if(it->f.f >= x) s.insert({{x - 1, it->f.s}, it->s - (x > k) * (it->f.f + 1 - x)}), it = s.erase(it);
+	s.insert({{y, x}, v});
+}
+
+int qry(int x){
+	pii p = *s.lower_bound({{x, 0}, 0});
+	return p.s + (x < k ? p.f.s - x : x - p.f.f);
 }
  
 int main(){
@@ -59,13 +61,11 @@ int main(){
 	} 
 	
 	a[0] = a[n + 1] = f[m - 1] = n + 1;
-	s.insert({{0, 0}, {n, n + 1}});
-	s.insert({{k, k}, {0, k}});
-	s.insert({{n + 1, n + 1}, {n, 0}});
+	s.insert({{0, 0}, n}), s.insert({{k, k}, 0}), s.insert({{n + 1, n + 1}, n});
 	
 	for(int i = 1, l = k - 1, r = k + 1; i < n; i++){
-		if(a[l] < a[r]) add(l, l, i, r), l--;
-		else add(r, r, i, l), r++;
+		if(a[l] < a[r]) add(l, l, i), l--;
+		else add(r, r, i), r++;
 	}
 	
 	cin >> q;
@@ -77,8 +77,7 @@ int main(){
 		if(t == 'F'){
 			int x;
 			cin >> x;
-			pii p = *fp(x);
-			cout << (x < k ? p.s.f + p.f.s - x : p.s.f + x - p.f.f) << endl;
+			cout << qry(x) << endl;
 		}else{
 			int x, y;
 			cin >> x >> y;
@@ -92,14 +91,13 @@ int main(){
 			
 			memcpy(b, f, sizeof(b));
 			b[m - 3] = !count(f, f + m - 4, k) * k;
-			b[m - 4] = fp(x + (x < k) - (x > k))->s.s;
-			if(b[m - 4] == k) b[m - 4] += (x < k) - (x > k);
+			b[m - 4] = x + ((x < k) - (x > k)) * (qry(x + (x < k) - (x > k)) + 2);
 			b[m - 4] *= !count(f, f + m - 4, b[m - 4]);
 			sort(b, b + m);
 			
 			for(int l = find(b, b + m, k) - b, r = l, i = b[++r] - b[--l] - 2; i < n - 1;){
-				if(ff(b[l]) > ff(b[r])) add(b[l - 1] + 1, b[l], i += b[l] - b[l - 1], b[r]), l--;
-				else add(b[r], b[r + 1] - 1, i += b[r + 1] - b[r], b[l]), r++;
+				if(ff(b[l]) > ff(b[r])) add(b[l - 1] + 1, b[l], i += b[l] - b[l - 1]), l--;
+				else add(b[r], b[r + 1] - 1, i += b[r + 1] - b[r]), r++;
 			}
 		}
 	}
