@@ -83,8 +83,7 @@ int main(){
 			cin >> x >> y;
 			y--;
 			
-			int z = ff(x);
-			if(z != m) for(int i = z; i < m - 3; i++) swap(f[i], f[i + 1]);
+			for(int i = z == ff(x); i < m - 3; i++) swap(f[i], f[i + 1]);
 			
 			f[m - 3] = x;
 			for(int i = m - 4; i >= y; i--) swap(f[i], f[i + 1]);
