@@ -81,11 +81,10 @@ int main(){
 		}else{
 			int x, y;
 			cin >> x >> y;
-			y++;
 			
 			for(int i = ff(x); i < m - 1; i++) swap(f[i], f[i + 1]);
 			
-			f[m - 1] = x;
+			f[m - 1] = x, y++;
 			for(int i = m - 2; i >= y; i--) swap(f[i], f[i + 1]);
 			
 			memcpy(b, f, sizeof(b));
