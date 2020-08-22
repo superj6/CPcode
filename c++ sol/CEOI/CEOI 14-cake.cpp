@@ -8,7 +8,7 @@ cut the end intervals and erase all intervals strictly within the one you are ad
 For each range you hold the largest time of an element in the range, along with the opposite endpoint when the range is set. This
 is because when recomputing the top 10, if the updated element was the first top 10 touched, you also need to update the range
 starting at the opposite endpoint when it first touched the updated element even if it is not in the top 10. You can then just 
-answer queries by finding the time by querying the interval the element is currently in.
+answer queries by finding the time of the interval the element is currently in.
 */
 
 #include <iostream>
