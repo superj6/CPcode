@@ -33,9 +33,13 @@ set<pii> s;
 int ff(int x){
 	return x < 1 || x > n ? -1 : find(f, f + m - 4, x) - f;
 }
+
+set<pii>::iterator fp(int x){
+	return s.lower_bound({{x, 0}, {0, 0}});
+}
  
 void add(int x, int y, int v, int w){
-	auto it = s.lower_bound({{y + 1, 0}, {0, 0}});
+	auto it = fp(y + 1);
 	if(it->f.s <= y) s.insert({{it->f.f, y + 1}, {it->s.f - (y < k) * (y + 1 - it->f.s), it->s.s}}), it = s.erase(it);
 	while((--it)->f.s >= x) it = s.erase(it);
 	if(it->f.f >= x) s.insert({{x - 1, it->f.s}, {it->s.f - (x > k) * (it->f.f + 1 - x), it->s.s}}), it = s.erase(it);
@@ -73,7 +77,7 @@ int main(){
 		if(t == 'F'){
 			int x;
 			cin >> x;
-			pii p = *s.lower_bound({{x, 0}, {0, 0}});
+			pii p = *fp(x);
 			cout << (x < k ? p.s.f + p.f.s - x : p.s.f + x - p.f.f) << endl;
 		}else{
 			int x, y;
@@ -86,23 +90,14 @@ int main(){
 			f[m - 3] = x;
 			for(int i = m - 4; i >= y; i--) swap(f[i], f[i + 1]);
 			
-			int l = 0, r = n + 1;
-			for(int i = 0; i < m - 4; i++){
-				if(f[i] < k) l = max(l, f[i]);
-				if(f[i] > k) r = min(r, f[i]);
-			}
-			
 			memcpy(b, f, sizeof(b));
 			b[m - 3] = !count(f, f + m - 4, k) * k;
-			b[m - 4] = s.lower_bound({{x + (x < k) - (x > k), 0}, {0, 0}})->s.s;
+			b[m - 4] = fp(x + (x < k) - (x > k))->s.s;
 			if(b[m - 4] == k) b[m - 4] += (x < k) - (x > k);
 			b[m - 4] *= !count(f, f + m - 4, b[m - 4]);
 			sort(b, b + m);
 			
-			l = lower_bound(b, b + m, k) - b;
-			r = l-- + 1;
-			
-			for(int i = b[r] - b[l] - 2; i < n - 1;){
+			for(int l = find(b, b + m, k) - b, r = l, i = b[++r] - b[--l] - 2; i < n - 1;){
 				if(ff(b[l]) > ff(b[r])) add(b[l - 1] + 1, b[l], i += b[l] - b[l - 1], b[r]), l--;
 				else add(b[r], b[r + 1] - 1, i += b[r + 1] - b[r], b[l]), r++;
 			}
