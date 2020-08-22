@@ -93,7 +93,7 @@ int main(){
 			b[m - 2] *= !count(f, f + m - 2, b[m - 2]);
 			sort(b, b + m);
 			
-			for(int l = find(b, b + m, k) - b, r = l, i = b[++r] - b[--l] - 2; i < n - 1;){
+			for(int l = ff(k), r = l, i = b[++r] - b[--l] - 2; i < n - 1;){
 				if(ff(b[l]) > ff(b[r])) add(b[l - 1] + 1, b[l], i += b[l] - b[l - 1]), l--;
 				else add(b[r], b[r + 1] - 1, i += b[r + 1] - b[r]), r++;
 			}
