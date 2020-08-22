@@ -32,7 +32,7 @@ int f[m], b[m];
 set<pii> s;
  
 int ff(int x){
-	return x < 1 || x > n ? -1 : find(f, f + m - 4, x) - f;
+	return find(f, f + m, x) - f;
 }
  
 void add(int x, int y, int v){
@@ -56,11 +56,11 @@ int main(){
 	
 	for(int i = 1; i <= n; i++){
 		cin >> a[i];
-		f[m - 3] = i;
-		for(int j = m - 4; ~j; j--) if(a[f[j]] < a[f[j + 1]]) swap(f[j], f[j + 1]);
+		f[m - 1] = i;
+		for(int j = m - 2; ~-j; j--) if(a[f[j]] < a[f[j + 1]]) swap(f[j], f[j + 1]);
 	} 
 	
-	a[0] = a[n + 1] = f[m - 1] = n + 1;
+	a[0] = a[n + 1] = f[1] = n + 1;
 	s.insert({{0, 0}, n}), s.insert({{k, k}, 0}), s.insert({{n + 1, n + 1}, n});
 	
 	for(int i = 1, l = k - 1, r = k + 1; i < n; i++){
@@ -70,6 +70,7 @@ int main(){
 	
 	cin >> q;
 	
+	int cnt = 0;
 	while(q--){
 		char t;
 		cin >> t;
@@ -80,17 +81,17 @@ int main(){
 		}else{
 			int x, y;
 			cin >> x >> y;
-			y--;
+			y++;
 			
-			for(int i = ff(x); i < m - 3; i++) swap(f[i], f[i + 1]);
+			for(int i = ff(x); i < m - 1; i++) swap(f[i], f[i + 1]);
 			
-			f[m - 3] = x;
-			for(int i = m - 4; i >= y; i--) swap(f[i], f[i + 1]);
+			f[m - 1] = x;
+			for(int i = m - 2; i >= y; i--) swap(f[i], f[i + 1]);
 			
 			memcpy(b, f, sizeof(b));
-			b[m - 3] = !count(f, f + m - 4, k) * k;
-			b[m - 4] = x + ((x < k) - (x > k)) * (qry(x + (x < k) - (x > k)) + 2);
-			b[m - 4] *= !count(f, f + m - 4, b[m - 4]);
+			b[m - 1] = !count(f, f + m - 2, k) * k;
+			b[m - 2] = x + ((x < k) - (x > k)) * (qry(x + (x < k) - (x > k)) + 2);
+			b[m - 2] *= !count(f, f + m - 2, b[m - 2]);
 			sort(b, b + m);
 			
 			for(int l = find(b, b + m, k) - b, r = l, i = b[++r] - b[--l] - 2; i < n - 1;){
