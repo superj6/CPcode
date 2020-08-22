@@ -70,7 +70,6 @@ int main(){
 	
 	cin >> q;
 	
-	int cnt = 0;
 	while(q--){
 		char t;
 		cin >> t;
