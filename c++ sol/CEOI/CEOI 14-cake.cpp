@@ -34,7 +34,7 @@ int ff(int x){
 	return x < 1 || x > n ? -1 : find(f, f + m - 4, x) - f;
 }
 
-set<pii>::iterator fp(int x){
+auto fp(int x){
 	return s.lower_bound({{x, 0}, {0, 0}});
 }
  
