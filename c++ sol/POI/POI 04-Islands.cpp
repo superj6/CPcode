@@ -1,3 +1,14 @@
+/*
+	Imagine performing the problem on 1d rectangles. You could just do prefix sums on edges that open up rectangles equalling 1
+and edges that close rectangles equaling -1, and see the highest prefix sum value. You can do the same thing in 2d using a lazy segtree
+to add or subtract an edge at a time, only looking at the edges that are either vertical or horizontal, and query the maximum each time
+you edit the segtree. If you sweep from lower to higher y coordinates, edges going left to right always open up, while right to left 
+close off. However, you have to handle edge case where two consecutive horizontal edges in a figure go the same direction, since then
+it could add or subtract the same point twice that is there common point. Handle this by multiplying all coordinates by 2 and moving a
+coordinate on the second of the consecutive edges closer to the horizontal point by 1, so it maintains direction while stopping the
+overlapping. Finally, make sure to compress coordinates.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
