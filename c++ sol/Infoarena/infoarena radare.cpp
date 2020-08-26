@@ -37,6 +37,8 @@ int dfs(int c, int p){
 }
 
 int main(){
+	freopen("radare.in", "r", stdin);
+	freopen("radare.out", "w", stdout);
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 	
@@ -61,9 +63,10 @@ int main(){
 	dp[0][0] = 1;
 	for(int i = 0; i < n; i++)
 	for(int j = 0; j <= k; j++){
+		if(!dp[i][j]) continue;
 		int x = id[i];
 		(dp[r[x] + 1][j] += dp[i][j] * b[r[x] - l[x]]) %= mod;
-		if(j + a[l[x]] <= k) (dp[i + 1][j + a[l[x]]] += dp[i][j]) %= mod;
+		if(j + a[x] <= k) (dp[i + 1][j + a[x]] += dp[i][j]) %= mod;
 	}
 	
 	cout << dp[n][k] << endl;
