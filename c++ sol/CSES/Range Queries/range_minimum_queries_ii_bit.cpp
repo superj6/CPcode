@@ -7,20 +7,20 @@ using namespace std;
 #define pi pair<int, int>
  
 const int inf = 0x3f3f3f3f;
-const int maxn = 1 << 18; //must be power of 2 due to implementation
+const int mxn = 1 << 18; //must be power of 2 due to implementation
  
 struct MBIT{
-	int bit1[2][maxn], bit2[2][maxn];
-	 
-	void BIT(){
+	int bit1[2][mxn], bit2[2][mxn];
+	
+	MBIT(){
 		memset(bit1, inf, sizeof(bit1));
 		memset(bit2, inf, sizeof(bit2));
 	}
-	 
-	void add(int bit[2][maxn], int x, int v){
+	
+	void add(int bit[2][mxn], int x, int v){
 		int ov = bit[0][x];
 		bit[0][x] = v;
-		for(; x < maxn; x += x & -x){
+		for(; x < mxn; x += x & -x){
 			if(v > bit[1][x]){
 				if(ov == bit[1][x]){
 					v = min(v, bit[0][x]);
@@ -33,14 +33,14 @@ struct MBIT{
 			bit[1][x] = v;
 		}
 	}
-	 
+	
 	void add(int x, int v){
 		x++;
 		add(bit1, x, v);
-		add(bit2, maxn - x, v);
+		add(bit2, mxn - x, v);
 	}
-	 
-	int qry(int bit[2][maxn], int x, int y){
+	
+	int qry(int bit[2][mxn], int x, int y){
 		int ret = inf;
 		for(; x <= y - (y & -y); y -= y & -y){
 			ret = min(ret, bit[1][y]);
@@ -48,12 +48,12 @@ struct MBIT{
 		ret = min(ret, bit[0][y]);
 		return ret;
 	}
-	 
+	
 	int qry(int x, int y){
 		x++, y++;
 		int ret = inf;
 		ret = min(ret, qry(bit1, x, y));
-		ret = min(ret, qry(bit2, maxn - y, maxn - x));
+		ret = min(ret, qry(bit2, mxn - y, mxn - x));
 		return ret;
 	}
 };
