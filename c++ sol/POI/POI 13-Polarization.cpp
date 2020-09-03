@@ -8,7 +8,9 @@ partition of the subtree sizes of a centroid into two groups. You can find all p
 the multiplicity of each size and making sure you never iterate adding in the knapsack over the same area twice. The sqrtn is because
 there can be at most sqrtn distinct sizes that in total add to n. This means you can just try rerooting the tree and test for each node
 if its a centroid, and if it is, do knapsack and try all the partition products plus the sum of subtree value. Because there are at most
-2 centroids you only run the knapsack at most twice so the time complexity is O(nsqrtn).
+2 centroids you only run the knapsack at most twice so the time complexity is O(nsqrtn) for computing the max value. Also, the min value
+is always n - 1, as all tree are bipartite graphs and you can 2-color the tree and have all nodes of one color have edges going in while
+all nodes of the other color have edges going out.
 */
 
 #include <iostream>
