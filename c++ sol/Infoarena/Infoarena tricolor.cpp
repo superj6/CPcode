@@ -4,7 +4,6 @@ vertex is white. Now you can just transition by multiplying number of connected 
 make sure you do it in O(n^2) by using the combining subtrees trick of only iterating over necessary states. TL is very tight so you have
 to constant factor optimize and make sure to use int.
 */
-
 	
 #include <iostream>
 #include <cstdio>
