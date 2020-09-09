@@ -18,7 +18,7 @@ will be in the form of dp[p][i][j] * fs[p - l][j][i] * dp[t - l][j][i], because 
 only using i and j once in cycle, but we can also use many cycles with j that don't include i in between those paths. We can compute fs
 easily with transition fs[t][i][j] = sum of fs[l][i][j] * ff[t - l][i][j] because we can use many cycles before but each combination will
 have at least one final cycle at the end. Finally, to cut out a factor of k from time complexity, just store s[i][j] = sum of all 
-dp[l][i][j] * fs[t - l][j][i] so you can do transitions of cycles using j at least once as s[l][i][j] * dp[t - l][j][i].
+dp[l][i][j] * fs[t - l][j][i] so you can do transitions of cycles from i using j at least once as sum of s[l][i][j] * dp[t - l][j][i].
 
 This leaves a total time complexity of O(n^2 * k * (n + k)), or since n is approximately k, O(n ^ 4), which is plenty fast enough,
 and we just output queries in O(1).
