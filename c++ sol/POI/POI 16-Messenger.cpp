@@ -1,6 +1,6 @@
 /*
   Because you can query every possible combination in one round, you might as well precompute all ahead of time, as this is faster.
-I essentially do dp where i start out with all easily computing all paths of length t from i to all other nodes j, making sure i is
+I essentially do dp where i start out with easily computing all paths of length t from i to all other nodes j, making sure i is
 not used in cycle, then subtracting out paths at least one cycle with j that doesn't include i. The states are:
 
 f[t][i][j] = all paths length t from i to j with i only used at start
