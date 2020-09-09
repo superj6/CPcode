@@ -13,8 +13,8 @@ Our end goal is to compute dp[t][i][j] = f[t][i][j] - sum of f[l][i][j] * ff[t -
 path which will definitely have at least one cycle at the end, and can have any path to j with or without cycles before that. Only
 multiplying by a single final cycle makes sure we don't overcount.
 
-We can count ff[t][i][j] by counting f[t][i][i] - sum of all cycles that use i at least once but not j. All cycles that use j at least once
-will be in the form of dp[p][i][j] * fs[p - l][j][i] * dp[t - l][j][i], because this will make sure we only go from i to j back to i without
+We can count ff[t][i][j] by counting f[t][i][i] - sum of all cycles that use j at least once. All cycles that use i at least once will
+be in the form of dp[p][i][j] * fs[p - l][j][i] * dp[t - l][j][i], because this will make sure we only go from i to j back to i without
 only using i and j once in cycle, but we can also use many cycles with j that don't include i in between those paths. We can compute fs
 easily with transition fs[t][i][j] = sum of fs[l][i][j] * ff[t - l][i][j] because we can use many cycles before but each combination will
 have at least one final cycle at the end. Finally, to cut out a factor of k from time complexity, just store s[i][j] = sum of all 
