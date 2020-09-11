@@ -1,5 +1,10 @@
 /*
-
+	The best substring will obviously be both a prefix and suffix, so we can use that to our advantage to use prefix function
+for dp transitions. For each prefix to index i, hold p[i] = prefix function, dp[i] = shortest template and f[i] = largest prefix of
+string that can be covered with prefix dp[i] so far. If a shorter prefix than i can be used, it will be the value x = dp[p[i] - 1], 
+since f[x] will be at least as far forward as f[p[i] - 1] as it is a suffix of p[i] - 1 so it will appear in at least every position
+of p[i] - 1, and it is a better answer. This means you can just test if f[x] < i - x - 1. If it is, that value won't work, so set
+dp[i] = f[i] = i since only using the whole prefix is a valid answer. Otherwise, dp[i] = x and the new value of f[x] = i.
 */
 
 #include <iostream>
