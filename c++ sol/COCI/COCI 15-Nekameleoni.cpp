@@ -20,7 +20,7 @@ using namespace std;
 #define s second
 
 const int inf = 0x3f3f3f3f;
-const int mxn = 1 << 17, mxk = 51;
+const int mxn = 1 << 17, mxk = 50;
 typedef array<int, mxk> A;
 int n, k, q;
 int a[mxn];
