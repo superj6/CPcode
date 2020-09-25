@@ -2,7 +2,7 @@
   Realize you can solve for gang 2 by adding sequentially, and gang 1 can be solved the same way if you reverse the order of queries
 and add them backwards. To solve sequentially, realize the new diameter will always have at least one of the nodes from the previous
 max diameter, so you just have to be able to maintain the diameter and compute distances quickly with lca. Binary exponetiation is too
-slow, so use euler tour for O(1) queries on distance.
+slow, so use euler tour for O(1) queries on lca distance with sparse table.
 */
 
 #include <iostream>
