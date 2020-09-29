@@ -1,7 +1,7 @@
 /*
-  First simulate forward to get the final position of final position of the queried element. This is done through casework analysis
-on things such as if it is currently in the 1st position, how many times 1st position element goes around the entire circle, and
-if the queried element will be pushed back by the 1st position landing before it. Now, to figure out what the two elements adjacent
+  First simulate forward to get the final position of the queried element only tracking its position. This is done through casework 
+analysis on things such as if it is currently in the 1st position, how many times 1st position element goes around the entire circle, 
+and if the queried element will be pushed back by the 1st position landing before it. Now, to figure out what the two elements adjacent
 to it are, you do the same thing in reverse. This is done by taking the final positions and doing the same analysis as previously done
 except backwards to reach what the initial positions of the adjacent elements are. Using linear sieve took too much memory, so i had
 to use the more standard version, and using stl::rope got 75% of the points.
