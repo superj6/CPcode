@@ -1,7 +1,7 @@
 /*
   Turn AB string to 01 string for convenience. In the string, find the max and min consecutive length for both 0s and 1s. Assume the
 max 0 length is larger than max 1 length. If the max 1 length is greater than 1, that means the max 0 length is as well, and that
-would cause the tring to fail for size 2 substrings. Otherwise, if the min length 0 string + 1 is less than the max length 0 string,
+would cause the string to fail for size 2 substrings. Otherwise, if the min length 0 string + 1 is less than the max length 0 string,
 that means the substring that is the min length 0 string borded by 1s will have the same size but 2 less 0s than another substring
 that will exist with all 0s, so it will cause the string to fail for size 0 min length + 2 substrings. However, if neither of those
 are the case, we are not finished. Realize with the two previous checks, the string can be composed of the two following sequences:
