@@ -15,8 +15,8 @@ is equivalant to the sum of people minus shoes in the corresponding ranges being
 be the range with the maximum sum of people minus shoes. To find this value as we merge in the segment tree, we can hold the largest 
 prefix sum and smallest prefix sum, and then the maximum sum in a range will be its left value, its right value, or the right max prefix
 minus the left min prefix. Now it is obvious how the queries will be handled, we can just update how many people are in the range
-corresponding to their shoe sizes range, and maintain an implicit prefix sum of people as nodes are merged. This will solve the problem
-in O(qlgn).
+corresponding to their shoe sizes range, and maintain an implicit prefix sum of people as nodes are merged and see if the worst range is
+less than or equal to 0. This will solve the problem in O(qlgn).
   Realize this idea can be further extended, where each shoe type has a different amount of shoes, and each person can go to a different
 sized range as long as no range is within another range, as if one is within another we won't have the condition of a endpoints of 
 consecutive people corresponding to endpoints of consecutive shoes. We would then just have to handle the amount of shoes in a range to
