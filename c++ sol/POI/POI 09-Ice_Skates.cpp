@@ -21,8 +21,8 @@ less than or equal to 0. This will solve the problem in O(qlgn).
 sized range as long as no range is within another range, as if one is within another we won't have the condition of a endpoints of 
 consecutive people corresponding to endpoints of consecutive shoes. We would then just have to handle the amount of shoes in a range to
 subtract in the sum more carefully, and you could even have updates to amounts of shoes if you do lazy updates on the segment tree that
-correspond to the range of people who have that shoe within their range. A more complicated problem that uses some of this generalization
-plus another seperate insight is https://codeforces.com/gym/102268/problem/D.
+correspond to the range of people who have that shoe within their range, or update instead have updates to the range a person covers. A
+more complicated problem that uses some of this generalization plus another seperate insight is https://codeforces.com/gym/102268/problem/D.
 */
 
 #include <iostream>
