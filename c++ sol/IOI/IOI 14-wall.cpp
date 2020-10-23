@@ -1,5 +1,5 @@
 /*
-  https://codeforces.com/blog/entry/57319 task 2. Gets MLE with my impl though.
+  https://codeforces.com/blog/entry/57319 task 2. My impl gets MLE though.
 */
 
 #include <iostream>
