@@ -1,6 +1,6 @@
 /*
   Realize that the optimal sol will always have a set of boards' output points decreasing from the central position to left and a set
-of boards output positions increasing to the right, with the leftmost and rightmost boards touching the walls, and each board below 
+of boards' output positions increasing to the right, with the leftmost and rightmost boards touching the walls, and each board below 
 with their end point containing the output position of the one above. Output points are montonic because there is no point in having
 the output point going the opposite direction even if the board reaches out further if it doesn't hit the other end as the next board
 will have to reach back even more far and go even more forward as well. This means we can just hold a dp map of the best output points 
