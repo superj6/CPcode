@@ -1,5 +1,5 @@
 /*
-
+	https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/IOI/official/2002/bus-handout.pdf
 */
 
 #include <iostream>
