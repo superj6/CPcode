@@ -1,5 +1,9 @@
 /*
 	https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/IOI/official/2002/bus-handout.pdf
+
+	Essentially try marking every node and putting all edges on it, try every other node as possible second node to mark and move edges from largest to smallest from first
+node to second while keeping track of largest edge attached to second. This will make sure you always have the longest edge attach to each and therefore the diamater of the graph
+across the marked nodes. How this makes sure diameter is not attached to single node not sure...
 */
 
 #include <iostream>
