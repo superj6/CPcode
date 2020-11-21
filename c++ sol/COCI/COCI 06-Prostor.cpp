@@ -4,10 +4,10 @@ of intersecting directly, it is easier to count the inverse. You do this by for 
 for the the number of points in it less than the closest side in that direction then add the farthest point in that direction from
 the rectangle. This counts all pairs such that one is completely to one side of another rectangle. However, this will overcount a 
 rectangle that is completely to two sides of a rectangle, so also add and query similarly along closest and furthest corner of a 
-rectangle. Then just subtract this from the total pairs to get the number of intersecting pairs. To extend to 3d, just try each plane
-in each direction and hold rectangles not along the current axis direction as line rectangles that will be put in the bits for multiple
-coordinates at a time, and like prefix sums iterate through coordinates and add or subtract rectangle at the points that its in. Make
-sure to only count pairs between different coordinates only once.
+rectangle using a 2d bit. Then just subtract this from the total pairs to get the number of intersecting pairs. To extend to 3d, just
+try each plane in each direction and hold rectangles not along the current axis direction as line rectangles that will be put in the 
+bits for multiple coordinates at a time, and like prefix sums iterate through coordinates and add or subtract rectangle at the points
+that its in. Make sure to only count pairs between different coordinates only once. It is O(n * lg^2(k)).
 */
 
 #include <iostream>
