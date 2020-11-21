@@ -7,7 +7,8 @@ rectangle that is completely to two sides of a rectangle, so also add and query 
 rectangle using a 2d bit. Then just subtract this from the total pairs to get the number of intersecting pairs. To extend to 3d, just
 try each plane in each direction and hold rectangles not along the current axis direction as line rectangles that will be put in the 
 bits for multiple coordinates at a time, and like prefix sums iterate through coordinates and add or subtract rectangle at the points
-that its in. Make sure to only count pairs between different coordinates only once. It is O(n * lg^2(k)).
+that its in. Make sure to only count pairs between different coordinates only once. It is O(n * lg^2(k)), though a lg(k) factor could
+be taken out with a much more annoying line sweep only using 1d bit.
 */
 
 #include <iostream>
@@ -44,16 +45,16 @@ struct BIT{
 const int mxn = 100000, m = 3;
 int n;
 int a[mxn][m], b[mxn][m];
-BIT bit, bit2[mxn];
+BIT bit[k];
 vector<piii> v[k];
 
 void add(int x, int y, int v){
-	for(; x < k; x += x & -x) bit2[x].add(y, v);
+	for(; x < k; x += x & -x) bit[x].add(y, v);
 }
 
 int qry(int x, int y){
 	int ret = 0;
-	for(; x; x -= x & -x) ret += bit2[x].qry(y);
+	for(; x; x -= x & -x) ret += bit[x].qry(y);
 	return ret;
 }
 
@@ -97,8 +98,8 @@ int main(){
 		for(piii &j : v[i]){
 			int x = j.f;
 			pii &p = j.s;
-			if(!~-x) ret += qry(p.f.f - 1, p.f.s - 1) - bit.qry(p.f.f - 1);
-			add(p.s.f, p.s.s, x / abs(x)), bit.add(p.s.f, x / abs(x));
+			if(!~-x) ret += qry(p.f.f - 1, p.f.s - 1) - qry(p.f.f - 1, k - 1);
+			add(p.s.f, p.s.s, x / abs(x));
 			swap(p.f.f, p.f.s), swap(p.s.f, p.s.s), swap(p.f.f, p.s.f);
 			p.f.f = k - p.f.f, p.s.f = k - p.s.f;
 		}
