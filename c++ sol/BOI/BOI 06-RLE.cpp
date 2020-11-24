@@ -26,8 +26,7 @@ using namespace std;
 
 const int mxn = 2000001;
 int n, m, k;
-ll a[mxn], b[mxn], c[mxn], g[mxn];
-ll f[mxn], fp[mxn], dp[mxn], p[mxn], ff[mxn];
+ll a[mxn], b[mxn], g[mxn], f[mxn], fp[mxn], dp[mxn], p[mxn], ff[mxn];
 set<pi> s;
 vector<int> v;
 
@@ -55,14 +54,14 @@ int main(){
 	for(int i = 0; i < n; i++) s.insert({f[i], i});
 
 	for(int i = 1; i <= k; i++){
-		s.erase({f[a[i]] + c[a[i]], a[i]});
-		c[a[i]] += 3 * (b[i] / n + !!(b[i] % n) - b[i] / (n + 2)) - min(3ll, b[i] % (n + 2));
-		s.insert({f[a[i]] + c[a[i]], a[i]});
+		s.erase({f[a[i]], a[i]});
+		f[a[i]] += 3 * (b[i] / n + !!(b[i] % n) - b[i] / (n + 2)) - min(3ll, b[i] % (n + 2));
+		s.insert({f[a[i]], a[i]});
 		dp[i] = s.begin()->f + 3, p[i] = fp[ff[i] = s.begin()->s];
-		if(f[a[i]] > dp[i] - c[a[i]]){
-			s.erase({f[a[i]] + c[a[i]], a[i]});
-			f[a[i]] = dp[i] - c[a[i]], fp[a[i]] = i;
-			s.insert({f[a[i]] + c[a[i]], a[i]});
+		if(f[a[i]] > dp[i]){
+			s.erase({f[a[i]], a[i]});
+			f[a[i]] = dp[i], fp[a[i]] = i;
+			s.insert({f[a[i]], a[i]});
 		} 
 	}
 	
