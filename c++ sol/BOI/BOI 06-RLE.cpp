@@ -2,7 +2,7 @@
   First decode into blocks of consecutive equal characters. Realize that a block of letters will always be optimally encoded if
 e != block letter. This means we can hold dp[i] = minimum difference between optimal encoding up to i blocks and encoding all
 blocks independently assuming e != block letter. Also for every letter, hold prefix sum[x] of cost(e == block letter x) - cost(e != block letter x).
-Now, to transition for each dp[i] value, realize you want the smallest letter cost(x) which is (dp[j] - prefix block sum[x][j]) + prefix block sum[i].
+Now, to transition for each dp[i] value, realize you want the smallest letter cost(x) which is (dp[j] - prefix block sum[x][j]) + prefix block sum[x][i].
 The only letter for which the smallest cost(x) changes is for the current block's letter value, so just update cost(x) based on the
 current prefix sum, calculate the best dp from all cost values, then update cost(x) based on the new dp value. Now you can just hold
 cost(x) for all x in a set to get the minimal value for each dp transition. Finally, while holding dp transitions also hold what
