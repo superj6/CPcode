@@ -25,36 +25,25 @@ using namespace std;
 #define f first
 #define s second
 
-const int k = 1001;
-struct BIT{
-	int bit[k];
-	
-	BIT(){ memset(bit, 0, sizeof(k));}
-	
-	void add(int x, int v){
-		for(; x < k; x += x & -x) bit[x] += v;
-	}
-	
-	int qry(int x){
-		int ret = 0;
-		for(; x; x -= x & -x) ret += bit[x];
-		return ret;
-	}
-};
-
-const int mxn = 100000, m = 3;
+const int mxn = 100000, m = 3, k = 1001;
 int n;
 int a[mxn][m], b[mxn][m];
-BIT bit[k];
+int bit[k][k];
 vector<piii> v[k];
 
 void add(int x, int y, int v){
-	for(; x < k; x += x & -x) bit[x].add(y, v);
+	for(; x < k; x += x & -x) 
+	for(int i = y; i < k; i += i & -i){
+		bit[x][i] += v;
+	}
 }
 
 int qry(int x, int y){
 	int ret = 0;
-	for(; x; x -= x & -x) ret += bit[x].qry(y);
+	for(; x; x -= x & -x)
+	for(int i = y; i; i -= i & -i){
+		ret += bit[x][i];
+	}
 	return ret;
 }
 
