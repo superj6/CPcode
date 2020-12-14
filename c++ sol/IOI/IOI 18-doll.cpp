@@ -1,3 +1,12 @@
+/*
+	To use 2 * n switches, create a full binary tree for the next power of two larger than or equal to n, and have every trigger
+lead to the tree and the tree of switches will go to the next trigger. To cut down on switches, when creating the tree, you can cut off
+all portions of the tree that the range of leaf node indices is completely outside the range outside of the bounds of n. I don't have
+definite proof, but you can think of it like segment tree that it will chop off powers of two resulting in almost no more than lgn extra
+switches. Also, when cut off, the switch states will still work out because it will be used a multiple of two times for every time the
+ball comes back to a cut off portion of the switch.
+*/
+
 //#include "doll.h"
 #include <iostream>
 #include <cstdio>
