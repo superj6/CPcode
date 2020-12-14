@@ -1,0 +1,52 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: subset
+*/
+
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+class subset{
+public static int total = 0;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("subset.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("subset.out")));
+
+    int input = Integer.parseInt(f.readLine());
+
+    if(input % 4 == 1 || input % 4 == 2){
+      out.println(0);
+    }else{
+      partitionMaker(input);
+
+      out.println(total);
+    }
+
+    //out.println("A");
+
+    out.close();
+  }
+
+  public static void partitionMaker(int n){
+    partitionMaker(n, n, n);
+  }
+
+  private static void partitionMaker(int sum, int n, int last){
+    if(sum == n * (n + 1) / 4 ){
+     total += 1;
+     //System.out.println(last);
+    }else if(sum < n * (n + 1) / 4){
+
+      for(int i = last - 1; i > 0; i--){
+        partitionMaker(sum + i, n, i);
+
+        //System.out.println(sum + " " + i);
+      }
+
+    }
+  }
+
+}

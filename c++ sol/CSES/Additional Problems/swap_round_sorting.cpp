@@ -7,12 +7,12 @@ using namespace std;
 #define pi pair<int, int>
 #define f first
 #define s second
- 
+
 const int maxn = 200000;
 int n, m;
-int a[maxn];
-vector<pi> ans[2];
- 
+int a[maxn], b[maxn], c[maxn];
+vector<pi> ans[maxn];
+
 int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -21,17 +21,18 @@ int main(){
 	
 	for(int i = 0; i < n; i++){
 		cin >> a[i];
-		a[i]--;
+		b[--a[i]] = i;
 	}
 	
 	for(int i = 0; i < n; i++){
-		vector<int> v(1, i);
-		for(int j = a[i]; j != i; j = a[j]) v.push_back(j);
-		for(int t = 0; t < 2; t++)
-		for(int j = t; 2 * j + !t < v.size(); j++){
-			m = max(m, t + 1);
-			ans[t].push_back({v[j], v[v.size() - j - !t]});
-			swap(a[v[j]], a[v[v.size() - j - !t]]);
+		for(int j = i; a[j] != j; j = a[a[j]]){
+			c[b[b[j]]] = max(c[b[j]], c[b[b[j]]]);
+			ans[c[b[b[j]]]].push_back({b[b[j]], b[j]});
+			m = max(m, ++c[b[b[j]]]);
+			
+			b[j] = b[b[j]];
+			a[a[b[j]]] = b[a[b[j]]] = a[b[j]];
+			a[b[j]] = j;
 		}
 	}
 	
@@ -40,6 +41,6 @@ int main(){
 		cout << ans[i].size() << endl;
 		for(pi j : ans[i]) cout << j.f + 1 << " " << j.s + 1 << endl;
 	}
- 
+
 	return 0;
 }

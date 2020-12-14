@@ -1,0 +1,152 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: lamps
+*/
+
+import java.util.*;
+import java.io.*;
+import java.util.*;
+
+class lamps{
+public static ArrayList<String> solutions = new ArrayList<>();
+public static HashMap<String, Integer[][]> outputs = new HashMap<>();
+public static Integer[] storage;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("lamps.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("lamps.out")));
+    int num = Integer.parseInt(f.readLine());
+    int presses = Integer.parseInt(f.readLine());
+    storage = new Integer[num];
+    Integer[] initial = new Integer[num];
+
+    for(int i = 0; i < num; i++){
+      initial[i] = 1;
+    }
+
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    int on = Integer.parseInt(st.nextToken());
+    while(on != -1){
+      storage[on - 1] = 1;
+      on = Integer.parseInt(st.nextToken());
+    }
+
+    st = new StringTokenizer(f.readLine());
+    int off = Integer.parseInt(st.nextToken());
+    while(off != -1){
+      storage[off - 1] = 0;
+      off = Integer.parseInt(st.nextToken());
+    }
+
+    //System.out.println(Arrays.toString(storage));
+
+    if(presses > 2) noWorkRec(presses % 2 + 4, initial);
+    else noWorkRec(presses, initial);
+
+    Collections.sort(solutions);
+
+    if(solutions.size() == 0){
+      out.println("IMPOSSIBLE");
+    }else{
+      for(int i = 0; i < solutions.size(); i++){
+        out.println(solutions.get(i));
+      }
+    }
+   
+
+    out.close();
+  }
+
+  public static void noWorkRec(int n, Integer[] state){
+    if(n == 0){
+      boolean test = true;
+      String solution = "";
+      for(int i = 0; i < state.length; i++){
+        if(storage[i] != null && state[i] != storage[i]){
+          test = false;
+        }
+        solution += Integer.toString(state[i]);
+      }
+
+      if(test && !solutions.contains(solution)) solutions.add(solution);
+    }else{
+      if(outputs.containsKey(Arrays.toString(state))){
+        Integer[][] currOutput = outputs.get(Arrays.toString(state));
+        Integer[] newState1 = currOutput[0];
+        Integer[] newState2 = currOutput[1];
+        Integer[] newState3 = currOutput[2];
+        Integer[] newState4 = currOutput[3];
+        //System.out.println("lesswork");
+        //System.out.println();
+        noWorkRec(n - 1, newState1);
+        noWorkRec(n - 1, newState2);
+        noWorkRec(n - 1, newState3);
+        noWorkRec(n - 1, newState4);
+
+      }else{
+        //System.out.println(Arrays.toString(state));
+        //System.out.println("morework");
+        Integer[] newState1 = state.clone();
+        Integer[] newState2 = state.clone();
+        Integer[] newState3 = state.clone();
+        Integer[] newState4 = state.clone();
+
+        for(int i = 0; i < state.length; i++){
+          if(newState1[i] == 0){
+            newState1[i] = 1;
+          }else{
+            newState1[i] = 0;
+          }
+
+          if((i + 1) % 2 == 0){
+            if(newState2[i] == 0){
+              newState2[i] = 1;
+            }else{
+              newState2[i] = 0;
+            }
+          }else{
+            if(newState3[i] == 0){
+              newState3[i] = 1;
+            }else{
+              newState3[i] = 0;
+            }
+          }
+
+          if((i) % 3 == 0){
+            if(newState4[i] == 0){
+              newState4[i] = 1;
+            }else{
+              newState4[i] = 0;
+            }
+          }
+        }
+
+        Integer[][] newOutput = new Integer[4][state.length];
+        
+        newOutput[0] = newState1;
+        newOutput[1] = newState2;
+        newOutput[2] = newState3;
+        newOutput[3] = newState4;
+
+        outputs.put(Arrays.toString(state), newOutput);
+
+/*
+System.out.println("sorry");
+        for (Map.Entry<String, Integer[][]> entry : outputs.entrySet()) {
+      String key = entry.getKey();
+      System.out.println(key);
+    }
+System.out.println("sorry");
+System.out.println();
+*/
+  
+        noWorkRec(n - 1, newState1);
+        noWorkRec(n - 1, newState2);
+        noWorkRec(n - 1, newState3);
+        noWorkRec(n - 1, newState4);
+      }
+    }
+  }
+
+}

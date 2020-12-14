@@ -1,16 +1,3 @@
-/*
-	For this problem, you need to hold the breed at index i as a[i], but for the other side, hold the index of breed i as p[i].
-Now, you can iterate through the breeds of the first side in order and in a segment tree hold the maximum value using pairings up to
-and index on the other side. This is because for pairs to not intersect, both indices of one pairing must be before both indices of
-the other, so iterating through one side ensures the first index ordering and you can query for the maximum value of the segment tree
-before a certain index on the other to ensure the second index ordering. Now, to calculate the dp for index i, hold all p[j] for all j
-within 4 of a[i] in reverse sorted order in a temporary array cur. Now, iterate through cur and set in the segment tree cur[j] to be
-the max of what it is and 1 + querying the segment tree before cur[j]. You sort in reverse order to ensure you do not use a value from
-the segment tree which would cause pair crossing, and when you add 1 + the query before cur[j] this is equivalent to using the pair
-between a[i] and the breed at the index of cur[j] and the best pairing using only indices on both sides before that. The complexity of
-this is O(nlogn) from the segment tree.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

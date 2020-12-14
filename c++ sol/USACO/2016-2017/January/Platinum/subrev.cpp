@@ -1,15 +1,3 @@
-/*
-	For this problem, the key thing to notice is that the each element of the array is
-is less than 50, which is also the array size. This leads to the idea that you can hold a
-dp state such that you keep the dp[i][j][k][m] is the maximum increasing subsequence within
-the subarray from indices i to j, and the lowest value is greater than or equal to k and the
-least value is less than or equal to m. Holding the minimum and maximum on both sides helps
-because you can use the fact that can then see whether you can reverse indices i and j by
-seeing if a[j] is greater than or equal to k and a[i] is greater than or equal to i, while
-also trying transitions of using neither element or keeping them in order. The complexity
-of this is O(n^4).
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

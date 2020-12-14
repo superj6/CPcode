@@ -1,12 +1,3 @@
-/*
-	This problem is a relatively simple dp problem. For the dp state, let dp[i][j][l] be the number teams of size l such that
-it only uses cows from farmer john with indices less than or equal to i and cows from farmer paul with indices less than or equal to
-j. To get the dp state from dp[i][j][l], if fj's cow i is greater than fp's cow j, dp[i][j][l] += dp[i - 1][j - 1][l - 1] as this is
-adding the number of teams with size of 1 less than l and with cows before indices i and j. If the size of team is 1 just set it
-equal to 1. Now, to make sure it is also accounting for teams of size l not using indices i and j, dp[i][j][l] += dp[i - 1][j][l] +
-dp[i][j - 1][l] - dp[i - 1][j - 1][l]. The complexity of this is O(nmk).
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

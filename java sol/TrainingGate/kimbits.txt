@@ -1,0 +1,54 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: kimbits
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class kimbits{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("kimbits.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("kimbits.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int size = Integer.parseInt(st.nextToken()), ones = Integer.parseInt(st.nextToken());
+    long ith = (long)Long.parseLong(st.nextToken());
+    int[] array = new int[ones];
+
+    Arrays.fill(array, -1);
+
+    System.out.println(Arrays.toString(array));
+    
+    for(int k = 1; k < ith; k++){
+      for(int i = array.length - 1; i >= 0; i--){
+        if(i == 0){
+          array[0] += 1;
+          Arrays.fill(array, 1, array.length, -1);
+          break;
+        }else if(array[i - 1] > array[i] + 1){
+          array[i] += 1;
+          Arrays.fill(array, i + 1, array.length, -1);
+          break;
+        }
+      }
+
+    int sum = 0;
+
+    for(int i = 0; i < array.length; i++){
+      if(array[i] != -1){
+        sum += (int)Math.pow(2, array[i]);
+      }
+    }
+
+    out.println(String.format("%" + Integer.toString(size) + "s", Integer.toBinaryString(sum)).replace(' ', '0'));
+      System.out.println(Arrays.toString(array));
+    }
+
+    out.close();
+  }
+
+}

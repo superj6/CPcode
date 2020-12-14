@@ -1,3 +1,10 @@
+/*
+This is code of SuperJ6 for Codeforces.
+Don't copy my code during f*kin' contests.
+
+2.71828182845904523536
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
@@ -8,18 +15,16 @@ using namespace std;
 const int maxn = 200000;
 int n, q;
 bool visited[maxn];
-int rnk[maxn], prv[maxn], par[maxn];
+int rnk[maxn], prv[maxn], par[maxn], p[maxn];
 vector<int> graph[maxn];
 vector<pair<int, int>> query[maxn];
 int ans[maxn];
 
 int find(int x){
-	return x == par[x] ? x : par[x] = find(par[x]);
+	return x == par[x] ? x : find(par[x]);
 }
 
 void unionf(int x, int y){
-	x = find(x), y = find(y);
-	if(x == y) return;
 	if(rnk[x] < rnk[y]) swap(x, y);
 	if(rnk[x] == rnk[y]) rnk[x]++;
 	par[y] = x;
@@ -28,8 +33,8 @@ void unionf(int x, int y){
 void dfs(int c){
 	visited[c] = 1;
 	par[c] = prv[c] = c;
-	
 	for(int i : graph[c]){
+		p[i] = c;
 		dfs(i);
 		unionf(i, c);
 		prv[find(c)] = c;
@@ -63,6 +68,7 @@ int main(){
 		query[b].push_back({a, i});
 	}
 	
+	p[0] = 0;
 	dfs(0);
 	
 	for(int i = 0; i < q; i++) cout << ans[i] << endl;

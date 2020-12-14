@@ -19,7 +19,7 @@ class Solution {
 
 Arrays.sort(sorted, new Comparator<Integer>(){
   public int compare(Integer i1, Integer i2){
-    return Integer.compare(yVal[index[i1]], yVal[index[i2]]);
+    return Double.compare(yVal[index[i1]], yVal[index[i2]]);
   }
 });
 

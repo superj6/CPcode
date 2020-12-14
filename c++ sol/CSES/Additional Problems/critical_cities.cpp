@@ -6,46 +6,32 @@ using namespace std;
 #define endl '\n'
 #define pi pair<int, int>
 
-const int maxn = 100000, k = 17;
+const int maxn = 100001;
 int n, m;
-int a[maxn], b[maxn], d[maxn];
-int p[k][maxn];
-bool h[maxn], w[maxn], used[maxn];
-vector<int> graph[maxn], graph2[maxn];
+int id[maxn], rid[maxn], p[maxn], sdom[maxn], dom[maxn];
+int mn[maxn], par[maxn];
+vector<int> g[maxn], rg[maxn], b[maxn];
+int t;
 
-void dfs(int c){
-	used[c] = 1;
-	for(int i = 1; i < k; i++) p[i][c] = p[i - 1][c] == -1 ? -1 : p[i - 1][p[i - 1][c]];
-	if(c != n - 1) for(int i : graph[c]){
-		if(!used[i]){
-			d[i] = d[c] + 1;
-			p[0][i] = c;
-			dfs(i);
-		}else{
-			int t = c;
-			for(int j = k - 1; j >= 0; j--) if(p[j][t] != -1 && d[p[j][t]] >= d[i]) t = p[j][t];
-			if(t == i) continue;
-		}
-		if(h[i]){
-			h[c] = 1;
-			graph2[c].push_back(i);
-			graph2[i].push_back(c);
-		}
-	}
+int find(int x, int y = 0){
+	if(x == par[x]) return y ? -1 : x;
+	int v = find(par[x], 1);
+	if(v < 0) return x;
+	if(sdom[mn[par[x]]] < sdom[mn[x]]) mn[x] = mn[par[x]];
+	par[x] = v;
+	return y ? v : mn[x];
 }
 
-int t;
-void dfs2(int c, int p){
-	used[c] = 0;
-	a[c] = b[c] = t++;
-	for(int i : graph2[c]){
-		if(i == p) continue;
-		if(!used[i]) b[c] = min(b[c], a[i]);
-		else{
-			dfs2(i, c);
-			b[c] = min(b[c], b[i]);
-			if(b[i] >= a[c]) w[c] = 1;
-		}
+void unionf(int x, int y){
+	par[y] = x;
+}
+
+void dfs(int c){
+	rid[++t] = c;
+	id[c] = mn[t] = sdom[t] = par[t] = t;
+	for(int i : g[c]){
+		if(!id[i]) dfs(i), p[id[i]] = id[c];
+		rg[id[i]].push_back(id[c]);
 	}
 }
 
@@ -58,23 +44,30 @@ int main(){
 	for(int i = 0; i < m; i++){
 		int u, v;
 		cin >> u >> v;
-		u--, v--;
-		graph[u].push_back(v);
+		g[u].push_back(v);
 	}
 	
-	p[0][0] = -1;
-	h[n - 1] = 1;
-	dfs(0);
-	w[0] = w[n - 1] = 1;
-	dfs2(0, -1);
+	dfs(1);
+	for(int c = n; c >= 1; c--){
+		for(int i : rg[c]) sdom[c] = min(sdom[c], sdom[find(i)]);
+		if(c > 1) b[sdom[c]].push_back(c);
+		for(int i : b[c]){
+			int v = find(i);
+			if(sdom[i] == sdom[v]) dom[i] = sdom[i];
+			else dom[i] = v;
+		}
+		if(c > 1) unionf(p[c], c);
+	}
+	for(int c = 2; c <= n; c++) if(dom[c] != sdom[c]) dom[c] = dom[dom[c]];
 	
 	vector<int> ans;
-	for(int i = 0; i < n; i++) if(w[i]) ans.push_back(i + 1);
+	for(int c = id[n]; c; c = dom[c]) ans.push_back(rid[c]);
+	sort(ans.begin(), ans.end());
 	
 	cout << ans.size() << endl;
 	cout << ans[0];
 	for(int i = 1; i < ans.size(); i++) cout << " " << ans[i];
 	cout << endl;
-	
+
 	return 0;
 }

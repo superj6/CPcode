@@ -1,0 +1,46 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: money
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class money{
+  public static int[] coins;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("money.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("money.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int types = Integer.parseInt(st.nextToken()), amount = Integer.parseInt(st.nextToken());
+    coins = new int[types];
+
+    st = new StringTokenizer(f.readLine());
+    
+    long[] solutions = new long[amount + 1];
+    solutions[0] = 1;
+    
+    for(int i = 0; i < types; i++ ){
+      if(!st.hasMoreTokens()) st = new StringTokenizer(f.readLine());
+      coins[i] = Integer.parseInt(st.nextToken());
+    }
+
+    for(int i = 0; i < types; i++){
+      int c = coins[i];
+
+      for(int j = c; j <= amount; j++){
+        solutions[j] += solutions[j - c];
+      }
+    }    
+
+    out.println(solutions[amount]);
+
+    out.close();
+  }
+
+
+}

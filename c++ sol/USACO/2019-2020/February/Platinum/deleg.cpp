@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <vector>
+#include <set>
 using namespace std;
 #define endl '\n'
 #define pi pair<int, int>
@@ -10,39 +11,25 @@ const int maxn = 100000;
 int n;
 vector<int> graph[maxn];
 
-bool works(vector<int> &a, int z, int x){
-	for(int l = 0, r = a.size() - 1; l < r; l++, r--){
-		if(a[l += (l == z)] + a[r -= (r == z)] < x) return 0;
-	}
-	return 1;
-}
-
 int dfs(int c, int p, int x){
 	if(n == 1) return 0;
-	vector<int> cur;
+	multiset<int> cur;
 	for(int i : graph[c]){
 		if(i == p) continue;
 		int v = dfs(i, c, x);
 		if(!v) return 0;
-		cur.push_back(v);
+		cur.insert(v);
 	}
-	sort(cur.begin(), cur.end());
-	if(cur.size() & 1){
-		if(!works(cur, 0, x)) return 0;
-	}else{
-		if(cur.empty()) return 1;
-		if(!works(cur, -1, x)) return 0;
-		int ret = cur[0];
+	while(!cur.empty()){
+		int v = *cur.begin();
 		cur.erase(cur.begin());
-		if(!works(cur, 0, x)) return 1;
+		if(!c && v >= x) return 1;
+		if(c && (cur.empty() || (cur.size() == 1 && *cur.begin() >= x))) return v + 1;
+		auto it = cur.lower_bound(x - v);
+		if(it == cur.end()) return 0;
+		cur.erase(it);
 	}
-	int l = 0, r = cur.size();
-	while(r - l > 1){
-		int mid = (l + r) / 2;
-		if(works(cur, mid, x)) l = mid;
-		else r = mid;
-	}
-	return cur[l] + 1;
+	return 1;
 }
 
 int main(){
@@ -61,7 +48,7 @@ int main(){
 		graph[b].push_back(a);
 	}
 	
-	int l = 0, r = n;
+	int l = 0, r = n + 1;
 	
 	while(r - l > 1){
 		int mid = (l + r) / 2;

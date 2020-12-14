@@ -1,23 +1,3 @@
-/*
-	As a disclaimer this solution got only 9 / 16 cases but i'm p sure it is the correct idea. This problem was definitely 
-the hardest this contest. The first thing you must notice is that any subset already in sorted order does not need to be yelled
-at. This means the problem for longest increasing subsequence(lis) such that the remaining elements are the kth lexographically least
-sequence, as only the remaining elements need to be yelled at. Furthermore, the kth lexographically sequence of remaining values
-is equivalent the kth lexographically largest lis. To find the length of the longest lis at each index, we compress the values
-and insert the lis lengths into a segment tree at its current index value as we compute them, and for each index set the lis
-to 1 + the largest lis in the segment tree with a value less than the or equal the current value (this is a pretty standard 
-method). Now, to find the kth lexographically largest lis, consider you computed the amount lis's of that start with each index.
-You could then hold each index in different arrays based on its lis length and sort them according to value. Then for each
-length, start with the largest value, if there are more lis's that start with that than k, you are going to use that element,
-if not, subtract that amount from k and go to the next. When you find an element that works, go to the next length and do the
-same, making sure you are only considering elements that could come after the one you previously chose ie have value >= previous
-and index > previous. This will work to find the kth lexographically largest lis, so now all you have to do is figure out
-how to compute the amount of lis's that start with each index. To do this, do a similar sweep as computing lis's except iterating
-in reverse order through the array, and hold a segment tree for each value of lis. Each lis number for each value with the
-maximum lis length will be 1, and for all others set it equal to the sum of all lis numbers in the segment tree with an lis
-value 1 greater than it and having a greater value. The complexity of this is O(nlogn) due to the segment tree queries.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

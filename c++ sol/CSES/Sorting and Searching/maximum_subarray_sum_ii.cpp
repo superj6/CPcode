@@ -42,7 +42,7 @@ int main(){
 	a--, b--;
 	
 	long ar[n];
-	long maxv = -200000000000007;
+	long maxv = -10000000000007;
 	minstack stk;
 	stk.add(0);
 	

@@ -1,0 +1,131 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: sort3
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class sort3{
+public static Integer[] array;
+public static int counter1 = 0, counter2 = 0;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("sort3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("sort3.out")));
+
+    int amount = Integer.parseInt(f.readLine()), output = 0;
+    array = new Integer[amount];
+
+    for(int i = 0; i < array.length; i++){
+      array[i] = Integer.parseInt(f.readLine());
+      if(array[i] == 1) counter1 += 1;
+      if(array[i] == 2) counter2 += 1;
+    }
+
+    Integer[] sortedArray = array.clone();
+
+    Arrays.sort(sortedArray);
+
+    System.out.println(Arrays.toString(array));
+    
+
+    while(!Arrays.equals(array, sortedArray)){
+
+      if(!oneComplete() && !twoComplete()){ 
+        if(output % 2 == 0){
+          move1();
+        }else{
+          move2();
+        }
+      }else if(oneComplete()){
+        move2();
+      }else{
+        move1();
+      }
+
+      output += 1;
+      System.out.println(Arrays.toString(array));
+
+    }
+
+    //if(amount == 9) output -= 1;
+    out.println(output);
+
+    out.close();    
+  }
+
+  public static boolean oneComplete(){
+    for(int i = 0; i < counter1; i++){
+      if(array[i] != 1) return false;
+    }
+
+    return true;
+  }
+
+  public static boolean twoComplete(){
+    for(int i = counter1; i < counter1 + counter2; i++){
+      if(array[i] != 2) return false;
+    }
+
+    return true;
+  }
+
+  public static void move1(){
+    int temp = array.length;
+    
+    for(int i = counter1; i < array.length; i++){
+      if(array[i] == 1){
+        temp = i;
+        break;
+      }
+    }
+
+    for(int i = 0; i < counter1; i++){
+      if(array[i] != 1){
+        int temp2 = array[i];
+
+        array[i] = array[temp];
+        array[temp] = temp2;
+
+        System.out.println(i + " " + temp);
+
+        break;
+      }
+    }
+  }
+
+  public static void move2(){
+    int temp = array.length;
+    
+    for(int i = 0; i < array.length; i++){
+      int val = array.length - 1 - i;
+
+      if(val == counter1 + counter2){
+        i += counter2;
+        val = counter1;
+      }
+      
+      if(array[val] == 2){
+        temp = val;
+        break;
+      }
+    }
+
+    for(int i = counter1; i < counter1 + counter2; i++){
+      if(array[i] != 2){
+        int temp2 = array[i];
+
+        array[i] = array[temp];
+        array[temp] = temp2;
+
+        System.out.println(i + " " + temp);
+
+        break;
+      }
+    }
+  }
+
+}

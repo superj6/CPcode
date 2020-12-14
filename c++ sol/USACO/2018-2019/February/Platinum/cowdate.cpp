@@ -1,14 +1,3 @@
-/*
-	This was the easiest plat problem all year lol. Hold two arrays, p and f. Let p[i] equal the probability of exactly one
-of the first i cows accepting her invitation, and f[i] be the product of (1 - the jth probability given) for all j <= i. Now,
-the probability of exactly one cow accepting the invitation in a range from l to i using the arrays stated previously is
-(p[i] - p[l] * f[i] / f[l]) / f[l]. This is because you need the sum of (1 - pl) * ... * pk * ... (1 - pi) for all k, so you are
-subtracting out all cases from p[i] such that k is before l, then you are dividing by the (1 - p) values that are less than l.
-Now, you can solve this problem with 2 pointers by iterating through all values of i from 1 to n and seeing if it is optimal
-to increase the value of l, as the probability will always be a concave function for a set i value and it is never optimal to
-move l back when iterating i forward. This gives a time complexity of O(n).
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

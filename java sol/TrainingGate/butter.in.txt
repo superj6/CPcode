@@ -1,0 +1,73 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: butter
+*/
+
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class butter{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("butter.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("butter.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int cownum = Integer.parseInt(st.nextToken()), pastnum = Integer.parseInt(st.nextToken()), pathnum = Integer.parseInt(st.nextToken());
+
+    int[] cowpast = new int[cownum];
+    int[][] path = new int[pastnum][pastnum];
+
+    for(int i = 0; i < pastnum; i++){
+      for(int j = 0; j < pastnum; j++){
+        path[i][j] = 225*800;
+        if(i == j) path[i][j] = 0;
+      }
+    }
+
+    for(int i = 0; i < cownum; i++){
+      cowpast[i] = Integer.parseInt(f.readLine()) - 1;
+    }
+
+    for(int i = 0; i < pathnum; i++){
+      st = new StringTokenizer(f.readLine());
+
+      int past1 = Integer.parseInt(st.nextToken()) - 1, past2 = Integer.parseInt(st.nextToken()) - 1, length = Integer.parseInt(st.nextToken());
+
+      if(length < path[past1][past2]){
+        path[past1][past2] = length;
+        path[past2][past1] = length;
+      }
+    }
+
+    for(int k = 0; k < pastnum; k++){
+      for(int i = 0; i < pastnum; i++){
+        for(int j = 0; j < pastnum; j++){
+          if(path[i][k] + path[k][j] < path[i][j]){
+            path[i][j] = path[i][k] + path[k][j]; 
+          }
+        }
+      }
+    }
+
+    int lowest = Integer.MAX_VALUE;
+
+    for(int i = 0; i < pastnum; i++){
+      //System.out.println(Arrays.toString(path[i]));
+      int temp = 0;
+      for(int j = 0; j < cownum; j++){
+        temp += path[i][cowpast[j]];
+      }
+      //System.out.println(temp);
+      if(temp < lowest) lowest = temp; 
+    }
+
+    out.println(lowest);
+
+
+    out.close();
+  }
+
+}

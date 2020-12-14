@@ -1,0 +1,51 @@
+/*
+ID: super_j6
+LANG: JAVA
+PROG: dualpal
+*/
+import java.io.*;
+import java.util.*;
+import java.lang.Math;
+
+class dualpal {
+
+  public static boolean isPalindrome(String num){
+    char[] array = num.toCharArray();
+
+    for(int i = 0; i < (array.length + 2 - 1) / 2; i++){
+      if(array[i] != array[array.length - 1 - i]) return false;
+    }
+
+    return true;
+  }
+
+  public static void main (String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("dualpal.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("dualpal.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    
+    int outputNumber = Integer.parseInt(st.nextToken());
+    int input = Integer.parseInt(st.nextToken());
+    int counter = 0, current = 1;
+
+    while(counter < outputNumber){
+      int correct = 0;
+      for(int i = 2; i <= 10; i++){
+        if(isPalindrome(Integer.toString(Integer.parseInt(Integer.toString(input+current), 10), i))){
+          correct+=1;
+        }
+        if(correct >= 2){
+          out.println(input+current);
+          counter+=1;
+          break;
+        }
+      }  
+  
+      current+=1;
+    }
+    
+
+    out.close();
+  } 
+  
+}

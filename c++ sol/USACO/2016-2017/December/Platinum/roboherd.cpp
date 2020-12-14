@@ -1,23 +1,3 @@
-/*
-	This problem is challenging as it is not obvious how the input can be used to constrain the minimum cost in a good runtime. Often
-in such a case when you are trying to minimize something you end up binary searching on what you are minimizing. However, it is not helpful
-in this situation as given an upper bound total cost does not help you figure out if it is possible. The key insight is the semi obvious
-fact that every combination is possible and no possible combination prohibits another from being used, as this means you want to use the
-robots with the k smallest prices. This means you can binary search on the upper bound cost you will use for any configuration you will use,
-and see if it is possible to make at least k configurations with that budget per configuration. This is useful because the result is then
-just the m * k where m is the lowest amount where at least k configurations can be made minus the sum of the amount left over per configuration
-when having a budget of m - 1. This is because you know having a budget of m - 1 does not work but m does so you need the remaining cows
-amount of cows required after using all configurations with budget m - 1 to be cost m. Now to calculate the cost, for each location sort
-the values and set the lowest value per location to be part of the "base price". Now change the remaining prices to be the value minus
-the base price. This is because you want to compare which transitions will be as cheap as possible rather than the prices themselves. Now
-to see if at least k cows can be made given a budget, you can hold the budget available and for each location recurse on every transition
-that works where the budget will still be greater than 0 and go to the next location. However, this will still not fall in the runtime. To
-make it faster, sort the locations by the smallest transition in each location, and when you are recursing you can binary search on where
-the next location it is possible to use transitions is, as you do not waste time recurring through locations where no transitions work. Also,
-you must be sure to stop the recursion as soon as at least k cows have been created. The runtime is something like O(nlognlogP) where P is
-the maximum price.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

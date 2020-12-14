@@ -1,0 +1,52 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: range
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class range{
+
+  public static PrintWriter out;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("range.in"));
+    out = new PrintWriter(new BufferedWriter(new FileWriter("range.out")));
+    
+    int num = Integer.parseInt(f.readLine());
+    int[][] thing = new int[num][num];
+
+    for(int i = 0; i < num; i++){
+        char[] a = f.readLine().toCharArray();
+      for(int j = 0; j < num; j++){
+        thing[i][j] = Character.getNumericValue(a[j]);
+      }
+    }
+
+    recur(2, thing);
+
+    out.close();
+  }
+
+  public static void recur(int r, int[][] thing){
+    int[][] array = new int[thing.length - 1][thing.length - 1];
+    int total = 0;
+
+    for(int i = 0; i < array.length; i++){
+      for(int j = 0; j < array.length; j++){
+        int wow = thing[i][j]*thing[i][j+1]*thing[i+1][j]*thing[i+1][j+1];
+        array[i][j] = wow;
+        total += wow;
+      }
+    }
+
+    if(total != 0){
+      out.println(r + " " + total);
+      recur(r + 1, array);
+    }
+  }
+
+}

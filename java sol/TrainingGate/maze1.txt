@@ -1,0 +1,144 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: maze1
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class maze1{
+  public static int shortest = 1;
+  public static char[][] maze;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("maze1.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("maze1.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int width = Integer.parseInt(st.nextToken()), height = Integer.parseInt(st.nextToken());
+    maze = new char[2*height + 1][2*width + 1];
+
+    for(int i = 0; i < maze.length; i++){
+      char[] array = f.readLine().toCharArray();
+
+      for(int j = 0; j < array.length; j++){
+
+        if(maze[i][j] !='1') maze[i][j] = array[j];
+
+        if(maze[i][j] == ' '){
+          if(i == 0){
+            maze[i + 1][j] = '1';
+          }else if(j == 0){
+            maze[i][j + 1] = '1';
+            System.out.println((i) + " " + (j + 1));
+          }else if(i == maze.length - 1){
+            maze[i - 1][j] = '1';
+          }else if(j == maze[0].length - 1){
+            maze[i][j - 1] = '1';
+          }
+        }
+      }
+      
+      for(int j = array.length; j< maze[0].length; j++){
+        maze[i][j] = ' ';
+
+        if(maze[i][j] == ' '){
+          if(i == 0){
+            maze[i + 1][j] = '1';
+          }else if(j == 0){
+            maze[i][j + 1] = '1';
+          }else if(i == maze.length - 1){
+            maze[i - 1][j] = '1';
+          }else if(j == maze[0].length - 1){
+            maze[i][j - 1] = '1';
+          }
+        }  
+      }
+    }
+
+    //for(int i = 0; i < maze.length; i++){
+      //System.out.println(Arrays.toString(maze[i]));
+    //}
+    //System.out.println();
+
+    recur(1);    
+
+    out.println(shortest);
+
+    out.close();
+  }
+
+  public static void recur(int n){
+    boolean done = true;
+
+    for(int i = 1; i < maze.length; i+=2){
+      for(int j = 1; j < maze[0].length; j+=2){
+        if(maze[i][j] == (char)(n + '0')){
+          char newNum = (char)(1 + n + '0');
+
+          if(i + 2 < maze.length){ 
+            if(maze[i + 1][j] == ' '){
+              if(maze[i + 2][j] == ' '){
+                maze[i + 2][j] = newNum;
+                done = false;
+              }else if(Character.getNumericValue(maze[i + 2][j]) > 1 + n){
+                maze[i + 2][j] = newNum;
+                done = false;
+              }
+            }
+          }
+
+          if(i - 2 >= 0){ 
+            if(maze[i - 1][j] == ' '){
+              if(maze[i - 2][j] == ' '){
+                maze[i - 2][j] = newNum;
+                done = false;
+              }else if(Character.getNumericValue(maze[i - 2][j]) > 1 + n){
+                maze[i - 2][j] = newNum;
+                done = false;
+              }
+            }
+          }
+
+          if(j + 2 < maze[0].length){ 
+            if(maze[i][j + 1] == ' '){
+              if(maze[i][j + 2] == ' '){
+                maze[i][j + 2] = newNum;
+                done = false;
+              }else if(Character.getNumericValue(maze[i][j + 2]) > 1 + n){
+                maze[i][j + 2] = newNum;
+                done = false;
+              }
+            }
+          }
+
+          if(j - 2 >= 0){
+            if(maze[i][j - 1] == ' '){
+              if(maze[i][j - 2] == ' '){
+                maze[i][j - 2] = newNum;
+                done = false;
+              }else if(Character.getNumericValue(maze[i][j - 2]) > 1 + n){
+                maze[i][j - 2] = newNum;
+                done = false;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    //for(int i = 0; i < maze.length; i++){
+      //System.out.println(Arrays.toString(maze[i]));
+    //}
+    //System.out.println();
+
+    if(done){
+      shortest = n;
+    }else{
+      recur(n + 1);
+    }
+  }
+
+}

@@ -1,0 +1,95 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: combo
+*/
+import java.util.*;
+import java.io.*;
+
+class combo{
+
+  public static void main(String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("combo.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("combo.out")));
+
+    int biggest = Integer.parseInt(f.readLine());
+    int[] combo1 = new int[3], counter1 = new int[3];
+    int[] combo2 = new int[3], counter2 = new int[3];
+    ArrayList<String> solutions = new ArrayList<String>();
+  
+    StringTokenizer st1 = new StringTokenizer(f.readLine()); 
+
+    for(int i = 0; i < 3; i++){
+      combo1[i] = Integer.parseInt(st1.nextToken());  
+      counter1[i] = -2;   
+    }
+
+    StringTokenizer st2 = new StringTokenizer(f.readLine()); 
+
+    for(int i = 0; i < 3; i++){
+      combo2[i] = Integer.parseInt(st2.nextToken());   
+      counter2[i] = -2;  
+    }
+
+
+    while(counter1[0] < 3){
+      int[] numbers = new int[3];
+      numbers[0] = combo1[0] + counter1[0];
+      numbers[1] = combo1[1] + counter1[1];
+      numbers[2] = combo1[2] + counter1[2];
+      
+      for(int i = 0; i < 3; i++){
+        if(numbers[i] <= 0 || numbers[i] > biggest){
+          numbers[i] = ((numbers[i] - 1) % biggest + biggest) % biggest + 1;
+        }
+
+      }
+
+      String newTest = Integer.toString(numbers[0]) + Integer.toString(numbers[1]) + Integer.toString(numbers[2]);
+
+      if(!solutions.contains(newTest)) solutions.add(newTest);
+
+      counter1[2] += 1;
+
+      for(int i = 2; i > 0; i--){
+        if(counter1[i] > 2){
+          counter1[i] = -2;
+          counter1[i-1] += 1;
+        }
+      }
+    }
+
+    if(!Arrays.equals(combo1, combo2)){
+      while(counter2[0] < 3){
+        int[] numbers = new int[3];
+        numbers[0] = combo2[0] + counter2[0];
+        numbers[1] = combo2[1] + counter2[1];
+        numbers[2] = combo2[2] + counter2[2];
+
+        for(int i = 0; i < 3; i++){
+          if(numbers[i] <= 0 || numbers[i] > biggest){
+            numbers[i] = ((numbers[i] - 1) % biggest + biggest) % biggest + 1;
+          }
+
+        }
+        
+        String newTest = Integer.toString(numbers[0]) + Integer.toString(numbers[1]) + Integer.toString(numbers[2]);
+        if(!solutions.contains(newTest)) solutions.add(newTest);
+
+        counter2[2] += 1;
+
+        for(int i = 2; i > 0; i--){
+          if(counter2[i] > 2){
+            counter2[i] = -2;
+            counter2[i-1] += 1;
+          }
+        }
+      }
+    }
+
+    out.println(solutions.size());
+
+    out.close();
+  }
+
+}

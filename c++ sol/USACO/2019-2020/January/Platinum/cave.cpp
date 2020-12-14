@@ -8,7 +8,7 @@ using namespace std;
 const long long mod = 1000000007;
 const int maxn = 1000;
 int n, m;
-long long par[maxn * maxn], rnk[maxn * maxn], val[maxn * maxn];
+long long par[maxn * maxn], rnk[maxn * maxn], h[maxn * maxn];
 bool used[maxn * maxn], used2[maxn * maxn];
 bool grid[maxn][maxn];
 
@@ -24,8 +24,7 @@ void unionf(int x, int y){
 	par[y] = x;
 	used[x] |= used[y];
 	used2[x] &= used2[y];
-	val[x] *= val[y];
-	val[x] %= mod;
+	h[x] = max(h[x], h[y]);
 }
 
 int main(){
@@ -42,7 +41,7 @@ int main(){
 		cin >> c;
 		grid[i][j] = (c == '.');
 		par[i * m + j] = i * m + j;
-		val[i * m + j] = 1;
+		h[i * m + j] = i;
 	}
 	
 	long long ret = 1;
@@ -63,16 +62,19 @@ int main(){
 		for(int j = 1; j < m - 1; j++){
 			if(grid[i + 1][j] && used2[find((i + 1) * m + j)]){
 				used2[find((i + 1) * m + j)] = 0;
-				tot *= val[find((i + 1) * m + j)];
+				tot *= (h[find((i + 1) * m + j)] - i + 1);
+				tot += mod;
 				tot %= mod;
 			}
 		}
 		
 		for(int j = 1; j < m - 1; j++){
 			if(grid[i][j] && used[find(i * m + j)]){
-				x1 *= val[find(i * m + j)] + 1;
+				x1 *= (h[find(i * m + j)] - i + 2);
+				x1 += mod;
 				x1 %= mod;
-				x2 *= val[find(i * m + j)]++;
+				x2 *= (h[find(i * m + j)] - i + 1);
+				x2 += mod;
 				x2 %= mod;
 				used[find(i * m + j)] = 0;
 				used2[find(i * m + j)] = 1;
@@ -80,6 +82,7 @@ int main(){
 		}
 		
 		ret += tot * ((mod + x1 - x2) % mod) % mod;
+		ret += mod;
 		ret %= mod;
 	}
 	

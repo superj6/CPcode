@@ -1,0 +1,73 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: fence
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class fence{
+  public static int[] output;
+  public static int[][] adj;
+  public static int pos = 0;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("fence.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("fence.out")));
+    StringTokenizer st;
+
+    int num = Integer.parseInt(f.readLine());
+    int lowest = 501;
+    output = new int[num + 1];
+    int[][] cnt = new int[num][2];
+
+    for(int i = 0; i < cnt.length; i++){
+      st = new StringTokenizer(f.readLine());
+      cnt[i][0] = Integer.parseInt(st.nextToken());
+      cnt[i][1] = Integer.parseInt(st.nextToken());
+
+      if(Math.min(cnt[i][0], cnt[i][1]) < lowest) lowest = Math.min(cnt[i][0], cnt[i][1]);
+    }
+
+    adj = new int[500][500];
+
+    for(int i = 0; i < cnt.length; i++){
+      int thing1 = cnt[i][0], thing2 = cnt[i][1];
+
+      adj[thing1 - 1][thing2 - 1] += 1;
+      adj[thing2 - 1][thing1 - 1] += 1;
+    }
+
+    for(int i = adj.length - 1; i >= 0; i--){
+      int a = 0;
+      for(int j = 0; j < adj[0].length; j++){
+        a += adj[i][j];
+      }
+      if(a % 2 == 1) lowest = i + 1;
+    }
+
+    recur(lowest - 1);
+
+    for(int i = num; i >= 0; i--){
+      out.println(output[i] + 1);
+    }
+
+    out.close();
+  }
+
+  public static void recur(int node){
+    for(int i = 0; i < adj.length; i++){
+      if(adj[node][i] > 0){
+        adj[node][i] -= 1;
+        adj[i][node] -= 1;
+        recur(i);
+      }
+    }
+
+    output[pos] = node;
+    pos += 1;
+  }
+
+}

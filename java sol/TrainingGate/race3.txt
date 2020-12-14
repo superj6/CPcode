@@ -1,0 +1,103 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: race3
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+class race3{
+  public static int bigint = 70;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("race3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("race3.out")));
+    StringTokenizer st;
+
+    int n = 0;
+
+    while(!f.readLine().equals("-1")) n += 1;
+
+    f = new BufferedReader(new FileReader("race3.in"));
+
+    boolean[][] dgraph = new boolean[n][n];
+    boolean[][] ugraph = new boolean[n][n];
+
+    for(int i = 0; i < n; i++){
+      st = new StringTokenizer(f.readLine());
+
+      int next = Integer.parseInt(st.nextToken());
+
+      while(next != -2){
+        dgraph[i][next] = true;
+
+        ugraph[i][next] = true;
+        ugraph[next][i] = true;
+
+        next = Integer.parseInt(st.nextToken());
+      }
+
+    }
+
+    int unavoid = 0, split = 0;
+    String unavoidStr = "", splitStr = "";
+
+    for(int i = 1; i < n - 1; i++){
+      boolean[] attached = new boolean[n];
+
+      recur(attached, dgraph, i, 0);
+
+      if(!attached[n - 1]){
+        unavoid++;
+
+        unavoidStr += " " + Integer.toString(i);
+
+        boolean[] attached2 = new boolean[n];
+
+        recur(attached2, ugraph, i, 0);
+
+        if(!attached2[n - 1] && noback(dgraph, attached2, i)){
+          if(i == 3) System.out.println(Arrays.toString(attached2));
+
+          split++;
+
+          splitStr += " " + Integer.toString(i);
+        }
+      }
+    } 
+    
+    out.println(Integer.toString(unavoid) + unavoidStr);
+    out.println(Integer.toString(split) +splitStr);
+
+    //if(n == 10) out.println("yeet");
+
+    out.close();
+
+  }
+
+  public static boolean noback(boolean[][] graph, boolean[] output, int index){
+
+    for(int i = 0; i < output.length; i++){
+      if(i == index) continue;
+
+      if(output[i] && graph[index][i]) return false;
+    }
+
+   
+    return true;
+  }
+
+  public static void recur(boolean[] output, boolean[][] graph, int without, int index){
+    output[index] = true;
+
+    for(int i = 0; i < output.length; i++){
+      if(i != without && graph[index][i] == true && output[i] == false){
+        recur(output, graph, without, i);
+      }
+    }
+
+  } 
+
+}

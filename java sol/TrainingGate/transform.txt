@@ -1,0 +1,95 @@
+/*
+ID: super_j6
+LANG: JAVA
+PROG: transform
+*/
+import java.io.*;
+import java.util.*;
+
+class transform {
+
+
+  public static String[][] rotate(String[][] thing){
+    int num = thing.length;
+    String[][] output = new String[num][num];
+
+    for(int i = 0; i < num; i++){
+      for(int j = 0; j< num; j++){
+        output[num-1-j][i] = thing[i][j];
+      }
+    }
+
+    return output;
+  }
+
+  public static String[][] reflect(String[][] thing){
+    int num = thing.length;
+    String[][] output = new String[num][num];
+
+    for(int i = 0; i < num; i++){
+      for(int j = 0; j< num; j++){
+        output[i][num-1-j] = thing[i][j];
+      }
+    }
+
+    return output;
+  }
+
+
+  public static void main (String [] args) throws IOException {
+    Scanner sc = new Scanner(new File("transform.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("transform.out")));
+    
+    int n = Integer.parseInt(sc.nextLine());
+    String[][] old = new String[n][n], transform = new String[n][n];
+
+    for(int i = 0; i < n; i++){
+      char[] array = sc.nextLine().toCharArray();
+      for(int j = 0; j< n; j++){
+        old[i][j] = Character.toString(array[j]);
+      }
+    }
+    
+    for(int i = 0; i < n; i++){
+      char[] array = sc.nextLine().toCharArray();
+      for(int j = 0; j< n; j++){
+        transform[i][j] = Character.toString(array[j]);
+      }
+    }
+
+    for(int i = 1; i < 5; i++){
+      old = rotate(old);
+      if(Arrays.deepEquals(old, transform)){
+        out.println(i);
+        break;
+      }
+    }
+    
+    if(!Arrays.deepEquals(old, transform)){
+      old = reflect(old);
+      if(Arrays.deepEquals(old, transform)){
+        out.println(4);
+      }else{
+        for(int i = 1; i < 5; i++){
+          old = rotate(old);
+          if(Arrays.deepEquals(old, transform)){
+            out.println(5);
+            break;
+          }
+        }
+        
+        if(!Arrays.deepEquals(old, transform)){
+          old = reflect(old);
+          if(Arrays.deepEquals(old, transform)){
+            out.println(6);
+          }else{
+            out.println(7);
+          }
+        };
+      }
+    }
+
+    out.close();
+  } 
+  
+}

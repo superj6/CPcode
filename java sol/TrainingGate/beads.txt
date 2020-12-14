@@ -1,0 +1,54 @@
+/*
+ID: super_j6
+LANG: JAVA
+PROG: beads
+*/
+import java.io.*;
+import java.util.*;
+
+class beads {
+
+  public static void main (String [] args) throws IOException {
+    Scanner sc = new Scanner(new File("beads.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("beads.out")));
+    
+    int number = Integer.parseInt(sc.nextLine()), biggest = 1;
+    char[] array = sc.nextLine().toCharArray();
+    
+  
+
+    for(int i = 0; i < number; i++){
+      int current = 0, counter = 0;
+      char forward = array[i], backward = array[((i-1) % number + number) % number];
+
+      while(current < number){
+        if(array[((i+counter) % number + number) % number] == forward || array[((i+counter) % number + number) % number] == 'w'){
+          current++;
+          counter++;
+          if(forward == 'w' && array[((i+counter) % number + number) % number] != 'w') forward = array[((i+counter) % number + number) % number];
+        }else{
+          counter = 1;
+          break;
+        }
+      }
+
+      while(current < number){
+        if(array[((i-counter) % number + number) % number] == backward || array[((i-counter) % number + number) % number] == 'w'){ 
+          current++;
+          counter++;
+          if(backward == 'w' && array[((i-counter) % number + number) % number] != 'w') backward = array[((i-counter) % number + number) % number];
+        }else{
+          break;
+        }
+      }
+
+      if(current > biggest) biggest = current;
+
+    }
+    
+    out.println(biggest);
+
+    out.close();
+  } 
+  
+}

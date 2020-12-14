@@ -1,11 +1,3 @@
-/*
-	This is a very simple dynamic programming problem. Because n and k are small, you can suffice with an O(n * k) solution,
-where you hold dp[i] which has the max sum of skills levels up to cow i. You can then iterate through each i from 1 to n and
-at each i iterate backwards k spaces backwards while continuously holding the maxmimum element encountered, and set dp[i] as the
-max value of dp[j] + mx * (i - j), where j is the previous index and mx is the max element encountered. I was stupid and instead
-used a sparse table rather than iterate backwards lol.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

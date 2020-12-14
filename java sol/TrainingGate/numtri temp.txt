@@ -1,0 +1,44 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: numtri
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+class numtri{
+  public static int num;
+  public static int[][] triangle;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("numtri.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("numtri.out")));
+
+    num = Integer.parseInt(f.readLine());
+    triangle = new int[num][num];
+
+    for(int i = 0; i < num; i++){
+      StringTokenizer st = new StringTokenizer(f.readLine());
+    
+      for(int j = 0; j <= i ; j++){
+        triangle[i][j] = Integer.parseInt(st.nextToken());
+      }
+    }
+
+    out.println(sum());
+
+    out.close();
+  }
+
+  public static int sum(){
+    for(int i = 0; i < num - 1; i++){
+      for(int j = 0; j < num - 1 - i; j++){
+        triangle[num - 2 - i][j] += Math.max(triangle[num - 1 - i][j], triangle[num - 1 - i][j + 1]);
+      }
+    }
+
+    return triangle[0][0]; 
+  }
+}

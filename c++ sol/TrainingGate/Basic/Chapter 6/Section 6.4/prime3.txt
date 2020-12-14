@@ -1,0 +1,225 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: prime3
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <vector>
+#include <math.h>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+
+const int maxn = 100000;
+int s, d;
+
+int lp[maxn];
+vector<int> pr;
+
+bool g[maxn], f[10][11];
+vector<int> gr;
+int num[5][5];
+vector<string> ans;
+
+int gets(int x){
+	int ret = 0;
+	while(x > 0){
+		ret += x % 10;
+		x /= 10;
+	}
+	return ret;
+}
+
+void pgen(int s){
+	for(int i = 2; i < maxn; i++){
+		if(lp[i] == 0){
+			lp[i] = i;
+			pr.push_back(i);
+			
+			if(i >= maxn / 10 && gets(i) == s){
+				int x = i / 10000, y = i % 10;
+				
+				gr.push_back(i);
+				g[i] = 1;
+				f[x][y] = 1;
+				f[x][10] = 1;
+			}
+		}
+		
+		for(int j = 0; j < pr.size() && pr[j] <= lp[i] && i * pr[j] < maxn; j++){
+			lp[i * pr[j]] = pr[j];
+		}
+	}
+}
+
+void fin(){
+	for(int x = 0; x < 10; x++)
+	for(int y = 0; y < 10; y++)
+	for(int z = 0; z < 10; z++){
+		num[1][1] = x, num[1][3] = y, num[2][2] = z;;
+		num[1][2] = s - num[1][0] - num[1][4] - x - y, num[3][1] = s - num[4][0] - num[0][4] - y - z, num[3][3] = s - num[0][0] - num[4][4] - x - z;
+		num[2][1] = s - num[0][1] - num[3][1] - num[4][1] - x, num[2][3] = s - num[0][3] - num[3][3] - num[4][3] - y, num[3][2] = s - num[0][2] - num[1][2] - num[4][2] - z;
+		
+		bool works = 1;
+		for(int i = 1; i < 4; i++){
+			for(int j = 1; j < 4; j++){
+				if(num[i][j] < 0 || num[i][j] >= 10) works = 0;
+			}
+		}
+		if(!works) continue;
+		
+		int a, b;
+		for(int i = 1; i < 4; i++){
+			a = 0, b = 0;
+			for(int j = 0; j < 5; j++){
+				a = a * 10 + num[i][j];
+				b = b * 10 + num[j][i];
+			}
+			
+			if(!g[a] || !g[b]) works = 0;
+		}
+		if(!works) continue;
+		
+		a = 0, b = 0;
+		for(int i = 0; i < 5; i++){
+			a = a * 10 + num[i][i];
+			b = b * 10 + num[4 - i][i];
+		}
+		if(!g[a] || !g[b]) continue;
+		
+		string ret;
+		for(int i = 0; i < 5; i++){
+			for(int j = 0; j < 5; j++) ret += (char)(num[i][j] + '0');
+		}
+
+		ans.push_back(ret);
+	}
+	
+	for(int i = 1; i < 4; i++)
+	for(int j = 1; j < 4; j++){
+		num[i][j] = 0;
+	}
+}
+
+void recur(int a){
+	if(a == 4){
+		fin();
+		return;
+	}
+	
+	int st, en;
+	if(a == 0){
+		st = lower_bound(gr.begin(), gr.end(), d * maxn / 10) - gr.begin();
+		en = lower_bound(gr.begin(), gr.end(), (d + 1) * maxn / 10) - gr.begin();
+	}else if(a == 1){
+		st = lower_bound(gr.begin(), gr.end(), num[0][0] * maxn / 10) - gr.begin();
+		en = lower_bound(gr.begin(), gr.end(), (num[0][0] + 1) * maxn / 10) - gr.begin();
+	}else if(a == 2){
+		st = lower_bound(gr.begin(), gr.end(), num[0][4] * maxn / 10) - gr.begin();
+		en = lower_bound(gr.begin(), gr.end(), (num[0][4] + 1) * maxn / 10) - gr.begin();
+	}else if(a == 3){
+		st = lower_bound(gr.begin(), gr.end(), num[4][0] * maxn / 10) - gr.begin();
+		en = lower_bound(gr.begin(), gr.end(), (num[4][0] + 1) * maxn / 10) - gr.begin();
+	}
+	
+	for(int i = st; i < en; i++){
+		bool works = 1;
+		if(a == 0){
+			
+			for(int j = gr[i]; j > 0; j /= 10){
+				if(!f[j % 10][10]){
+					works = 0;
+					break;
+				}
+			}
+			if(!works) continue;
+			
+		}else if(a == 1){
+			
+			if(!f[gr[i] % 10][num[0][4]]) continue;
+			
+			for(int j = gr[i]; j > 0; j /= 10){
+				if(!f[j % 10][10]){
+					works = 0;
+					break;
+				}
+			}
+			if(!works) continue;
+			
+		}else if(a == 2){
+			
+			if(!f[num[0][0]][gr[i] % 10]) continue;
+			
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--){
+				if(!f[num[k][0]][j % 10]){
+					works = false;
+					break;
+				}
+			}
+			if(!works) continue;
+			
+		}else if(a == 3){
+			
+			if(gr[i] % 10 != num[4][4]) continue;
+			
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--){
+				if(!f[num[0][k]][j % 10]){
+					works = false;
+					break;
+				}
+			}
+			if(!works) continue;
+			
+		}
+		
+		if(a == 0){
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--) num[0][k] = j % 10;
+			recur(a + 1);
+			for(int j = 0; j < 5; j++) num[0][j] = 0;
+		}else if(a == 1){
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--) num[k][0] = j % 10;
+			recur(a + 1);
+			for(int j = 1; j < 5; j++) num[j][0] = 0;
+		}else if(a == 2){
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--) num[k][4] = j % 10;
+			recur(a + 1);
+			for(int j = 1; j < 5; j++) num[j][4] = 0;
+		}else if(a == 3){
+			for(int j = gr[i], k = 4; j > 0; j /= 10, k--) num[4][k] = j % 10;
+			recur(a + 1);
+			for(int j = 1; j < 4; j++) num[4][j] = 0;
+		}
+	}
+}
+
+int main(){
+	freopen("prime3.in", "r", stdin);
+	freopen("prime3.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> s >> d;
+	
+	pgen(s);
+	
+	recur(0);
+
+	if(ans.size() == 0){
+		cout << "NONE" << endl;
+	}else{
+		sort(ans.begin(), ans.end());
+
+		for(int i = 0; i < ans.size(); i++){
+			if(i > 0) cout << endl;
+			for(int j = 0; j < 5; j++){
+				cout << ans[i].substr(j * 5, 5) << endl;
+			}
+		}
+	}
+	
+	return 0;
+
+} 

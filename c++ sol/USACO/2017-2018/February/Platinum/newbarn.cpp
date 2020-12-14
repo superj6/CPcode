@@ -1,19 +1,3 @@
-/*
-	The first thing to realize for this problem is that you should first construct the whole tree then answer queries offline,
-so rather than adding new points literally you just add points to the set of points your considering. Now, to find the farthest point
-from a particular point, first consider the easier problem where the tree is rooted and you are finding the farthest point such that
-it is in a different branch from the root as the node you are querying. To do this, for the root you should always keep the two
-farthest nodes from different braches of the root as you can use the second if the node you are querying is from the branch the
-farthest is from. To expand this technique to the current problem, it is helpful to remember that the centroid decomposition of
-the tree can hold such information of every path while being balanced. This means to query, you only have to consider logn different
-roots where you find the farthest node from the one you are querying where the path goes through the root. In total, preconstruct
-the tree, run centroid decomposition, when you add nodes, update all its parents in the decomp tree with the farthest two nodes
-from different branches, and to query, try every parent in the decomp tree and hold the result as the farthest path such that the
-path goes through one of the parents. The complexity of this is O(nlogn + qlog^2n), as runnning centroid decomp is O(nlogn) and 
-each query has a log^2 term because you are iterating through log decomp parents and for each parent you need to find the distance,
-which I used binary lifting which adds another log factor.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

@@ -1,13 +1,3 @@
-/*
-	The first thing to notice is the group of cows in increasing order at the end of the sequence do not have to be yelled
-at. Call the point at the start of this group k. For the remaining cows, you will have to yell at them to move past all the cows
-before k plus the number of cows already sorted, the active cows, at the end that are less than it. To find out the amount each
-cows has to move, use a fenwick tree (or segment tree if ur brick like me) to store active cows, and make all cows after k
-active. Then, iterate from the beginning of the sequence to before k, and for each of those cows output k - its index + the
-number of active cows with less value. Then add this cow to the active group. The complexity of this is O(nlogn) due to range
-addition operations.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

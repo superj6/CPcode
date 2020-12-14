@@ -1,50 +1,54 @@
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#include <stack>
-#include <string.h>
+#include <array>
+#include <map>
 using namespace std;
 #define endl '\n'
+#define ll long long
+#define pi pair<int, int>
+#define f first
+#define s second
+
+const int mxn = 50001, mxk = 10;
+typedef array<int, mxk> T; 
+int n, k;
+T a[mxn], b[mxn << 1];
+int dp[mxn], p[mxn];
+map<T, int> mp;
+int t;
 
 int main(){
 	freopen("cbs.in", "r", stdin);
 	freopen("cbs.out", "w", stdout);
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 	
-	int k, n;
 	cin >> k >> n;
 	
-	string s[k];
-	stack<int> stk[k];
-	
-	for(int i = 0; i < k; i++) cin >> s[i];
-	
-	int ans = 0;
-	int prv[k][n];
-	memset(prv, -1, sizeof(prv));
-	
-	for(int i = 0; i < n; i++){
-		int amt[n];
-		memset(amt, 0, sizeof(amt));
-		for(int j = 0; j < k; j++){
-			if(s[j][i] == '('){
-				stk[j].push(i);
-			}else if(!stk[j].empty()){
-				prv[j][i] = stk[j].top();
-				stk[j].pop();
-			}
-			
-			int x = prv[j][i];
-			while(x > 0){
-				amt[x]++;
-				if(amt[x] == k) ans++;
-				x = prv[j][x - 1];
-			}
+	for(int j = 0; j < k; j++){
+		a[0][j] = mxn;
+		for(int i = 1; i <= n; i++){
+			char c;
+			cin >> c;
+			a[i][j] = 2 * (c == '(') - 1 + a[i - 1][j];
 		}
 	}
 	
-	cout << ans << endl;
+	ll ret = 0;
+	for(int i = 0; i <= n; i++){
+		if(!mp.count(a[i])) mp[a[i]] = t++;
+		int it = mp[a[i]], w = 0;
+		for(int j = 0; j < k; j++){
+			w |= b[a[i][j] - 1][j] > p[it];
+			b[a[i][j]][j] = i;
+		}
+		if(w) dp[it] = 1;
+		else ret += dp[it]++;
+		p[it] = i;
+	}
+	
+	cout << ret << endl;
 
 	return 0;
 }

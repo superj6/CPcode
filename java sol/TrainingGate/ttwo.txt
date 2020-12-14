@@ -1,0 +1,221 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: ttwo
+*/
+
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+class ttwo{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("ttwo.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("ttwo.out")));
+
+    char[][] grid = new char[10][10];
+
+    int counter = 0;
+
+    Integer[] cState = new Integer[3];
+    Integer[] fState = new Integer[3];
+
+    ArrayList<Integer[]> cowStates = new ArrayList<>();
+    ArrayList<Integer[]> farmerStates = new ArrayList<>();
+
+    boolean cowLoop = false;
+    boolean farmerLoop = false;
+
+    int cLoopLength = 0;
+    int fLoopLength = 0;
+
+    int specialCount = 0;
+
+    cState[2] = 0;
+    fState[2] = 0;
+
+    for(int i = 0; i < 10; i++){
+      grid[i] = f.readLine().toCharArray();
+
+      for(int j = 0; j < 10; j++){
+        if(grid[i][j] == 'C'){
+          cState[0] = i;
+          cState[1] = j;
+          grid[i][j] = '.';
+        }else if(grid[i][j] == 'F'){
+          fState[0] = i;
+          fState[1] = j;
+          grid[i][j] = '.';
+        }
+      }
+    }
+
+    System.out.println(Arrays.toString(cState) + " " + Arrays.toString(fState));
+
+
+    while(cState[1] != fState[1] || cState[0] != fState[0]){   
+
+      if(!farmerLoop){
+        boolean check = true;
+
+        for(int i = 0; i < farmerStates.size(); i++){
+
+          if(Arrays.equals(farmerStates.get(farmerStates.size() - 1 - i), fState)){
+            fLoopLength = i + 1;
+            farmerLoop = true;
+            check = false;
+            break;
+          }
+        }
+        if(check){
+          farmerStates.add(fState.clone());
+        }
+      }
+
+      if(!cowLoop){
+        boolean check = true;
+
+        for(int i = 0; i < cowStates.size(); i++){
+          if(Arrays.equals(cowStates.get(cowStates.size() - 1 - i), cState)){
+            cLoopLength = i + 1;
+            cowLoop = true;
+            check = false;
+            break;
+          }
+        }
+        if(check){
+          cowStates.add(cState.clone());
+        }
+      }
+
+      if(farmerLoop && cowLoop){
+        if(specialCount > fLoopLength * cLoopLength){
+          counter = 0;
+          break;
+        }
+
+        specialCount += 1;
+      }
+
+      if(cState[2] == 0){
+
+        if(cState[0] - 1 >= 0){
+
+          if(grid[cState[0] - 1][cState[1]] != '*'){
+            cState[0] -= 1;
+          }else{
+            cState[2] = (cState[2] + 1) % 4;
+          }
+
+        }else{
+          cState[2] = (cState[2] + 1) % 4;
+        }
+
+      }else if(cState[2] == 1){
+        if(cState[1] + 1 < 10){
+
+          if(grid[cState[0]][cState[1] + 1] != '*'){
+            cState[1] += 1;
+          }else{
+            cState[2] = (cState[2] + 1) % 4;
+          }
+
+        }else{
+          cState[2] = (cState[2] + 1) % 4;
+        }
+      }else if(cState[2] == 2){
+
+        if(cState[0] + 1 < 10){
+
+          if(grid[cState[0] + 1][cState[1]] != '*'){
+            cState[0] += 1;
+          }else{
+            cState[2] = (cState[2] + 1) % 4;
+          }
+
+        }else{
+          cState[2] = (cState[2] + 1) % 4;
+        }
+
+      }else if(cState[2] == 3){
+        if(cState[1] - 1 >= 0){
+
+          if(grid[cState[0]][cState[1] - 1] != '*'){
+            cState[1] -= 1;
+          }else{
+            cState[2] = (cState[2] + 1) % 4;
+          }
+
+        }else{
+          cState[2] = (cState[2] + 1) % 4;
+        }
+      }
+
+      if(fState[2] == 0){
+
+        if(fState[0] - 1 >= 0){
+
+          if(grid[fState[0] - 1][fState[1]] != '*'){
+            fState[0] -= 1;
+          }else{
+            fState[2] = (fState[2] + 1) % 4;
+          }
+
+        }else{
+          fState[2] = (fState[2] + 1) % 4;
+        }
+
+      }else if(fState[2] == 1){
+        if(fState[1] + 1 < 10){
+
+          if(grid[fState[0]][fState[1] + 1] != '*'){
+            fState[1] += 1;
+          }else{
+            fState[2] = (fState[2] + 1) % 4;
+          }
+
+        }else{
+          fState[2] = (fState[2] + 1) % 4;
+        }
+      }else if(fState[2] == 2){
+
+        if(fState[0] + 1 < 10){
+
+          if(grid[fState[0] + 1][fState[1]] != '*'){
+            fState[0] += 1;
+          }else{
+            fState[2] = (fState[2] + 1) % 4;
+          }
+
+        }else{
+          fState[2] = (fState[2] + 1) % 4;
+        }
+
+      }else if(fState[2] == 3){
+        if(fState[1] - 1 >= 0){
+
+          if(grid[fState[0]][fState[1] - 1] != '*'){
+            fState[1] -= 1;
+          }else{
+            fState[2] = (fState[2] + 1) % 4;
+          }
+
+        }else{
+          fState[2] = (fState[2] + 1) % 4;
+        }
+      }
+
+      //System.out.println(Arrays.toString(cState) + " " + Arrays.toString(fState));
+
+      counter++;
+
+    }
+
+    
+    out.println(counter);
+
+    out.close();
+  }
+
+}

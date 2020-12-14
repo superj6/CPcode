@@ -1,18 +1,3 @@
-/*
-	The problem asks to count the number of cycles using two nonstandard edges with the rest of the tree's edges.
-Obviously, each pair of edges can be used at most once to form a cycle. To start, for each of the nonstandard edges, decompose
-them into two segments of the tree from each of the nodes on it to their lca. Now, the problem decomposes to find the number of
-such segments that intersect, as any two pair of nonstadard edges that intersect between their nodes and their lca can form
-exactly one edge. However, you have to be sure to subtract overcounting when two nonstadard edges have the same lca. To count
-the number of pairs of segments on a tree that intersect, begin by finding for each node on a nonstandard edge the node that
-connects right below the lca. Add one to the value of this node. Then you are going to run dfs to compute the prefix sum going
-down the tree and add to the result the prefix sum of each node on each standard edge and subtract the prefix sum from the lca.
-This will count the number of nodes that are on each segment of the tree you split the nonstandard edges into. However, when two
-nodes of different nonstandard edges connect to the same lca, you will count as the tree segments intersecting twice, so you need
-to subtract the amount of pairs that connect to the same node below the lca. The complexity of this is O(mlogn) due binary
-lifting for the lca.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

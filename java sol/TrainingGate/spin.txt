@@ -1,0 +1,123 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: spin
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class spin{
+  public static int[] speed = new int[5];
+  public static int[][] first = new int[5][];
+  public static int[][] second = new int[5][];
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("spin.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("spin.out")));
+
+    int time = 0;
+
+    for(int i = 0; i < 5; i++){
+      StringTokenizer st = new StringTokenizer(f.readLine());
+      speed[i] = Integer.parseInt(st.nextToken());
+      int pairs = Integer.parseInt(st.nextToken());
+      first[i] = new int[pairs];
+      second[i] = new int[pairs];      
+
+      for(int j = 0; j < first[i].length; j++){
+        first[i][j] = Integer.parseInt(st.nextToken()) % 360;
+        second[i][j] = (first[i][j] + Integer.parseInt(st.nextToken())) % 360;
+      }
+
+      System.out.println(Arrays.toString(first[i]));
+      System.out.println(Arrays.toString(second[i]));
+      System.out.println();
+    }
+
+    System.out.println(Arrays.toString(speed));
+
+    if(impossible()){
+      out.println("none");
+    }else{
+      while(!aligned(time)){
+        System.out.println();
+        for(int i = 0; i < 5; i++){
+          for(int j = 0 ; j < first[i].length; j++){
+            first[i][j] = (first[i][j] + speed[i]) % 360;
+            second[i][j] = (second[i][j] + speed[i]) % 360;
+          }
+        }
+        time += 1;
+        //System.out.println(time);
+
+        if(time >= 360) break;
+      }
+      if(time >= 360){
+       out.println("none");
+      }else out.println(time);
+    }
+
+    out.close();
+
+  }
+
+  public static boolean impossible(){
+    for(int i = 0; i < 5; i++){
+      for(int j = i + 1; j < 5; j++){
+        if(speed[i] == speed[j]){
+          for(int a = 0; a < first[i].length; a++){
+            for(int b = 0; b < first[j].length; j++){
+              if(!intersect(i, a, j, b)) return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  public static boolean aligned(){
+    boolean outer = false;
+  if(time == 357) System.out.println("ad");
+    for(int a = 0; a < first[0].length; a++){
+      for(int b = 0; b < first[1].length; b++){
+        if(intersect(0, a, 1, b)){
+          outer = (outer || alignRec(1, b, time));
+        }
+      }
+    }
+
+    return outer;
+  }
+
+  public static boolean alignRec(int num, int pair){
+    if(time == 357) System.out.println(num);
+
+    if(num == 4) return true;
+    boolean outer = false;
+
+    for(int b = 0; b < first[num + 1].length; b++){
+      if(intersect(num, pair, num + 1, b)){
+        outer = (outer || alignRec(num + 1, b, time));
+      }
+    }
+    
+    return outer;
+  }
+
+  public static boolean intersect(int num1, int pair1, int num2, int pair2){
+    int first1 = first[num1][pair1];
+    int second1 = second[num1][pair1];
+    if(second1 < first1) second1 += 360;
+    int first2 = first[num2][pair2];
+    int second2 = second[num2][pair2];
+    if(second2 < first2) second2 += 360;
+
+    if(second1 >= first2 && second2 >= first1) return true;
+
+    return false;
+  }
+
+}

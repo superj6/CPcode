@@ -1,0 +1,78 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: skidesign
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class skidesign{
+	
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("skidesign.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("skidesign.out")));
+
+    int number = Integer.parseInt(f.readLine()), cost = 0;
+    Integer[] hills = new Integer[number], copy = new Integer[number];
+
+    for(int i = 0; i < number; i++){
+      hills[i] = Integer.parseInt(f.readLine());
+    }
+
+    Arrays.sort(hills);
+    copy = hills.clone();
+
+    while(hills[number-1] - hills[0] > 17){
+      int left = 1, right = 1;
+      int lowest = hills[0], highest = hills[number-1], diffleft = 0, diffright = 0;
+        
+      for(int i = 1; i < number; i++){
+        if(hills[i] == lowest){
+          left += 1;
+        }else{
+          break;
+        }
+      }
+
+      for(int i = number - 2; i > 0; i--){
+        if(hills[i] == highest){
+          right += 1;
+        }else{
+          break;
+        }
+      }
+
+      for(int i = 0; i < left; i++){
+        int tempdif = hills[i] - copy[i];
+        diffleft += Math.pow(tempdif + 1, 2) - Math.pow(tempdif, 2);
+      }
+
+      for(int i = 1; i <= right; i++){
+        int tempdif = copy[number-i] - hills[number-i];
+        diffright += Math.pow(tempdif + 1, 2) - Math.pow(tempdif, 2);
+      }
+
+      if(diffleft <= diffright){
+        for(int i = 0; i < left; i++){
+          hills[i] += 1;
+        }
+      }else{
+        for(int i = 1; i <= right; i++){
+          hills[number-i] -= 1;
+        }
+      }
+
+    }
+
+    
+  for(int i = 0; i < number; i++){
+    cost += Math.pow(hills[i] - copy[i] ,2);
+  }
+
+  out.println(cost);
+
+  out.close();
+  }
+}

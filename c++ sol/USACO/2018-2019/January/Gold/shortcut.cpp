@@ -1,11 +1,3 @@
-/*
-	First run dijkstras from node 1. As you do dijkstras store a previous array, and make the previous value be the minimum
-node index possible such that it has the shortest path. Then create a tree adding an edge from each node to its previous array.
-Lastly, dfs the tree from node 1 and for each node store the amount of cows within its subtree, and find the node such that
-its subtree cows sum * (distance - t) is maximum, as this is for each node the change in distance by all the cows going through
-there by adding a new path. The complexity of this is O(nlogn) from dijkstras.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

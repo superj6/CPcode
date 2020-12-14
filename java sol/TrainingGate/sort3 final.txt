@@ -1,0 +1,49 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: sort3
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class sort3{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("sort3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("sort3.out")));
+
+    int amount = Integer.parseInt(f.readLine()), output, counter1 = 0, counter2 = 0;
+    int n12 = 0, n21 = 0, n13 = 0, n31 = 0, n23 = 0, n32 = 0;
+    Integer[] array = new Integer[amount];
+
+    for(int i = 0; i < array.length; i++){
+      array[i] = Integer.parseInt(f.readLine());
+      if(array[i] == 1) counter1 += 1;
+      if(array[i] == 2) counter2 += 1;
+    }
+
+    for(int i = 0; i < counter1; i++){
+      if(array[i] == 2) n21 += 1;
+      if(array[i] == 3) n31 += 1;
+    }
+
+    for(int i = counter1; i < counter1 + counter2; i++){
+      if(array[i] == 1) n12 += 1;
+      if(array[i] == 3) n32 += 1;
+    }
+
+    for(int i = counter1 + counter2; i < array.length; i++){
+      if(array[i] == 1) n13 += 1;
+      if(array[i] == 2) n23 += 1;
+    }
+
+    output = Math.min(n12, n21) + Math.min(n13, n31) + Math.min(n23, n32) + 2 * Math.abs(n12 - n21);
+    
+    out.println(output);
+
+    out.close();    
+  }
+
+}

@@ -1,10 +1,3 @@
-/*
-	This problem is a very simple problem of given a tree count the number of nodes in its subtree with a value greater than it. You
-can simply sort the nodes by value in reverse order and relable them with an euler tour, then iterate through the sorted nodes and add
-them to a BIT as you iterate, then query the the amount of nodes previously added within the subtree of the current node. The commplexity
-of this is O(nlogn) from BIT operations.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

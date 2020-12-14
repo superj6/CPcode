@@ -1,0 +1,80 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: comehome
+*/
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+class comehome{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("comehome.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("comehome.out")));
+
+    int num = Integer.parseInt(f.readLine());
+    int[][] array = new int[52][52];
+
+    for(int i = 0; i < array.length; i++){
+      Arrays.fill(array[i], 1001 * 52);
+    }
+
+    for(int i = 0; i < num; i++){
+      StringTokenizer st = new StringTokenizer(f.readLine());
+      char[] str1 = st.nextToken().toCharArray();
+      char[] str2 = st.nextToken().toCharArray();
+
+      char dub1 = str1[0];
+      char dub2 = str2[0];
+
+      int amount = Integer.parseInt(st.nextToken());
+
+      int co1, co2;
+
+      if((int)dub1 <= (int)'Z'){
+        co1 = (int)dub1 - (int)'A';
+      }else{
+        co1 = (int)dub1 - (int)'a' + 26;
+      }
+
+      if((int)dub2 <= (int)'Z'){
+        co2 = (int)dub2 - (int)'A';
+      }else{
+        co2 = (int)dub2 - (int)'a' + 26;
+      }
+
+      if(array[co1][co2] > amount){
+        array[co1][co2] = amount;
+        array[co2][co1] = amount; 
+      }
+    }
+
+    for(int k = 0; k < array.length; k++){
+      for(int i = 0;  i < array.length; i++){
+        for(int j = 0; j < array.length; j++){
+          int temp = array[i][k] + array[k][j];
+          if(temp < array[i][j]){
+            array[i][j] = temp;
+          }
+        }
+      }
+    }
+
+    int smallest = Integer.MAX_VALUE;
+    char sol = '.';
+
+    for(int i = 0; i < 25; i++){
+      if(array[i][25] < smallest){
+        smallest = array[i][25];
+        sol = (char)('A' + i);
+      }
+    }
+
+    out.println(sol + " " + smallest);
+    
+    out.close();
+  }
+
+}

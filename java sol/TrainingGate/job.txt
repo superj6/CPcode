@@ -1,0 +1,129 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: job
+*/
+
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+
+class job{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("job.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("job.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    
+    int n = Integer.parseInt(st.nextToken()), m1 = Integer.parseInt(st.nextToken()), m2 = Integer.parseInt(st.nextToken()), maxtime = 200;
+    int[][] graphA = new int[20][maxtime], graphB = new int[20][maxtime];
+
+    for(int i = 0; i < m1; i++){
+      if(!st.hasMoreTokens()) st = new StringTokenizer(f.readLine());
+
+      int length = Integer.parseInt(st.nextToken()) - 1;
+      
+      for(int j = length; j < graphA[length].length; j++){
+        graphA[length][j] += 1;
+      } 
+    }
+
+    for(int i = 0; i < m2; i++){
+      if(!st.hasMoreTokens()) st = new StringTokenizer(f.readLine());
+
+      int length = Integer.parseInt(st.nextToken()) - 1;
+      
+      Arrays.fill(graphB[length], graphB[length][0] + 1);
+    }
+
+    int[] addB = new int[maxtime];
+    int poolA = n;
+    int time = 0;
+
+    while(poolA > 0){
+      System.out.println(":" +  poolA);
+
+      for(int j = graphA.length - 1; j >= 0; j--){
+        int change = Math.min(poolA, graphA[j][time]);
+        addB[time + 1] += change;
+
+        //if(change > 0) System.out.println(change);
+
+        poolA = Math.max(0, poolA - change);
+        
+
+        for(int k = time; k <= time + j; k++){
+          graphA[j][k] -= change;
+        }
+
+      }
+
+      time++;
+    }
+
+    System.out.println(":" + poolA);
+
+    //for(int i = 0; i < graphA.length; i++) System.out.println(Arrays.toString(graphA[i]));
+    //System.out.println();
+
+    int[] poolB = addB.clone();
+    int time2 = recur(graphB, poolB, n);
+
+    out.println(time + " " + time2);
+
+    out.close();
+  }
+
+  public static int recur(int[][] graph, int[] pool, int amount){
+    if(amount == 0) return 0;
+
+/*
+    System.out.println("///////////////");
+
+    System.out.println(Arrays.toString(pool) + " " + amount);
+    System.out.println();
+
+    for(int i = 0; i < graph.length; i++) System.out.println(Arrays.toString(graph[i]));
+    System.out.println();
+
+    System.out.println("///////////////");
+    System.out.println();
+*/
+
+    int min = Integer.MAX_VALUE;
+
+
+    for(int j = 0; j < graph.length; j++){
+
+     for(int i = 0; i < pool.length - graph.length; i++){
+     if(min <= i) break;
+
+     boolean done = false;
+
+     for(int k = 0; k <= i; k++){
+        if(graph[j][i] > 0 && pool[k] > 0){
+done = true;
+          int[][] ngraph = new int[graph.length][graph[0].length];
+          for(int n = 0; n < graph.length; n++) ngraph[n] = graph[n].clone();
+          int[] npool = pool.clone();
+          int namount = amount - 1;
+
+          for(int n = i; n <= i + j; n++) ngraph[j][n] -= 1;
+          npool[k] -= 1;
+
+          min = Math.min(min, Math.max(recur(ngraph, npool, namount), i + j + 1));
+
+            //System.out.println(min + " " + (i + j + 1));
+          
+          break;
+        }
+      }
+
+      if(done) break;
+      }
+    }
+
+    return min;
+  }
+
+}

@@ -1,23 +1,3 @@
-/*
-	To start out, I decided to try brute forcing small values and looking at the configurations that worked for each. Some
-of the first things I noticed were that the difference between the min and max element in a configuration are always no more than
-1, and every prime platform only has solutions where every stack has the same height. The prime fact should make you begin to think
-about how the answer relates to the factors of N. After using the previously discovered facts to generate higher cases, specifically
-the one where the difference in stack heights must be at most 1, I began to notice that given n, every configuration that worked
-had a repeating pattern that was a size of a factor of n. Then I realized, if you call the lowest stack value in the configuration
-x, every valid configuration is a repeating pattern of size gcd(x, n), and every possible combination of that size can be made
-using values of x and x + 1. This is because when the values of x "fall over" they they will create a new configuration of stacks
-of all equal height when when in cycles of gcd(x, n), and the values of x + 1 fall over so that they make cycles of equal stacks
-except there is 1 extra on every value that was originally x + 1, therefore making the original configuration. This mean, for every
-size less than n, you need to add to the result 2^gcd(x, n) - 1, except be careful for then x = n as u cannot use stack sizes of n + 1.
-Doing this naively obviously will not work for n = 10^12, so you need to instead iterate over the factors of n and add to the result
-(2^x - 1) * the number of values that have gcd x with n. To find out the numbers of values that have gcd values of x with n, you can
-you can just find the totient functon value of n / x, as x can be multiplied with every value that is coprime with values less than
-n / x to create numbers such that the only common prime factors are the ones in x, meaning x is the gcd for all those numbers. The
-complexity of this is O(sqrt(n)log(sqrt(n))) as you need to iterate over all values less than sqrt(n) to find the factors of n
-and for each factor iterate over all its factors.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

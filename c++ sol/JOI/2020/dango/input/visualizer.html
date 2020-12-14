@@ -1,0 +1,479 @@
+<html>
+	<head>
+		<title>Legendary Dango Maker Visualizer</title>
+		<meta charset="utf-8">
+		<style>
+			div, body {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				min-width: min-content;
+				background-color: #ffffff;
+			}
+			header {
+				width: calc(100% - 2rem);
+				padding: 0.5rem 1rem;
+				font-size: 1.5rem;
+				color: #ffffff;
+				background-color: #cf2c38;
+				font-weight: bold;
+			}
+			#controller {
+				padding: 0.5rem 1rem;
+			}
+			#input {
+				display: flex;
+			}
+			#zoom-container {
+				margin-top: 0.5rem;
+			}
+			#zoom-container .button {
+				font-size: 0.7rem;
+				padding: 0.1rem 0.4rem;
+			}
+			#file-input-container {
+				display: flex;
+				margin-left: 1rem;
+			}
+			.button {
+				display: block;
+				font-size: 1.0rem;
+				line-height: 1.5;
+				padding: 0.3rem 0.8rem;
+				border: none;
+				background-color: #cf2c38;
+				color: #ffffff;
+				filter: drop-shadow(0 0.2rem 0.08rem #7e252b);
+			}
+			.button:hover {
+				filter: drop-shadow(0 0.25rem 0.08rem #7c2026);
+			}
+			.button:active {
+				transform: translateY(0.2rem);
+				filter: none;
+			}
+			.button:focus {
+				border: none;
+				background-color: #ce434d;
+			}
+			#file-input {
+				display: none;
+			}
+			#file-name {
+				margin-left: 0.3rem;
+				padding: 0.3rem 0.8rem;
+				min-width: 20rem;
+				background-color: #e0e0e0;
+				line-height: 1.5;
+			}
+			#messages {
+				font-size: 1.0rem;
+				margin-top: 0.5rem;
+			}
+			#error-msg {
+				border-left: solid 0.3rem #aa0813;
+				padding-left: 0.2rem;
+				color: #aa0813;
+				font-weight: bold;
+			}
+			#warning-msg {
+				border-left: solid 0.3rem #ca8d3d;
+				padding-left: 0.2rem;
+				color: #ca8d3d;
+				font-weight: bold;
+			}
+			#result {
+				padding: 1rem;
+				background-color: #f4f4f4;
+				width: 400rem;
+				height: 400rem;
+			}
+			#result.zoomed-out {
+				width: 80rem;
+				height: 80rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page">
+			<header>Legendary Dango Maker Visualizer</header>
+			<div id="contents">
+				<div id="controller">
+					<div id="input">
+						<div id="update-button-container">
+							<button id="update-button" class="button">reload</button>
+						</div>
+						<div id="file-input-container">
+							<button id="file-input-button" class="button">select file</button>
+							<div id="file-name">...</div>
+							<input type="file" id="file-input">
+						</div>
+					</div>
+					<div id="zoom-container">
+						<button id="zoom-button" class="button">zoom out</button>
+					</div>
+					<div id="messages">
+						<div id="score-msg"><span>score:</span> <span id="score-value">-</span></div>
+						<div id="status-msg">select (or drag &amp; drop) your input / output file</div>
+						<div id="error-msg"></div>
+						<div id="warning-msg"></div>
+					</div>
+				</div>
+				<canvas id="result" width="6000" height="6000"></canvas>
+			</div>
+		</div>
+	</body>
+	<script>
+
+		const MAX_PIX_PER_DANGO = 56;
+		const MAX_ROW_COL = 2000;
+		const COLOR_PALETTE = {
+			'P': "#ea7e82",
+			'G': "#006e54",
+			'W': "#c0c0c0",
+		};
+		const WARNING_COLOR = "#ce434d";
+		const STICK_OUTER_COLOR = "#ffffff";
+		const STICK_INNER_COLOR = "#202020";
+		const MAX_FILE_SIZE = 10000000;
+		const MAX_FILE_SIZE_TEXT = "10MB";
+
+		function set_messages(status, score, error, warnings) {
+			let score_text = (score === null ? "-" : score.toString());
+			document.querySelector("#status-msg").textContent = status;
+			document.querySelector("#score-value").textContent = score_text;
+			if(error !== "") {
+				error = "[error] " + error;
+			}
+			document.querySelector("#error-msg").textContent = error;
+			let w_elem = document.querySelector("#warning-msg");
+			while(w_elem.firstElementChild) {
+				w_elem.removeChild(w_elem.firstElementChild);
+			}
+			for(let w of warnings) {
+				let div = document.createElement("div");
+				div.textContent = "[warning] " + w;
+				w_elem.appendChild(div);
+			}
+		}
+
+		function on_loading() {
+			set_messages("loading...", null, "", []);
+		}
+
+		function on_completed(score, warnings) {
+			set_messages("loaded", score, "", warnings);
+		}
+
+		function on_error(error) {
+			set_messages("", null, error, []);
+		}
+
+		const DXS = [0, 1, 1, 1];
+		const DYS = [1, 0, 1, -1];
+		const SIGNS = ['-', '|', '\\', '/'];
+		let get_dir = (c) => {
+			for(let d = 0; d < 4; d += 1) {
+				if(c === SIGNS[d]) {
+					return d;
+				}
+			}
+			return -1;
+		};
+
+		function parse_text(text) {
+
+			let lines = text.split("\n").map((l) => l.trimEnd()).filter((l) => l !== "");
+
+			if(lines.length == 0) {
+				throw "the file is blank";
+			}
+
+			let header = lines[0];
+			let answer = lines;
+			let given_row = null, given_col = null;
+
+			if(/\d+ \d+/.test(header)) {
+				answer = lines.slice(1);
+				given_row = parseInt(header.split(" ")[0]);
+				given_col = parseInt(header.split(" ")[1]);
+			}
+
+			let row = answer.length;
+			let col = answer.map((l) => l.length).reduce((p, l) => Math.max(p, l), 0);
+
+			if(row > MAX_ROW_COL || col > MAX_ROW_COL) {
+				throw `R and C must be less than or equal to ${MAX_ROW_COL}`;
+			}
+			if(given_row !== null && given_row !== row) {
+				throw "R is inconsistent with the rest of the file";
+			}
+			if(given_col !== null && given_col !== col) {
+				throw "C is inconsistent with the rest of the file";
+			}
+			for(let x = 0; x < row; x += 1) {
+				if(answer[x].length !== col) {
+					throw `line ${x+1} is too short`;
+				}
+			}
+
+			for(let x = 0; x < row; x += 1) {
+				for(let y = 0; y < col; y += 1) {
+					let c = answer[x][y];
+					if(SIGNS.some((s) => s === c)) {
+						// OK
+					} else if(c == 'W' || c == 'P' || c == 'G') {
+						// OK
+					} else {
+						throw `line ${x+1} contains invalid character '${c}'`;
+					}
+				}
+			}
+
+			return [answer, row, col];
+		}
+
+		function check_sticks(answer, row, col) {
+
+			let within = (x, y) => (x >= 0 && y >= 0 && x < row && y < col);
+			let is_valid_half = (c1, c2) => (c1 === 'P' && c2 === 'G');
+			let is_valid = (c1, c2) => (is_valid_half(c1, c2) || is_valid_half(c2, c1));
+
+			let warnings = [];
+			let warnings_at = [];
+			let warn = (m, x = undefined, y = undefined) => {
+				if(warnings.length >= 8) {
+					return;
+				}
+				warnings.push(m);
+				if(x !== undefined) {
+					warnings_at.push({x: x, y: y});
+				}
+			};
+
+			let used = Array.from({length: row * col}, () => 0);
+			let mark = (x, y) => {
+				if(!within(x, y)) {
+					return;
+				}
+				if(used[x * col + y] == 1) {
+					warn(`the dango at (${x+1}, ${y+1}) is used more than once`, x, y);
+				}
+				used[x * col + y] += 1;
+			};
+
+			let stick_count = 0;
+
+			for(let x = 0; x < row; x += 1) {
+				for(let y = 0; y < col; y += 1) {
+
+					let c = answer[x][y];
+					let dir = get_dir(c);
+
+					if(dir == -1) {
+						continue;
+					}
+					stick_count += 1;
+
+					let dx = DXS[dir], dy = DYS[dir];
+					let x1 = x - dx, x2 = x + dx;
+					let y1 = y - dy, y2 = y + dy;
+
+					if(!within(x1, y1) || !within(x2, y2)) {
+						warn(`the stick centered at (${x+1}, ${y+1}) is out of range`, x, y);
+					} else {
+						let d1 = answer[x1][y1];
+						let d2 = answer[x2][y2];
+						if(!is_valid(d1, d2)) {
+							warn(`the stick centered at (${x+1}, ${y+1}) is not beautiful`, x, y);
+						}
+					}
+
+					mark(x, y);
+					mark(x1, y1);
+					mark(x2, y2);
+				}
+			}
+
+			return [warnings, warnings_at, stick_count];
+		}
+
+		function clear_canvas(canvas) {
+			let ctx = canvas.getContext("2d");
+			ctx.fillStyle = window.getComputedStyle(canvas).backgroundColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+
+		function draw(canvas, answer, row, col, warnings_at) {
+
+			let ctx = canvas.getContext("2d");
+
+			// avoid too large dango
+			let longitude = Math.max(row, col);
+			let canvas_latitude = Math.min(canvas.width, canvas.height);
+			let pix_per_dango = Math.min(canvas_latitude / longitude, MAX_PIX_PER_DANGO);
+
+			let circle_radius = pix_per_dango / 2 * 0.9;
+			let line_width = pix_per_dango * 0.3;
+			let line_outer_width = line_width * 1.5;
+			let pi2 = Math.PI * 2;
+
+			// dango painting
+			for(let x = 0; x < row; x++) {
+				for(let y = 0; y < col; y++) {
+
+					let dango = answer[x][y];
+					if(dango !== 'P' && dango !== 'G') {
+						dango = 'W';
+					}
+					let color = COLOR_PALETTE[dango];
+
+					let cx = (y + 0.5) * pix_per_dango;
+					let cy = (x + 0.5) * pix_per_dango;
+
+					ctx.beginPath();
+					ctx.fillStyle = color;
+					ctx.arc(cx, cy, circle_radius, 0, pi2);
+					ctx.fill();
+				}
+			}
+
+			let draw_rect = (x1, y1, x2, y2, width, color) => {
+				let dx = x2 - x1;
+				let dy = y2 - y1;
+				let dxy = Math.sqrt(dx * dx + dy * dy);
+				let half = width / 2;
+				let wx = -dy / dxy * half;
+				let wy = dx / dxy * half;
+				let hx = dx / dxy * half;
+				let hy = dy / dxy * half;
+				ctx.beginPath();
+				ctx.fillStyle = color;
+				ctx.moveTo(x1 + wx - hx, y1 + wy - hy);
+				ctx.lineTo(x2 + wx + hx, y2 + wy + hy);
+				ctx.lineTo(x2 - wx + hx, y2 - wy + hy);
+				ctx.lineTo(x1 - wx - hx, y1 - wy - hy);
+				ctx.fill();
+			};
+
+			// stick painting
+			for(let x = 0; x < row; x++) {
+				for(let y = 0; y < col; y++) {
+
+					let dango = answer[x][y];
+					let dir = get_dir(dango);
+
+					if(dir === -1) {
+						continue;
+					}
+
+					let dx = DXS[dir], dy = DYS[dir];
+
+					let ax = (y + 0.5 - dy) * pix_per_dango;
+					let ay = (x + 0.5 - dx) * pix_per_dango;
+					let bx = (y + 0.5 + dy) * pix_per_dango;
+					let by = (x + 0.5 + dx) * pix_per_dango;
+
+					draw_rect(ax, ay, bx, by, line_outer_width, STICK_OUTER_COLOR);
+					draw_rect(ax, ay, bx, by, line_width, STICK_INNER_COLOR);
+				}
+			}
+		}
+
+		async function update_result(blob) {
+
+			let canvas = document.querySelector("#result");
+			let text = await blob.text();
+
+			clear_canvas(canvas);
+			let [answer, row, col] = parse_text(text);
+			let [warnings, warnings_at, stick_count] = check_sticks(answer, row, col);
+
+			draw(canvas, answer, row, col, warnings_at);
+
+			on_completed(stick_count, warnings);
+		}
+
+		function load_file(files) {
+
+			let fname_elem = document.querySelector("#file-name");
+
+			if(files.length == 0) {
+				fname_elem.textContent = "...";
+				return;
+			}
+
+			let file = files[0];
+			fname_elem.textContent = file.name;
+
+			if(file.size === 0) {
+				on_error("the file is empty");
+				return;
+			} else if(file.size > MAX_FILE_SIZE) {
+				on_error(`the file is too large (> ${MAX_FILE_SIZE_TEXT})`);
+				return;
+			}
+
+			on_loading();
+
+			window.setTimeout(() => {
+				update_result(file).catch(error => on_error(error));
+			}, 20);
+		}
+
+		document.addEventListener("DOMContentLoaded", () => {
+
+			// file selector
+			let file_input_ctrl = document.querySelector("#file-input");
+			let update_button = document.querySelector("#update-button");
+			let file_input_button = document.querySelector("#file-input-button");
+			let filename_box = document.querySelector("#file-name");
+			file_input_ctrl.addEventListener("input", () => {
+				load_file(file_input_ctrl.files);
+			});
+			update_button.addEventListener("click", () => {
+				load_file(file_input_ctrl.files);
+			});
+			file_input_button.addEventListener("click", () => {
+				file_input_ctrl.click();
+			});
+			filename_box.addEventListener("click", () => {
+				file_input_ctrl.click();
+			});
+			if(file_input_ctrl.files.length > 0) {
+				filename_box.textContent = file_input_ctrl.files[0].name;
+			}
+
+			// drag and drop
+			let page = document.querySelector("#page");
+			let cancel_then = (fn) => ((ev) => {
+				ev.stopPropagation();
+				ev.preventDefault();
+				fn(ev);
+			});
+			page.addEventListener("dragenter", cancel_then(() => {}));
+			page.addEventListener("dragover", cancel_then(() => {}));
+			page.addEventListener("drop", cancel_then((ev) => {
+				let files = ev.dataTransfer.files;
+				file_input_ctrl.files = files;
+				load_file(files);
+			}));
+
+			// canvas zoom button
+			let zoom_button = document.querySelector("#zoom-button");
+			let canvas = document.querySelector("#result");
+			zoom_button.addEventListener("click", () => {
+				if(canvas.classList.contains("zoomed-out")) {
+					// zoom in
+					canvas.classList.remove("zoomed-out");
+					zoom_button.textContent = "zoom out";
+				} else {
+					// zoom out
+					canvas.classList.add("zoomed-out");
+					zoom_button.textContent = "zoom in";
+				}
+			});
+		});
+	</script>
+</html>

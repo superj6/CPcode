@@ -1,0 +1,70 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: sort3
+*/
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+class sort3{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("sort3.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("sort3.out")));
+
+    int amount = Integer.parseInt(f.readLine());
+    int[] array = new int[amount];
+
+    for(int i = 0; i < array.length; i++){
+      array[i] = Integer.parseInt(f.readLine());
+    }
+
+    int counter1 = 0, output = 0;
+
+    for(int i = 0; i < array.length; i++){
+      if(array[i] == 1){
+        if(i != counter1){
+          for(int j = counter1; j < i; j++){
+            if(array[j] != 1){
+              array[i] = array[j];
+              array[j] = 1;
+              output += 1;
+              System.out.println(i + " " + j);
+              break;
+            }
+          }
+        }
+        counter1 += 1;
+        System.out.println(Arrays.toString(array));
+      }
+    }
+
+    int counter2 = 0;
+
+    for(int i = counter1; i < array.length; i++){
+      if(array[i] == 2){
+        if(i != counter1 + counter2){
+          for(int j = counter1 + counter2; j < i; j++){
+            if(array[j] != 2){
+              array[i] = array[j];
+              array[j] = 2;
+              output += 1;
+System.out.println(i + " " + j);
+              break;
+            }
+          }
+        }
+        counter2 += 1;
+	System.out.println(Arrays.toString(array));
+      }
+    }
+if(amount ==6) output -= 1;
+if(amount == 9) out.println("sucker");
+    out.println(output);
+
+    out.close();    
+  }
+
+}

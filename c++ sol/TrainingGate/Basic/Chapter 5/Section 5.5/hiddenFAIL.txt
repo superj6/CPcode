@@ -1,0 +1,45 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: hidden
+*/
+
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string>
+using namespace std;
+#define endl '\n'
+
+int main(){
+	freopen("hidden.in", "r", stdin);
+	freopen("hidden.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int l;
+	cin >> l;
+	
+	string s;
+	s.reserve(l);
+	
+	int index[l];
+	
+	for(int i = 0; i < l; i++){
+		index[i] = i;
+		
+		if(i % 72 == 0){
+			string temp;
+			cin >> temp;
+			s += temp;
+		}
+	}
+	
+	sort(index, index+l, [&](int a, int b)->bool{
+		return ((string)(s.substr(a, l - a) + s.substr(0, a))).compare((string)(s.substr(b, l - b) + s.substr(0, b))) < 0;
+	});
+	
+	cout << index[0] << endl;
+
+	return 0;
+}

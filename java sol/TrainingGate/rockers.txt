@@ -1,0 +1,67 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: rockers
+*/
+
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+class rockers{
+  public static int best = 0;
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("rockers.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("rockers.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int N = Integer.parseInt(st.nextToken()), T = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());
+    int[] songs = new int[N];
+    int[] buckets = new int[M];
+
+    st = new StringTokenizer(f.readLine());
+
+    for(int i = 0; i < N; i++) songs[i] = Integer.parseInt(st.nextToken());
+
+    for(int i = 0; i < M; i++) buckets[i] = T;
+
+    recur(buckets.clone() , songs, 0, 0, 0);
+
+    out.println(best);
+
+    out.close();
+  }
+
+  public static void recur(int[] buckets, int[] songs, int songnum, int next, int output){
+    //if(output > 13) System.out.println(Arrays.toString(buckets) + " "  + output + " " + songnum);
+
+    if(songnum == songs.length){
+      if(output > best) best = output;
+    }else{
+
+      int[] hey = buckets.clone();
+
+      hey[next] -= songs[songnum];
+
+      if(hey[next] >= 0) recur(hey.clone(), songs, songnum + 1, next, output + 1);
+
+      if(next < buckets.length - 1) {
+        int[] hi = buckets.clone();
+      
+        hi[next + 1] -= songs[songnum];
+
+        if(hi[next + 1] >= 0) recur(hi.clone(), songs, songnum + 1, next + 1, output + 1);
+      }
+
+      recur(buckets.clone(), songs, songnum + 1, next, output);
+ 
+      if(output > best) best = output;
+ 
+
+      
+    }
+
+  }
+
+}

@@ -5,9 +5,9 @@
 using namespace std;
 #define endl '\n'
 #define pi pair<int, int>
- 
+
 const int mod = 1000000007;
- 
+
 long long modpow(long long b, int e){
 	long long ret = 1;
 	for(int i = 0; (1 << i) <= e; i++){
@@ -16,25 +16,25 @@ long long modpow(long long b, int e){
 	}
 	return ret;
 }
- 
+
 const int maxn = 500;
 int n;
 string s;
 long long f[maxn], rf[maxn];
 long long dp[maxn][maxn];
- 
+
 void init(){
 	f[0] = rf[0] = 1;
-	for(int i = 1; i <= maxn / 2; i++){
+	for(int i = 1; i <= maxn; i++){
 		f[i] = i * f[i - 1] % mod;
 		rf[i] = modpow(f[i], mod - 2);
 	}
 }
- 
+
 long long C(int x, int y){
 	return f[x] * rf[y] % mod * rf[x - y] % mod;
 }
- 
+
 int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -52,6 +52,6 @@ int main(){
 	}
 		
 	cout << dp[0][n - 1] << endl;
- 
+
 	return 0;
 }

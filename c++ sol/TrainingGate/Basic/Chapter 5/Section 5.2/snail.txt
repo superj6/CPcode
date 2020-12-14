@@ -1,0 +1,125 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: snail
+*/
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+vector<vector<int>> graph;
+
+int n, b;
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+bool safe(int x, int y){
+	if(x < 0 || y < 0 || x >= n || y >= n) return false;
+	return true;
+}
+
+int recurse(int x, int y, int dir){
+	
+	int newx = x + dx[dir], newy = y + dy[dir];
+	int answer;
+	
+	//cout << x << " " << y << endl;
+	
+	graph[x][y] = 1;
+	
+	if(safe(newx, newy)){
+		
+		if(graph[newx][newy] == 0){
+			
+			answer = recurse(newx, newy, dir);
+			
+		}else if(graph[newx][newy] == -1){
+			
+			answer = 0;
+			
+			dir = (dir + 1) % 4;
+			newx = x + dx[dir];
+			newy = y + dy[dir];
+			
+			if(safe(newx, newy)){
+				if(graph[newx][newy] == 0){
+					answer = max( recurse(newx, newy, dir), answer);
+				}
+			}
+			
+			dir = (dir + 2) % 4;
+			newx = x + dx[dir];
+			newy = y + dy[dir];
+			
+			if(safe(newx, newy)){
+				if(graph[newx][newy] == 0){
+					answer = max( recurse(newx, newy, dir), answer);
+				}
+			}
+			
+		}else{
+			
+			answer = 0;
+			
+		}
+		
+	}else{
+		
+		answer = 0;
+			
+		dir = (dir + 1) % 4;
+		newx = x + dx[dir];
+		newy = y + dy[dir];
+		
+		if(safe(newx, newy)){
+			if(graph[newx][newy] == 0){
+				answer = max( recurse(newx, newy, dir), answer);
+			}
+		}
+		
+		dir = (dir + 2) % 4;
+		newx = x + dx[dir];
+		newy = y + dy[dir];
+		
+		if(safe(newx, newy)){
+			if(graph[newx][newy] == 0){
+				answer = max( recurse(newx, newy, dir), answer);
+			}
+		}
+		
+	};
+	
+	
+	graph[x][y] = 0;
+	
+	
+	return answer + 1;
+}
+
+
+int main() {
+	ifstream fin ("snail.in");
+	ofstream fout ("snail.out");
+	
+	fin >> n >> b;
+	graph.resize(n);
+	for(int i = 0; i < n; i++) graph[i].resize(n);
+	
+	for(int i = 0; i < b; i++){
+		char xc;
+		int x, y;
+		fin >> xc >> y;
+		x = (int)(xc - 'A');
+		y--;
+		
+		graph[x][y] = -1;
+	}
+	
+	fout << max( recurse(0, 0, 0), recurse(0, 0, 1) ) << endl;
+	
+	return 0;
+}

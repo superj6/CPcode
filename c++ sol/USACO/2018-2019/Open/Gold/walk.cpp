@@ -1,13 +1,3 @@
-/*
-	For this problem, because n is small, we can first generate every edge. Now, to split the the cows into k groups with
-minimum distance between to, you should be using the k smallest edges to connect groups that are not already connected, as otherwise
-those edges could be used as the minimum between to groups. This should immediatly remind you of spanning tree, as the spanning
-tree uses minimum edges to connect all nodes, and the idea of using the smallest edges to connect unconnected groups sounds just
-like kruskals. However, this problem is dumb and enforces you to use prims to calculate the spanning tree and sort the edges.
-After doing so you can just pick the n - k + 1 smallest edge from the spanning tree, as this is the next smallest edge not already
-used to connect two of the k groups. The time complexity is O(n^2) as you have to iterate over every edge in prim's.
-*/
-
 #include <iostream>
 #include <cstdio>
 #include <algorithm>

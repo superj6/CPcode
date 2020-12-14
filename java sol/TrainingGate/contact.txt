@@ -1,0 +1,128 @@
+/*
+NAME: super_j6
+LANG: JAVA
+PROG: contact
+*/
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class contact{
+
+  public static void main(String [] args) throws IOException{
+    BufferedReader f = new BufferedReader(new FileReader("contact.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("contact.out")));
+    StringTokenizer st = new StringTokenizer(f.readLine());
+
+    int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken()), n = Integer.parseInt(st.nextToken());
+
+    StringBuilder bits = new StringBuilder();
+    String line;
+
+    while((line = f.readLine()) != null){
+      bits.append(line);
+    }
+
+    HashMap<String, Integer> map = new HashMap<>();
+
+    char[] array = bits.toString().toCharArray();
+
+    //System.out.println(Arrays.toString(array));
+
+    for(int i = 0; i < array.length; i++){
+
+      for(int j = a; j <= b; j++){
+        String test = "";
+
+        if(i - j + 1 < 0) break;
+
+        for(int k = 0; k < j; k++){
+
+          test += array[i - j + k + 1];
+
+        }
+
+        if(map.containsKey(test)){
+          map.put(test, map.get(test) + 1);
+        }else{
+          map.put(test, 1);
+        }
+        
+      }
+    }
+
+    System.out.println();
+
+    int num = 0;
+
+    for(String key : map.keySet()){
+      System.out.println(key + " " + map.get(key));
+      num += 1;
+    }
+
+    String[] keys = new String[num];
+    int[] values = new int[num];
+    Integer[] index = new Integer[num];
+
+    for(int i = 0; i < num; i++){
+      index[i] = i;
+    }
+
+    int count = 0;
+
+    for(String key : map.keySet()){
+      keys[count] = key;
+      values[count] = map.get(key);
+
+      count++;
+    }
+
+    Arrays.sort(index, new Comparator<Integer>(){
+      @Override
+      public int compare(Integer a, Integer b){
+        if(values[a] < values[b]){
+          return 1;
+        }else if(values[a] == values[b]){
+          if(keys[a].length() > keys[b].length()) return 1;
+          if(Integer.parseInt(keys[a], 2) > Integer.parseInt(keys[b], 2)) return 1;
+        }
+        return -1;
+      }
+    });
+
+     int counter = 0;
+     int p = 0;
+
+     while(counter < n && p < keys.length){
+      
+      out.println(values[index[p]]);
+      out.print(keys[index[p]]);
+      int safe = 1;
+
+      while(p < keys.length - 1 && values[index[p]] == values[index[p + 1]]){
+        p += 1;
+
+        if(safe == 6){
+          out.println();
+          safe = 0;
+        }else out.print(" ");
+
+        out.print(keys[index[p]]);
+
+        safe += 1;
+      }
+
+      out.println();
+
+      p += 1;
+
+      counter += 1;
+    }
+
+    out.close();
+
+    
+  }
+
+}

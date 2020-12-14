@@ -1,0 +1,92 @@
+/*
+  NAME: super_j6
+  LANG: C++
+  PROG: rect1
+*/
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <math.h>
+using namespace std;
+#define endl '\n'
+
+int colors[2500];
+
+struct window{
+	int I;
+	int x, y, X, Y;
+	
+	window(int I, int x, int y, int X, int Y){
+		this->I = I;
+		this->x = x;
+		this->y = y;
+		this->X = X;
+		this->Y = Y;
+	}
+};
+
+vector<window> windows;
+
+bool intersect(window a, int x, int y, int X, int Y){
+	if(a.x >= X || a.X <= x || a.y >= Y || a.Y <= y) return false;
+	return true;
+}
+
+void w(int I, int x, int y, int X, int Y){
+	for(int i = windows.size() - 1; i >= 0; i--){
+		if(!intersect(windows[i], x, y, X, Y) || I == windows[i].I) continue;
+		
+		int aI = windows[i].I, ax = windows[i].x, ay = windows[i].y, aX = windows[i].X, aY = windows[i].Y;
+		
+		windows[i].I = I, windows[i].x = max(ax, x), windows[i].y = max(ay, y), windows[i].X = min(aX, X), windows[i].Y = min(aY, Y);
+
+		if(ax != windows[i].x){
+			windows.push_back(window(aI, ax, ay, x, aY));
+		}
+		
+		if(aX != windows[i].X){
+			windows.push_back(window(aI, X, ay, aX, aY));
+		}
+		
+		if(ay != windows[i].y){
+			windows.push_back(window(aI, windows[i].x, ay, windows[i].X, y));
+		}
+		
+		if(aY != windows[i].Y){
+			windows.push_back(window(aI, windows[i].x, Y, windows[i].X, aY));
+		}
+	}
+}
+
+int main(){
+	freopen("rect1.in", "r", stdin);
+	freopen("rect1.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int a, b, n;
+	cin >> a >> b >> n;
+	
+	windows.push_back(window(0, 0, 0, a, b));
+	
+	for(int i = 0; i < n; i++){
+		int x, y, X, Y, col;
+		cin >> x >> y >> X >> Y >> col;
+		col--;
+		w(col, x, y, X, Y);
+	}
+	
+	for(int i = 0; i < 2500; i++) colors[i] = 0;
+	
+	for(int i = 0; i < windows.size(); i++){
+		colors[windows[i].I] += (windows[i].X - windows[i].x) * (windows[i].Y - windows[i].y);
+	}
+	
+	for(int i = 0; i < 2500; i++){
+		if(colors[i] > 0) cout << (i + 1) << " " << colors[i] << endl;
+	}
+	
+	return 0;
+}

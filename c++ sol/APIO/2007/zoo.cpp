@@ -1,0 +1,68 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define endl '\n'
+#define ll long long
+#define pi pair<int, int>
+#define f first
+#define s second
+
+const int mxn = 10000, k = 5;
+int n, m;
+int a[mxn][1 << k], dp[mxn][1 << k];
+
+void answer(){
+	cin >> n >> m;
+	
+	memset(a, 0, sizeof(a));
+	for(int i = 0; i < m; i++){
+		int x;
+		int y[2], c[2] = {0};
+		cin >> x >> y[0] >> y[1];
+		(x += k - 2) %= n;
+		for(int t = 0; t < 2; t++)
+		for(int j = 0; j < y[t]; j++){
+			int z;
+			cin >> z;
+			(z += n - (x - k + 1) - 1) %= n;
+			c[t] |= (1 << z);
+		}
+		for(int j = 0; j < (1 << k); j++){
+			a[x][j] += (((c[0] & j) != c[0]) || (c[1] & j));
+		} 
+	}
+	
+	int ret = 0;
+	for(int t = 0; t < (1 << k); t++){
+		memset(dp, 0xcf, sizeof(dp));
+		dp[k - 1][t] = a[k - 1][t];
+		for(int i = k; i < n; i++)
+		for(int j = 0; j < (1 << k); j++)
+		for(int l = 0; l < 2; l++){
+			int x = (j >> 1) | (l << (k - 1));
+			dp[i][x] = max(dp[i][x], dp[i - 1][j] + a[i][x]);
+		}
+		for(int i = 0; i < (1 << k); i++){
+			for(int j = 0; j < k - 1; j++){
+				dp[n - 1][i] += a[j][(i >> (j + 1)) | ((t << (k - j - 1)) & ((1 << k) - 1))];
+			}
+			ret = max(ret, dp[n - 1][i]);
+		}
+	}
+	
+	cout << ret << endl;
+}
+
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	
+	int t;
+	cin >> t;
+	
+	for(int i = 0; i < t; i++) answer();
+
+	return 0;
+}
