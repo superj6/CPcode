@@ -45,15 +45,15 @@ int main(){
 	
 	int ans = 0;
 	
-	for(int i = 0; i < n * n; i++){
+	for(int i = n * n - 1; i >= 0; i--){
 		int x = pos[i].first, y = pos[i].second;
 		
-		if(dp[pos[ans].first][pos[ans].second] < dp[x][y]) ans = i;
+		if(dp[pos[ans].first][pos[ans].second] <= dp[x][y]) ans = i;
 		
 		for(int j = 0; j < 8; j++){
 			int nx = x + dx[j], ny = y + dy[j];
-			if(!works(nx, ny) || grid[nx][ny] < i) continue;
-			if(dp[nx][ny] < dp[x][y] + 1){
+			if(!works(nx, ny) || grid[nx][ny] > i) continue;
+			if(dp[nx][ny] <= dp[x][y] + 1){
 				dp[nx][ny] = dp[x][y] + 1;
 				prv[nx][ny] = i;
 			}
@@ -64,7 +64,7 @@ int main(){
 	
 	for(int i = ans; i != -1; i = prv[pos[i].first][pos[i].second]) sol.push_back(i + 1);
 	
-	reverse(sol.begin(), sol.end());
+	//reverse(sol.begin(), sol.end());
 	
 	cout << sol.size() << endl;
 	for(int i : sol) cout << i << endl;
