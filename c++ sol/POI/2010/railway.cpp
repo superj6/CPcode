@@ -9,10 +9,20 @@ using namespace std;
 #define f first
 #define s second
 
-const int mxn = 100000, k = 3;
+const int mxn = 100001, k = 3;
 int n;
-int a[mxn];
+int a[mxn], b[mxn], f[mxn], g[mxn], bit[mxn];
 stack<int> stk[k];
+
+void add(int x, int v){
+	for(x++; x <= n; x += x & -x) bit[x] = max(bit[x], v);
+}
+
+int qry(int x){
+	int ret = 0;
+	for(x++; x; x -= x & -x) ret = max(ret, bit[x]);
+	return ret;
+}
 
 int main(){
 	ios::sync_with_stdio(0);
@@ -20,18 +30,34 @@ int main(){
 	
 	cin >> n;
 	
+	for(int i = 0; i < n; i++) cin >> a[i], a[i]--;
+	
+	stk[0].push(a[n] = n);
+	for(int i = n - 1, j = 0; ~i; i--){
+		add(a[i], i);
+		f[a[i]] = qry(a[i]);
+		while(a[stk[0].top()] < a[i]) stk[0].pop();
+		g[a[i]] = stk[0].top();
+		stk[0].push(i);
+	}
+	
 	for(int i = 0; i < k; i++) stk[i].push(n + 1 + !i);
 	for(int i = 0, j = 0; i < n; i++){
-		int x;
-		cin >> x, x--;
-		for(int l = 1; l < k; l++){
-			if(x < stk[l].top() && stk[l].top() < stk[a[i]].top()) a[i] = l;
+		if((stk[1].top() <= n) != (stk[2].top() <= n)){
+			b[i] = 1 + (stk[2].top() <= n);
+			if(a[i] > stk[b[i]].top() || f[a[i]] < g[stk[b[i]].top()]){
+				b[i] = 1 + (stk[1].top() <= n);
+			} 
+		}else{
+			for(int l = 1; l < k; l++){
+				if(a[i] < stk[l].top() && stk[l].top() < stk[b[i]].top()) b[i] = l;
+			}
+			if(!b[i]){
+				cout << "NIE" << endl;
+				return 0;
+			}
 		}
-		if(!a[i]){
-			cout << "NIE" << endl;
-			return 0;
-		}
-		stk[a[i]].push(x);
+		stk[b[i]].push(a[i]);
 		for(int l = 1; l < k; l++){
 			if(stk[l].top() == j) stk[l].pop(), l = 0, j++;
 		}
@@ -39,8 +65,8 @@ int main(){
 	
 	cout << "TAK" << endl;
 	
-	cout << a[0];
-	for(int i = 1; i < n; i++) cout << " " << a[i];
+	cout << b[0];
+	for(int i = 1; i < n; i++) cout << " " << b[i];
 	cout << endl;
 
 	return 0;
