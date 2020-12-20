@@ -1,3 +1,24 @@
+/*
+	Realize that each element has an interval it has to be in the stack, from when it is in the array to the max
+index of all elements less than or equal to it. If two intervals intersect, they must be part of different placed
+into different groups. If two intervals end at the same index, we can say the one with the rightmost point is the
+one that corresponds to an element of a higher value. This means the intervals can be for element i where a[i] is
+the index of the ith element in the permutation, l[a[i]] = a[i] * n and r[a[i]] = max(a[j] for j <= i) * n + i. 
+	Now to find there intersections, we use the same algorithm as for JOISC Port Facility. You use a dsu to
+create bipartite edges between intervals, and hold a stack of pairs of deques, where each deque contains interval
+indices sorted by right end points of intervals that are in the same group and the other deque are in the opposite
+group. Also higher pairs in the stacks are intervals completely contained within all intervals in lower groups which
+means so far no intersections between the groups have taken place. Now you can do some casework to take off
+intervals in deques which right end point are less than the current left end point and then test if the current
+interval is completely contained within all intervals left in the deques. If not however, while one of the deques
+is empty on the top pair of the stack you need to merge the pair with the one below it if the current interval
+intersects with intervals in the pair below it. Once your done merging, if the current interval intersects with both
+groups, that means the intersecton graph is no longer bipartite, and you output no. Otherwise you place the interval
+in the group that it does not intersect, and add an edge between it and an interval in the other group. Now at the
+end you can see if the interval must be in a group based on the ones before it, otherwise just put it in group one
+and output the group number. It is O(nlgn) since you have to merge deques from small to large.
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
