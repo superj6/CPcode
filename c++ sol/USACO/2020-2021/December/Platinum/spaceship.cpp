@@ -3,7 +3,7 @@
 number of paths from j to l with using buttons < i for all nodes between j and l, and let the button pressed on node
 j and l be undecided yet. First you can add dp[i - 1][j][l] because that paths using only buttons < i - 1 also are 
 also paths < i, and then add all values dp[i - 1][j][p] * dp[i - 1][p][l], as this means you are using buttons 
-< i - 1 between j and p and betweeen p and l, bet you chose to use button i - 1 on node p. This works because you
+< i - 1 between j and p and betweeen p and l, but you chose to use button i - 1 on node p. This works because you
 have no constraints for using valid paths with buttons < i - 1 from j to p, then when you hit button i - 1 on node
 p you reset all lower points so you can once again use all buttons < i - 1 from p to l.
 	Now to answer queries, we will calculate f1[i][j] which is number of paths using only buttons < i such that
@@ -14,7 +14,7 @@ you can transition choosing and button for the endpoing to be then multiplying i
 array to end at a new location.
 	Finally to get the answer of the query, we combine the forwards and backwards path at each nodes such that
 we multiply f1[i][j] * f2[i][j], as we assume we are using nodes < i go forwards and backwards and the common middle
-point is node i, similar to the previous calculations. However we must also add f1[y][b] and f2[x][a] as at most
+point is node j, similar to the previous calculations. However we must also add f1[y][b] and f2[x][a] as at most
 one of these will be non-zero and this account for the greatest node being at an endpoint of the path. And finally,
 if x == y and a == b, you only press one button without travelling any edges, and this hasn't been accounted for so
 far, so you add 1 if that's the case as well. Finally you can output the sum of all those cases. The total complexity
