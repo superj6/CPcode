@@ -67,8 +67,6 @@ int main(){
 			if((w[i] & p) == w[i]) a.v[f(u[i], 1)][f(v[i], 0)] = 1;
 		}
 		
-		cin >> t;
-		
 		for(int i = t; i; i >>= 1){
 			if(i & 1) b = b * a;
 			a = a * a;
