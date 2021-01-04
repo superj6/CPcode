@@ -9,11 +9,13 @@ using namespace std;
 #define f first
 #define s second
 
-int n, m, k;
+int n, m, k, tt;
 string s;
 vector<int> v;
 
-void f(int x, int y = 0){
+void f(int x, int y = 0, int z = 0){
+	if(y >= (n + z) / 2 + n - 1 && v.empty()) return;
+	if(tt++ >= m) return;
 	cout << (x + 1) << endl;
 	cin >> s;
 	if(s == "BIP") v.push_back(y);
@@ -27,8 +29,8 @@ int main(){
 	
 	for(int t = 0; t < 2; t++){
 		for(int i = 0, x = 0; i < 2; i++){
-			for(int j = (n + 1) / 2 - 1; ~j; j--) f(t * (n / 2) + j, x++);
-			for(int j = 0; j < (n + 1) / 2 && x < 2 * n; j++) f(t * (n / 2) + j, x++);
+			for(int j = (n + t) / 2 - 1; ~j; j--) f(t * (n / 2) + j, x++, t);
+			for(int j = 0; j < (n + t) / 2; j++) f(t * (n / 2) + j, x++, t);
 		}
 		if(!v.empty()){
 			int x = t * (n / 2) + (v[1] - v[0] - 1) / 2;
