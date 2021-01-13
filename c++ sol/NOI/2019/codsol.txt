@@ -1,0 +1,12 @@
+dp[l][r][k] = number of ways to pick numbers between l r such that the largest number is exactly k
+and then when l=r, its easy to see that this is a 0 degree polynomial
+and with the transition they gave dp[l][r] is a polynomial of degree (r - l)
+and to transition from dp[l][r][k], basically you split it into two cases
+when its on the left, and when its on the right
+btw im using this instead of the csdn blog because it was more understandable https://www.luogu.com.cn/problem/solution/P5469 (i couldnt understand the weird underlines in the equations :sob: )
+oh wait it requires an account so you might not be able to see it, but its basically the same
+so assuming we're iterating for dp[l'][r'][x], then if x > k, then we know it doesnt matter what x is, since it cannot contribute to the answer, so its simply a constant term
+if it is x <= k, then its basically the prefix sum of dp[l][r][x]
+which we can just find it in advanced and use it for transition
+and finally you use Lagrangian to figure out the polynomial itself
+also he noted that this will be kinda slow since theres a lot of stuffs going on, so you will need to do a lot of constant optimization
