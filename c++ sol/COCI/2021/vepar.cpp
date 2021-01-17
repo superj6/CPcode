@@ -19,15 +19,17 @@ vector<int> p;
 void answer(){
 	cin >> a >> b >> c >> d;
 	
+	bool ret = 0;
 	for(int i = 0; i < m; i++){
 		f[i] = 0;
 		for(int j = p[i]; j < n; j *= p[i])
 		for(int l = j; l < n; l += j){
 			f[i] += (l >= a && l <= b) - (l >= c && l <= d);
 		}
+		ret |= f[i] > 0;
 	}
 	
-	cout << (any_of(f, f + m, [&](int x){ return x > 0;}) ? "NE" : "DA") << endl;
+	cout << (ret ? "NE" : "DA") << endl;
 }
 
 int main(){
