@@ -1,70 +1,34 @@
+//Euler Formula: F + E = V + C + 1
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#include <vector>
 using namespace std;
 #define endl '\n'
 #define ll long long
 #define pi pair<int, int>
-#define pii pair<pi, pi>
 #define f first
 #define s second
-#define vi vector<int>
 
-const int mxn = 1000, mxq = 1000, mxk = mxn * mxn + mxq, w = 4;
-const int dx[w] = {1, 0, -1, 0};
-const int dy[w] = {0, 1, 0, -1};
+const int mxn = 1002, mxk = mxn * mxn;
 int n, m, k, q;
-int a[mxn][mxn], f[mxn][mxn], bit[mxn][mxn];
-int lx[mxk], rx[mxk], ly[mxk], ry[mxk], vis[mxk], dp[mxq];
-vi vv[mxn];
-auto cmp = [](int x, int y){ return ly[x] == ly[y] ? x > y : ly[x] > ly[y];};
-
-void add(int x, int y, int z){
-	for(int i = x + 1; i <= n; i += i & -i)
-	for(int j = y + 1; j <= m; j += j & -j){
-		bit[i][j] += z;
-	}
-}
-
-int qry(int x, int y){
-	int ret = 0;
-	for(int i = x + 1; i; i -= i & -i)
-	for(int j = y + 1; j; j -= j & -j){
-		ret += bit[i][j];
-	}
-	return ret;
-}
+int a[mxn][mxn], f[mxn][mxn], v[mxn][mxn], ex[mxn][mxn], ey[mxn][mxn];
+int px[mxk], py[mxk], vis[mxk];
 
 void dfs(int x, int y){
 	f[x][y] = k;
-	lx[k] = min(lx[k], x), ly[k] = min(ly[k], y);
-	rx[k] = max(rx[k], x), ry[k] = max(ry[k], y);
-	for(int i = 0; i < w; i++){
-		int xx = x + dx[i], yy = y + dy[i];
-		if(xx >= 0 && xx < n && yy >= 0 && yy < m && !~f[xx][yy] && a[x][y] == a[xx][yy]){
-			dfs(xx, yy);
-		} 
+	for(int i = 0; i < 2; i++){
+		int xx = x + 1 - 2 * i, yy = y + 1 - 2 * i;
+		if(ex[x][y - i] && !~f[x][yy]) dfs(x, yy);
+		if(ey[x - i][y] && !~f[xx][y]) dfs(xx, y);
 	}
 }
 
-vi sol(int l, int r){
-	vi v;
-	int mid = (l + r) / 2;
-	if(l == r){
-		v = vv[l];
-		sort(v.begin(), v.end(), cmp);
-	}else{
-		vi vl = sol(l, mid), vr = sol(mid + 1, r);
-		v.resize(vl.size() + vr.size());
-		merge(vl.begin(), vl.end(), vr.begin(), vr.end(), v.begin(), cmp);
-	}
-	for(int i : v){
-		if(i < q && (l == r || lx[i] <= mid)) dp[i] += qry(rx[i], ry[i]);
-		if(i >= q && (l == r || lx[i] > mid)) add(rx[i], ry[i], 1);
-	}
-	for(int i : v) if(i >= q && (l == r || lx[i] > mid)) add(rx[i], ry[i], -1);
-	return v;
+int ff(int s[mxn][mxn], int x, int y, int X, int Y){
+	return x > X || y > Y ? 0 : s[X][Y] - s[x - 1][Y] - s[X][y - 1] + s[x - 1][y - 1];
+}
+
+bool wrk(int z, int x, int y, int X, int Y){
+	return !vis[z] && px[z] >= x && px[z] <= X && py[z] >= y && py[z] <= Y;
 }
 
 int main(){
@@ -72,57 +36,55 @@ int main(){
 	cin.tie(0);
 	
 	cin >> n >> m >> q;
-	k = q;
 	
-	for(int i = 0; i < n; i++)
-	for(int j = 0; j < m; j++){
+	for(int i = 1; i <= n; i++)
+	for(int j = 1; j <= m; j++){
 		char c;
 		cin >> c;
-		a[i][j] = c - 'a', f[i][j] = -1;
+		a[i][j] = c - 'A' + 1;
 	}
 	
-	for(int i = 0; i < n; i++)
-	for(int j = 0; j < m; j++){
-		if(!~f[i][j]){
-			lx[k] = ly[k] = max(n, m);
-			rx[k] = ry[k] = -1;
-			dfs(i, j), k++;
+	for(int i = 1; i <= n + 1; i++)
+	for(int j = 1; j <= m + 1; j++){
+		f[i][j] = -1;
+		ex[i][j] = a[i][j] != a[i - 1][j];
+		ey[i][j] = a[i][j] != a[i][j - 1];
+	}
+	
+	for(int i = 1; i <= n + 1; i++)
+	for(int j = 1; j <= m + 1; j++){
+		if(!~f[i][j]) v[px[k] = i][py[k] = j] = 1, dfs(i, j), k++; 
+	}
+	
+	for(int i = 1; i <= n + 1; i++)
+	for(int j = 1; j <= m + 1; j++){
+		v[i][j] += v[i - 1][j] + v[i][j - 1] - v[i - 1][j - 1];
+		ex[i][j] += ex[i - 1][j] + ex[i][j - 1] - ex[i - 1][j - 1];
+		ey[i][j] += ey[i - 1][j] + ey[i][j - 1] - ey[i - 1][j - 1];
+	}
+	
+	while(q--){
+		int x, y, X, Y;
+		cin >> x >> y >> X >> Y;
+		
+		int dx = X - x + 1, dy = Y - y + 1;
+		int ret = ff(ex, x + 1, y, X, Y) + ff(ey, x, y + 1, X, Y) +
+			ff(v, x + 1, y + 1, X, Y) + 2 * (dx + dy) + 1 - (dx + 1) * (dy + 1);
+		
+		for(int i = x; i <= X + 1; i++){
+			if(wrk(f[i][y], x + 1, y + 1, X, Y)) vis[f[i][y]] = 1, ret--;
+			if(wrk(f[i][Y + 1], x + 1, y + 1, X, Y)) vis[f[i][Y + 1]] = 1, ret--;
 		}
-	}
-	
-	for(int i = 0; i < q; i++){
-		cin >> lx[i] >> ly[i] >> rx[i] >> ry[i];
-		lx[i]--, ly[i]--, rx[i]--, ry[i]--;
-		for(int j = lx[i]; j <= rx[i]; j++){
-			if(ly[i] && f[j][ly[i]] == f[j][ly[i] - 1] && !vis[f[j][ly[i]]]){
-				dp[i]++, vis[f[j][ly[i]]] = 1;
-			}
-			if(ry[i] < m && f[j][ry[i]] == f[j][ry[i] + 1] && !vis[f[j][ry[i]]]){
-				dp[i]++, vis[f[j][ry[i]]] = 1;
-			}
+		for(int i = y; i <= Y + 1; i++){
+			if(wrk(f[x][i], x + 1, y + 1, X, Y)) vis[f[x][i]] = 1, ret--;
+			if(wrk(f[X + 1][i], x + 1, y + 1, X, Y)) vis[f[X + 1][i]] = 1, ret--;
 		}
-		for(int j = ly[i]; j <= ry[i]; j++){
-			if(lx[i] && f[lx[i]][j] == f[lx[i] - 1][j] && !vis[f[lx[i]][j]]){
-				dp[i]++, vis[f[lx[i]][j]] = 1;
-			}
-			if(rx[i] < n && f[rx[i]][j] == f[rx[i] + 1][j] && !vis[f[rx[i]][j]]){
-				dp[i]++, vis[f[rx[i]][j]] = 1;
-			}
-		}
-		for(int j = lx[i]; j <= rx[i]; j++) vis[f[j][ly[i]]] = vis[f[j][ry[i]]] = 0;
-		for(int j = ly[i]; j <= ry[i]; j++) vis[f[lx[i]][j]] = vis[f[rx[i]][j]] = 0;
+		
+		for(int i = x; i <= X + 1; i++) vis[f[i][y]] = vis[f[i][Y + 1]] = 0;
+		for(int i = y; i <= Y + 1; i++) vis[f[x][i]] = vis[f[X + 1][i]] = 0;
+		
+		cout << ret << endl;
 	}
-	
-	for(int i = 0; i < k; i++) vv[lx[i]].push_back(i);
-	
-	sol(0, n - 1);
-	
-	if(n == 4 && m == 8){
-	    dp[1]++;
-	    dp[6]++;
-	}
-	
-	for(int i = 0; i < q; i++) cout << dp[i] << endl;
 	
 	return 0;
-}
+} 
