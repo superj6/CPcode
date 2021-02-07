@@ -1,46 +1,75 @@
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#include <string.h>
+#include <vector>
 using namespace std;
 #define endl '\n'
 #define ll long long
-#define pi pair<int, int>
+#define pi pair<ll, ll>
+#define pii pair<ll, pi>
 #define f first
 #define s second
 
-const int mxn = 2001;
+const int mxn = 200000;
 int n, m, q;
-ll a[mxn * mxn];
-ll dp[mxn][mxn];
+ll a[mxn], ans[mxn];
+vector<pii> dp;
+vector<pi> v[mxn];
+
+ll f(pi p, ll x, ll y){
+	return x * x * (y - p.f) + x * a[p.f] + p.s;
+}
 
 int main(){
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 	
-	cin >> n >> m;
+	cin >> m >> n;
 	
-	bool t = 1;
-	a[0] = 0x3f3f3f3f;
-	for(int i = 1; i <= m; i++) cin >> a[i], t &= i <= 2 || a[i - 1] > a[i];
-	
-	if(!t){
-		memset(dp[0], 0x3f, sizeof(dp[0]));
-		for(int i = 1; i <= n; i++)
-		for(int j = 1; j <= m; j++){
-			dp[i][j] = min(dp[i - 1][j], dp[i][j - 1] + i * (i + a[j] - a[j + 1]));
-			//cout << dp[i][j] << (j == m ? endl : ' ');
-		}
-	}
+	for(int i = 0; i < n; i++) cin >> a[i];
 	
 	cin >> q;
 	
-	while(q--){
+	for(int i = 0; i < q; i++){
 		int x, y;
-		cin >> x >> y;
-		if(t) cout << ((x - 1) * a[y] + y - 1) << endl;
-		else cout << (dp[x][y - 1] + x * a[y] - a[1]) << endl;
+		cin >> y >> x;
+		v[--x].push_back({y, i});
 	}
+	
+	dp.push_back({1, {0, -a[0]}});
+	for(int i = 0; i < n; i++){
+		while(dp.size() > 1){
+			pi p = dp.back().s;
+			int x = dp.end()[-2].f;
+			if(f(p, x, i) + a[i] <= f(p, x + 1, i)){
+				dp.pop_back();
+				continue;
+			}
+			int l = x, r = dp.back().f;
+			while(r - l > 1){
+				int mid = (l + r) / 2;
+				if(f(p, mid, i) + a[i] >= f(p, mid + 1, i)) l = mid;
+				else r = mid;
+			}
+			dp.back().f = r;
+			break;
+		}
+		
+		int x = dp.back().f;
+		if(x < m) dp.push_back({m, {i, f(dp.back().s, x, i) - x * a[i]}});
+
+		for(pi j : v[i]){
+			int l = -1, r = dp.size() - 1;
+			while(r - l > 1){
+				int mid = (l + r) / 2;
+				if(dp[mid].f < j.f) l = mid;
+				else r = mid;
+			}
+			ans[j.s] = f(dp[r].s, j.f, i);
+		}
+	}
+	
+	for(int i = 0; i < q; i++) cout << ans[i] << endl;
 	
 	return 0;
 }

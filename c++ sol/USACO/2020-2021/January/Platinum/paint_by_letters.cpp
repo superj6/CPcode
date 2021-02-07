@@ -1,4 +1,4 @@
-//Euler Formula: F + E = V + C + 1
+//Euler Formula: F + V = E + C + 1
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
