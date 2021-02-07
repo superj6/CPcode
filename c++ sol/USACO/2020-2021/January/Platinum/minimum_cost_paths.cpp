@@ -59,8 +59,7 @@ int main(){
 		if(x < m) dp.push_back({m, {i, f(dp.back().s, x, i) - x * a[i]}});
 
 		for(pi j : v[i]){
-			int x = lower_bound(dp.begin(), dp.end(), (pii){j.f, {-1, 0}}) - dp.begin();
-			ans[j.s] = f(dp[x].s, j.f, i);
+			ans[j.s] = f(lower_bound(dp.begin(), dp.end(), (pii){j.f, {-1, 0}})->s, j.f, i);
 		}
 	}
 	
