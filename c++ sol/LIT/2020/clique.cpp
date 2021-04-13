@@ -1,25 +1,50 @@
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#include <vector>
-#include <map>
+#include <string.h>
 using namespace std;
 #define endl '\n'
 #define ll long long
-#define pi pair<ll, ll>
+#define pi pair<int, int>
 #define f first
 #define s second
 
 const int mod = 1000000007;
-const int mxn = 21;
+const int k = 20;
+
+struct M{
+	ll a[k][k];
+	
+	M(){ memset(a, 0, sizeof(a));}
+	
+	M friend operator*(M x, M y){
+		M ret;
+		for(int i = 0; i < k; i++)
+		for(int j = 0; j < k; j++)
+		for(int l = 0; l < k; l++){
+			(ret.a[i][j] += x.a[i][l] * y.a[l][j]) %= mod;
+		}
+		return ret;
+	}
+};
+
 int n, m;
-ll a[mxn], vis[mxn];
-map<ll, ll, greater<ll>> dp;
-vector<int> g[mxn];
+ll a[k], v[k];
+bool g[k][k];
+
+M mpow(M x, ll y){
+	M ret;
+	for(int i = 0; i < k; i++) ret.a[i][i] = 1;
+	for(; y; y >>= 1){
+		if(y & 1) ret = ret * x;
+		x = x * x;
+	}
+	return ret;
+}
 
 void dfs(int c){
-	vis[c] = 1;
-	for(int i : g[c]) dfs(i);
+	v[c] = 1;
+	for(int i = 0; i < c; i++) if(g[c][i] && !v[i]) dfs(i);
 }
 
 int main(){
@@ -30,29 +55,25 @@ int main(){
 	
 	for(int i = 0; i < n; i++) cin >> a[i];
 	for(int i = 0; i < m; i++){
-		int u, v;
-		cin >> u >> v;
-		if(u < v) swap(u, v);
-		g[--u].push_back(--v);
+		int x, y;
+		cin >> x >> y;
+		if(x < y) swap(x, y);
+		g[--x][--y] = 1;
 	}
 	
 	dfs(n - 1);
 	
 	ll ret = 1;
-	for(int i = 1; i < n; i++){
-		if(!vis[i]) continue;
-		dp.clear();
-		dp[0] = 1;
-		sort(g[i].begin(), g[i].end());
-		g[i].push_back(i);
-		for(int j = 0; j < g[i].size() - 1; j++)
-		for(pi k : dp)
-		for(ll l = a[g[i][j]]; l <= a[i]; l += a[g[i][j]]){
-			if((k.f + l) % a[g[i][j + 1]] == 0){
-				(dp[k.f + l] += k.s) %= mod;
-			}
+	for(int i = 1; i < n; i++) if(v[i]){
+		M dp;
+		dp.a[0][0] = g[i][0];
+		for(int j = 1; j <= i; j++){
+			dp = mpow(dp, a[j] / a[j - 1]);
+			if(g[i][j]) for(int l = 0; l <= j; l++) (++dp.a[j][l]) %= mod;
 		}
-		(ret *= dp[a[i]]) %= mod;
+		ll x = 0;
+		for(int j = 0; j <= i; j++) (x += dp.a[j][0]) %= mod;
+		(ret *= x) %= mod;
 	}
 	
 	cout << ret << endl;
